@@ -12,11 +12,8 @@ public:
     //Constructor
     //Image(std::string);
     Image(String);
-<<<<<<< HEAD
-
-=======
     Image(Mat);
->>>>>>> 4f0ecf2ad11633555c4a6704b50b40b133ba2af4
+
     //Functions for min max
     double max();
     double min();
@@ -25,18 +22,20 @@ public:
     void display();
     void save(std::string s = "finger_print");
 
+    //Symetries
     Image sym_y();
     Image sym_xy();
+
     //Change intensity intervals
     void OneTo255();
     void From255ToOne();
 
     //Operator overloading
     double& operator()(int, int);
+    Mat operator()();
 
     //Rectangles
     Image rectangle(int, int, unsigned int, unsigned int, float);
-
 
 };
 
@@ -118,10 +117,15 @@ Image Image::rectangle(int x_begin, int y_begin,
                         float color){
   // TODO check if indices make sense
   Image new_img(img);
-  for (int i = x_begin; i <= length; i++){
-    for (int j = y_begin; j <= width; j++){
+  for (int i = x_begin; i < x_begin + length; i++){
+    for (int j = y_begin; j < y_begin + width; j++){
+      std::cout<< i << " ,"<< j << std::endl;
       new_img(i,j) = color;
     }
   }
   return new_img;
+}
+
+Mat Image::operator()(){
+  return img;
 }
