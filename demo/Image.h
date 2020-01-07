@@ -13,26 +13,33 @@ public:
     //Image(std::string);
     Image(String);
     Image(Mat);
+
     //Functions for min max
     double max();
     double min();
-    
+
     //Plotting and saving
     void display();
     void save(std::string s = "finger_print");
+
+    //Symetries
     Image sym_y();
     Image sym_xy();
-    
+
     //Change intensity intervals
     void OneTo255();
     void From255ToOne();
-    
+
     //Operator overloading
     uchar& operator()(int, int);
+    Mat operator()();
+
+    //Rectangles
+    Image rectangle(int, int, unsigned int, unsigned int, float);
 };
 
 /*Image::Image(std::string name){
-    
+
     img = imread(samples::findFile(name), 0);
     if( img.empty() )                   // Check for invalid input
         std::cerr <<  "Could not open or find the image" << std::endl ;
@@ -104,4 +111,22 @@ void Image::From255ToOne(){
 uchar& Image::operator()(int row, int col){
     //TODO check if indices make sense
     return img(row,col);
+}
+
+Image Image::rectangle(int x_begin, int y_begin,
+                        unsigned int length, unsigned int width,
+                        float color){
+  // TODO check if indices make sense
+  Image new_img(img);
+  for (int i = x_begin; i < x_begin + length; i++){
+    for (int j = y_begin; j < y_begin + width; j++){
+      std::cout<< i << " ,"<< j << std::endl;
+      new_img(i,j) = color;
+    }
+  }
+  return new_img;
+}
+
+Mat Image::operator()(){
+  return img;
 }
