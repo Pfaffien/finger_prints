@@ -10,7 +10,6 @@ class Image{
     Mat_<uchar> img;
 public:
     //Constructor
-    //Image(std::string);
     Image(String);
     Image(Mat);
 
@@ -47,8 +46,9 @@ public:
 
 Image::Image(String name){
     img = imread(name, 0);
-    if( img.empty() )                   // Check for invalid input
+    if (img.empty())                   // Check for invalid input
         std::cerr <<  "Could not open or find the image" << std::endl ;
+
 }
 
 Image::Image(Mat matrix){
@@ -111,16 +111,17 @@ void Image::From255ToOne(){
 uchar& Image::operator()(int row, int col){
     //TODO check if indices make sense
     return img(row,col);
+    /* return img.at<uchar>(row,col); */
 }
 
 Image Image::rectangle(int x_begin, int y_begin,
                         unsigned int length, unsigned int width,
                         float color){
   // TODO check if indices make sense
-  Image new_img(img);
+  Mat new_mat = img.clone();
+  Image new_img(new_mat);
   for (int i = x_begin; i < x_begin + length; i++){
     for (int j = y_begin; j < y_begin + width; j++){
-      std::cout<< i << " ,"<< j << std::endl;
       new_img(i,j) = color;
     }
   }
