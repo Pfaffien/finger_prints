@@ -23,6 +23,7 @@ public:
 
     //Symetries
     Image sym_y();
+    Image sym_x();
     Image sym_xy();
 
     //Change intensity intervals
@@ -97,8 +98,28 @@ Image Image::sym_y()
     return new_img;
 }
 
-/* Image sym_xy() */
-/* { */
+Image Image::sym_x()
+{
+    int rows, cols;
+    rows = img.rows;
+    cols = img.cols;
+    
+    Mat new_mat = img.clone();
+    Image new_img(new_mat);
+    std::cout << "rows: " << rows << ", cols: " << cols << std::endl;
+
+    for (int j = 0; j < cols; j++) {
+        for (int i = 0; i < rows; i++)
+            new_img(i, j) = (*this)(rows-i-1, j);
+    }
+
+    return new_img;
+}
+
+Image Image::sym_xy(){
+    Image new_img = (this->sym_x()).sym_y();
+    return new_img;
+}
 
 void Image::OneTo255(){
     img = 255. * img;

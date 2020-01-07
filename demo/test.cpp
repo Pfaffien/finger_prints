@@ -10,7 +10,7 @@ using namespace std;
 
 int main()
 {
-    String s1( "../img/txy_small_finger.png" );
+    String s1( "../img/lion.png" );
     
     Image img(s1);
 
@@ -19,6 +19,10 @@ int main()
     img.display();
     Image img2 = img.sym_y();
     img2.display();
+    Image img3 = img.sym_x();
+    img3.display();
+    Image img4 = img.sym_xy();
+    img4.display();
 
     finger.display();
     Image res = finger.rectangle(10,10,50,10,0);
