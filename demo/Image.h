@@ -9,13 +9,25 @@ class Image{
  private:
     Mat img;
 public:
+    //Constructor
     //Image(std::string);
     Image(String);
+    
+    //Functions for min max
     double max();
     double min();
+    
+    //Plotting and saving
     void display();
     void save(std::string s = "finger_print");
     
+    //Change intensity intervals
+    void OneTo255();
+    void From255ToOne();
+    
+    //Operator overloading
+    double& operator[](int, int);
+    void operator[]();
 };
 
 /*Image::Image(std::string name){
@@ -26,19 +38,21 @@ public:
 }*/
 
 Image::Image(String name){
-    std::cerr << "String name is: " << name << std::endl;
     img = imread(name, 0);
     if( img.empty() )                   // Check for invalid input
         std::cerr <<  "Could not open or find the image" << std::endl ;
 }
 
 double Image::max(){
-    return 0;
+    double min, max;
+    minMaxLoc(img, &min, &max);
+    return max;
 }
 
 double Image::min(){
-    return 0;
-    
+    double min, max;
+    minMaxLoc(img, &min, &max);
+    return min;
 }
 
 void Image::display(){
@@ -51,4 +65,17 @@ void Image::save(std::string s){
     s  = "../../" + s + ".png";
     imwrite(s, img);
 
+}
+
+void Image::OneTo255(){
+    img=255*img;
+}
+
+void Image::From255ToOne(){
+    img = (double)img/255.;
+}
+
+double& Image::operator[](int row, int col){
+    //TODO check if indices make sense
+    return img.at<double>(row,col);
 }
