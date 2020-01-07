@@ -1,3 +1,6 @@
+#ifndef _IMAGES_H_
+#define _IMAGES_H_
+
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
@@ -5,36 +8,38 @@
 
 
 class Image{
-private:
-    cv::Mat_<uchar> img;
-public:
-    //Constructor
-    Image(cv::String);
-    Image(cv::Mat);
 
-    //Functions for min max
-    double max();
-    double min();
+    private:
+        cv::Mat_<uchar> img;
 
-    //Plotting and saving
-    void display();
-    void save(std::string s = "finger_print");
+    public:
+        //Constructor
+        Image(cv::String);
+        Image(cv::Mat);
 
-    //Symmetries
-    Image sym_x();
-    Image sym_y();
-    Image sym_xy();
+        //Functions for min max
+        double max();
+        double min();
 
-    //Change intensity intervals
-    void OneTo255();
-    void From255ToOne();
+        //Plotting and saving
+        void display();
+        void save(std::string s = "finger_print");
 
-    //Operator overloading
-    uchar& operator()(int, int);
-    cv::Mat operator()();
+        //Symmetries
+        Image sym_x();
+        Image sym_y();
+        Image sym_xy();
 
-    //Rectangles
-    Image rectangle(int, int, unsigned int, unsigned int, float);
+        //Change intensity intervals
+        void OneTo255();
+        void From255ToOne();
+
+        //Operator overloading
+        uchar& operator()(int, int);
+        cv::Mat operator()();
+
+        //Rectangles
+        Image rectangle(int, int, unsigned int, unsigned int, float);
 };
 
 /*Image::Image(std::string name){
@@ -149,3 +154,5 @@ Image Image::rectangle(int x_begin, int y_begin,
 cv::Mat Image::operator()(){
   return img;
 }
+
+#endif  /* _IMAGES_H_ */
