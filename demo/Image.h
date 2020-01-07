@@ -12,26 +12,29 @@ public:
     //Constructor
     //Image(std::string);
     Image(String);
-    
+
     //Functions for min max
     double max();
     double min();
-    
+
     //Plotting and saving
     void display();
     void save(std::string s = "finger_print");
-    
+
     //Change intensity intervals
     void OneTo255();
     void From255ToOne();
-    
+
     //Operator overloading
     double& operator[](int, int);
     void operator[]();
+
+    //Rectangles
+    Image rectangle(int, int, unsigned int, unsigned int, float);
 };
 
 /*Image::Image(std::string name){
-    
+
     img = imread(samples::findFile(name), 0);
     if( img.empty() )                   // Check for invalid input
         std::cerr <<  "Could not open or find the image" << std::endl ;
@@ -78,4 +81,17 @@ void Image::From255ToOne(){
 double& Image::operator[](int row, int col){
     //TODO check if indices make sense
     return img.at<double>(row,col);
+}
+
+Image Image::rectangle(int x_begin, int y_begin,
+                        unsigned int length, unsigned int width,
+                        float color){
+  // TODO check if indices make sense
+  Image new_img(img);
+  for (int i = x_begin; i <= length; i++){
+    for (int j = y_begin; j <= width; j++){
+      new_img(i,j) = color;
+    }
+  }
+  return new_img;
 }
