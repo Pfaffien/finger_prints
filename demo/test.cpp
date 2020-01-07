@@ -5,12 +5,10 @@
 #include <iostream>
 #include "Image.h"
 
-using namespace cv;
-using namespace std;
 
 int main()
 {
-    String s1( "../img/lion.png" );
+    cv::String s1( "../src/img/lion.png" );
     
     Image img(s1);
 
