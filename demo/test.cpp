@@ -8,7 +8,7 @@
 
 int main()
 {
-    cv::String s1( "../src/img/lion.png" );
+    cv::String s1( "../img/lion.png" );
     
     Image img(s1);
 
