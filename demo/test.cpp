@@ -14,7 +14,7 @@ int main()
 
     Image finger(s1);
 
-    img.display();
+    img.display(s1, s1);
     Image img2 = img.sym_y();
     img2.display();
     Image img3 = img.sym_x();

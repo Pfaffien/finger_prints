@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Image.h"
 
+
 /*Image::Image(std::string name){
 
     img = imread(samples::findFile(name), 0);
@@ -31,9 +32,9 @@ double Image::min(){
     return min;
 }
 
-void Image::display(){
-    cv::namedWindow( "Display finger_print", cv::WINDOW_AUTOSIZE ); // Create a window for display.
-    cv::imshow( "Display finger_print", img );                // Show our image inside it.
+void Image::display(cv::String windowName, cv::String imageName){
+    cv::namedWindow( windowName, cv::WINDOW_AUTOSIZE ); // Create a window for display.
+    cv::imshow( imageName, img );                // Show our image inside it.
     cv::waitKey(0); // Wait for a keystroke in the window
 }
 
@@ -42,25 +43,7 @@ void Image::save(std::string s){
     cv::imwrite(s, img);
 }
 
-Image Image::sym_y()
-{
-    int rows, cols;
-    rows = img.rows;
-    cols = img.cols;
-    
-    cv::Mat new_mat = img.clone();
-    Image new_img(new_mat);
-
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++)
-            new_img(i, j) = (*this)(i, cols-j-1);
-    }
-
-    return new_img;
-}
-
-Image Image::sym_x()
-{
+Image Image::sym_x(){
     int rows, cols;
     rows = img.rows;
     cols = img.cols;
@@ -71,6 +54,22 @@ Image Image::sym_x()
     for (int j = 0; j < cols; j++) {
         for (int i = 0; i < rows; i++)
             new_img(i, j) = (*this)(rows-i-1, j);
+    }
+
+    return new_img;
+}
+
+Image Image::sym_y(){
+    int rows, cols;
+    rows = img.rows;
+    cols = img.cols;
+    
+    cv::Mat new_mat = img.clone();
+    Image new_img(new_mat);
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++)
+            new_img(i, j) = (*this)(i, cols-j-1);
     }
 
     return new_img;
@@ -94,6 +93,10 @@ uchar& Image::operator()(int row, int col){
     return img(row,col);
 }
 
+cv::Mat Image::operator()(){
+  return img;
+}
+
 Image Image::rectangle(int x_begin, int y_begin,
                         unsigned int length, unsigned int width,
                         float color){
@@ -108,8 +111,4 @@ Image Image::rectangle(int x_begin, int y_begin,
     }
     
   return new_img;
-}
-
-cv::Mat Image::operator()(){
-  return img;
 }

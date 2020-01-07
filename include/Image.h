@@ -22,7 +22,7 @@ class Image{
         double min();
 
         //Plotting and saving
-        void display();
+        void display(cv::String windowName = "Display finger_print", cv::String imageName = "Display finger_print");
         void save(std::string s = "finger_print");
 
         //Symmetries
