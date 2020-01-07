@@ -11,11 +11,13 @@ class Image{
 public:
     //Image(std::string);
     Image(String);
+    Image(Mat);
     double max();
     double min();
     void display();
     void save(std::string s = "finger_print");
-    
+    Image sym_y();
+    Image sym_xy();
 };
 
 /*Image::Image(std::string name){
@@ -30,6 +32,10 @@ Image::Image(String name){
     img = imread(name, 0);
     if( img.empty() )                   // Check for invalid input
         std::cerr <<  "Could not open or find the image" << std::endl ;
+}
+
+Image::Image(Mat matrix){
+    img = matrix;
 }
 
 double Image::max(){
@@ -50,5 +56,21 @@ void Image::display(){
 void Image::save(std::string s){
     s  = "../../" + s + ".png";
     imwrite(s, img);
+
+}
+
+Image sym_y()
+{
+    int rows, cols;
+    rows = img.rows;
+    cols = img.cols;
+    
+    Mat new_img(rows, cols, CV_16UC1);
+
+    for (int i = n-1; i >= 0; i--)
+}
+
+Image sym_xy()
+{
 
 }
