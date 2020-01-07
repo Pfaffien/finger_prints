@@ -7,7 +7,7 @@ using namespace cv;
 
 class Image{
  private:
-    Mat img;
+    Mat_<uchar> img;
 public:
     //Constructor
     //Image(std::string);
@@ -28,7 +28,7 @@ public:
     void From255ToOne();
     
     //Operator overloading
-    double& operator()(int, int);
+    uchar& operator()(int, int);
 };
 
 /*Image::Image(std::string name){
@@ -78,11 +78,13 @@ Image Image::sym_y()
     rows = img.rows;
     cols = img.cols;
     
-    Image new_img(img);
+    Mat new_mat = img.clone();
+    Image new_img(new_mat);
+    std::cout << "rows: " << rows << ", cols: " << cols << std::endl;
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++)
-            new_img(i, j) = (*this)(i, cols-j);
+            new_img(i, j) = (*this)(i, cols-j-1);
     }
 
     return new_img;
@@ -99,7 +101,7 @@ void Image::From255ToOne(){
     img = img / 255.;
 }
 
-double& Image::operator()(int row, int col){
+uchar& Image::operator()(int row, int col){
     //TODO check if indices make sense
-    return img.at<double>(row,col);
+    return img(row,col);
 }

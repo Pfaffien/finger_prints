@@ -8,12 +8,13 @@ using namespace cv;
 
 int main()
 {
-    String s1( "../img/clean_finger_small.png" );
+    String s1( "../img/lion.png" );
     std::cout << s1 << std::endl;
     
-    Mat matrix(15, 15, CV_64FC1);
+    Mat matrix(15, 15, 0);
+    std::cout << "Type: " << matrix.type() << std::endl;
     Image img(matrix);
-    img(10,10) = 1.5;
+    img(10,10) = 15;
 
     Image finger(s1);
 
