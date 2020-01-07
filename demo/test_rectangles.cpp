@@ -15,6 +15,10 @@ int main()
     Image res = finger.rectangle(10,10,50,10,0);
     res = res.rectangle(50, 100, 20, 30, 255);
     res.display("Black and white rectangles", "Black and white rectangles");
+    
+    res.save("rectangles");
+    Image saved("../img/rectangles.png");
+    saved.display("Saved image", "Saved image");
 
     return 0;
 }

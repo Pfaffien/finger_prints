@@ -39,7 +39,7 @@ void Image::display(cv::String windowName, cv::String imageName){
 }
 
 void Image::save(std::string s){
-    s  = "../../" + s + ".png";
+    s  = "../img/" + s + ".png";
     cv::imwrite(s, img);
 }
 
