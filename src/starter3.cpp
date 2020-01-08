@@ -47,7 +47,7 @@ cv::Mat_<float> convolutionDFT(cv::Mat_<float> k, cv::Mat_<float> f){
             conv(i, j) = k_hat(i, j) * f_hat(i, j);
     }
 
-    dft(conv, conv, DFT_INVERSE + DFT_SCALE)
+    dft(conv, conv, 1+2);
 
     return conv;
 }
