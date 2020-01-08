@@ -4,6 +4,6 @@
 #include "Image.h"
 
 Image convolution(Image, Image);
-void normalization(Image);
+Image normalization(Image);
 
 #endif
