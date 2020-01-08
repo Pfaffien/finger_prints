@@ -17,12 +17,18 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k){
           //indexes for A
           ii = i + middle_y - mm;
           jj = j + middle_x - nn;
+
           //Verification of boundary
           if (ii >= 0 && ii < f.rows && jj>=0 && jj < f.cols){
             res(i,j) += f(ii,jj)*k(mm,nn);
           }
+          //we use the extension
           else{
-            //TODO boundary conditions
+            if (ii < 0) ii = 0;
+            if (jj < 0) jj = 0;
+            if (ii >= f.rows) ii = f.rows - 1;
+            if (jj >= f.cols) jj = f.cols - 1;
+            res(i,j) += f(ii,jj)*k(mm,nn);
           }
         }
       }
