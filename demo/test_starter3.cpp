@@ -37,7 +37,7 @@ int main()
     //cv::waitKey(0);
 
     // TEST DE LA CONVOLUTION
-    int taille = 3;
+    int taille = 15;
     cv::Mat_<float> blur(taille,taille);
 
     for (int i = 0; i < taille; i++){
@@ -52,7 +52,14 @@ int main()
     cv::Mat_<float> pix = convolveDFT(img2, blur);
     /* std::cout << pix << std::endl; */
     Image img3(pix);
-    img3.display();
+    img3.display("Not working", "Not working");
+
+    cv::Mat_<float> pix2 = convolution(img2, blur);
+    Image img4(pix2);
+    img4.display("Working", "Working");
+
+    Image diff = img3 - img4;
+    diff.display("Diff", "Diff");
 
     return 0;
 }
