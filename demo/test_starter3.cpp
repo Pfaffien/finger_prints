@@ -28,16 +28,20 @@ int main(){
   // res_img.display("res convol", "res convol");
   int taille = 3;
   cv::Mat_<float> blur(taille,taille);
+
   for (int i = 0; i < taille; i++){
     for (int j = 0; j < taille; j++){
       blur(i,j) = 1;
     }
   }
+  
   blur = blur/taille;
-  cv::Mat_<float> blurred = convolution(finger(), blur);
+  cv::Mat_<float> blurred = convolutionDFT(finger(), blur);
   Image res_blur(blurred);
 
   res_blur.display("blur", "blur");
+  Image diff = finger - res_blur;
+  diff.display("Diff", "Diff");
 
   return 0;
 }

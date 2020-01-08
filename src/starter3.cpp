@@ -37,23 +37,29 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k){
   return res;
 }
 
-cv::Mat_<float> convolutionDFT(cv::Mat_<float> k, cv::Mat_<float> f){
+cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k){
     int M, N;
     M = f.rows;
     N = f.cols;
     cv::Mat_<float> conv(M, N);
+    cv::Mat_<float> padded(M, N);
     cv::Mat_<float> k_hat, f_hat;
 
     //Pas opti (cf. padded et getOptimalDFTSize)
-    dft(k, k_hat);
-    dft(f, f_hat);
+    cv::dft(k, k_hat);
+    cv::dft(f, f_hat);
+
+    for (int i = 0; i < k_hat.rows; i++) {
+        for (int j = 0; j < k_hat.cols; j++)
+            padded(i, j) = k_hat(i, j);
+    }
 
     for (int i = 0; i < M; i++) {
         for (int j = 0; j < N; j++)
-            conv(i, j) = k_hat(i, j) * f_hat(i, j);
+            conv(i, j) = padded(i, j) * f_hat(i, j);
     }
 
-    idft(conv, conv);
+    cv::idft(conv, conv);
 
     return conv;
 }

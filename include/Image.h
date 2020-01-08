@@ -19,7 +19,8 @@ class Image{
 
         //Operator overloading
         float& operator()(int, int);
-        cv::Mat_<float> operator()();
+        cv::Mat_<float> operator()() const;
+        Image operator-(const Image &);
 
         //Functions for min max
         double max();
