@@ -14,26 +14,26 @@ int main(){
 
   finger.display("Clean finger", "Clean finger");
 
-  cv::Mat_<float> kernel(3,3);
-  for (int i = 0; i < 3; i++){
-    for (int j = 0; j < 3; j++){
-      kernel(i,j) = -1;
-    }
-  }
-  kernel(1,1) = 8;
-
-  cv::Mat_<float> res = convolution(finger(), kernel);
-  Image res_img(res);
-
-  res_img.display("res convol", "res convol");
-
-  cv::Mat_<float> blur(15,15);
-  for (int i = 0; i < 15; i++){
-    for (int j = 0; j < 15; j++){
+  // cv::Mat_<float> kernel(3,3);
+  // for (int i = 0; i < 3; i++){
+  //   for (int j = 0; j < 3; j++){
+  //     kernel(i,j) = -1;
+  //   }
+  // }
+  // kernel(1,1) = 8;
+  //
+  // cv::Mat_<float> res = convolution(finger(), kernel);
+  // Image res_img(res);
+  //
+  // res_img.display("res convol", "res convol");
+  int taille = 3;
+  cv::Mat_<float> blur(taille,taille);
+  for (int i = 0; i < taille; i++){
+    for (int j = 0; j < taille; j++){
       blur(i,j) = 1;
     }
   }
-  blur = blur/15;
+  blur = blur/taille;
   cv::Mat_<float> blurred = convolution(finger(), blur);
   Image res_blur(blurred);
 
