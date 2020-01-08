@@ -16,6 +16,7 @@ class Image{
         //Constructor
         Image(cv::String);
         Image(cv::Mat);
+        Image(Image_float);
 
         //Functions for min max
         double max();
@@ -24,23 +25,31 @@ class Image{
         //Plotting and saving
         void display(cv::String windowName = "Display finger_print", cv::String imageName = "Display finger_print");
         void save(std::string s = "finger_print");
+};
 
-        //Symmetries
-        Image sym_x();
-        Image sym_y();
-        Image sym_xy();
+class Image_float{
 
-        //Change intensity intervals
-        void OneTo255();
-        void From255ToOne();
+    private:
+        cv::Mat_<float> img;
+
+    public:
+        //Constructor
+        Image_float(cv::String);
+        Image_float(cv::Mat);
+        Image_float(Image);
 
         //Operator overloading
-        uchar& operator()(int, int);
+        float& operator()(int, int);
         cv::Mat operator()();
 
         //Rectangles
-        Image rectangle(int, int, unsigned int, unsigned int, float);
-};
+        Image_float rectangle(int, int, unsigned int, unsigned int, float);
 
+        //Symetries
+        Image_float sym_x();
+        Image_float sym_y();
+        Image_float sym_xy();
+
+}
 
 #endif  /* _IMAGES_H_ */
