@@ -1,6 +1,6 @@
 #include "starter3.h"
 
-Image convolution(Image A, cv::Image B){
+Image convolution(Image A, Image B){
   Image res(A.rows, A.cols); //initialization of the result
 
   //finding the midle of the matrix B

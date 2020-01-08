@@ -4,6 +4,7 @@
 #include <opencv2/highgui.hpp>
 #include <iostream>
 #include "starter3.h"
+#include "Image.h"
 
 int main(){
   cv::String s1( "../img/clean_finger.png" );
