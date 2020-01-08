@@ -23,8 +23,12 @@ float& Image::operator()(int row, int col){
     return pixels(row,col);
 }
 
-cv::Mat_<float> Image::operator()(){
+cv::Mat_<float> Image::operator()() const {
     return pixels;
+}
+
+Image Image::operator-(const Image &img) {
+    return Image((*this)() - img());
 }
 
 
