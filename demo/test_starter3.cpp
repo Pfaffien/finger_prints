@@ -37,11 +37,11 @@ int main(){
 
   blur = blur/taille;
   cv::Mat_<float> blurred = convolution(finger(), blur);
+  // cout << blurred << endl;
   Image res_blur(blurred);
-
   res_blur.display("blur", "blur");
-  Image diff = finger - res_blur;
-  diff.display("Diff", "Diff");
+  // Image diff = finger - res_blur;
+  // diff.display("Diff", "Diff");
 
   return 0;
 }
