@@ -1,4 +1,7 @@
+#include <iostream>
+
 #include "starter3.h"
+#include "Image.h"
 
 cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k){
   cv::Mat_<float> res(f.rows, f.cols); //initialization of the result
@@ -72,5 +75,59 @@ cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k){
     double min, max;
     minMaxLoc(conv, &min, &max);
     conv = conv/max;
+    return conv;
+}
+
+cv::Mat_<float> convolveDFT(cv::Mat_<float> f, cv::Mat_<float> k){
+    int M, N;
+    M = f.rows;
+    N = f.cols;
+
+    cv::Mat planesF[] = {cv::Mat_<float>(f), cv::Mat::zeros(f.size(), CV_32F)};
+    cv::Mat planesK[] = {cv::Mat_<float>(k), cv::Mat::zeros(k.size(), CV_32F)};
+
+    cv::Mat complexF, complexK, complexPad;
+
+    cv::Mat_<float> pad(M, N, (int) 0);
+    cv::Mat_<float> clonedK = k.clone();
+    /* std::cout << complexK << std::endl; */
+    /* std::cout << cloned << std::endl; */
+    for (int i = 0; i < k.rows; i++) {
+        for (int j = 0; j < k.cols; j++)
+            pad(i, j) = clonedK(i, j);
+    }
+    /* std::cout << pad << std::endl; */
+    cv::Mat planesPad[] = {pad, cv::Mat::zeros(pad.size(), CV_32F)};
+     
+    cv::merge(planesF, 2, complexF);
+    /* cv::merge(planesK, 2, complexK); */
+    cv::merge(planesPad, 2, complexPad);
+    
+    cv::dft(complexF, complexF);
+    /* cv::dft(complexK, complexK); */
+    cv::dft(complexPad, complexPad);
+
+    cv::Mat_<float> conv(M, N);
+    /* cv::Mat_<float> padded(M, N); */
+    /* cv::Mat_<float> clonedK = complexK.clone(); */
+    /* /1* std::cout << cloned << std::endl; *1/ */
+    /* for (int i = 0; i < complexK.rows; i++) { */
+    /*     for (int j = 0; j < complexK.cols; j++) */
+    /*         padded(i, j) = clonedK(i, j); */
+    /* } */
+    /* std::cout << padded << std::endl; */
+
+    cv::Mat_<float> clonedF = complexF.clone();
+    cv::Mat_<float> clonedPad = complexPad.clone();
+    for (int i = 0; i < M; i++) {
+        for (int j = 0; j < N; j++)
+            conv(i, j) = clonedPad(i, j) * clonedF(i, j);
+    }
+    /* std::cout << conv << std::endl; */
+
+    cv::idft(conv, conv, cv::DFT_SCALE | cv::DFT_REAL_OUTPUT);
+    cv::normalize(conv, conv, 0, 1, cv::NORM_MINMAX);
+    /* std::cout << conv << std::endl; */
+    
     return conv;
 }
