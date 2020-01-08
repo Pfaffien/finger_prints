@@ -34,9 +34,9 @@ int main(){
       blur(i,j) = 1;
     }
   }
-  
+
   blur = blur/taille;
-  cv::Mat_<float> blurred = convolutionDFT(finger(), blur);
+  cv::Mat_<float> blurred = convolution(finger(), blur);
   Image res_blur(blurred);
 
   res_blur.display("blur", "blur");
