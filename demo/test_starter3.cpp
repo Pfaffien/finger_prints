@@ -9,14 +9,14 @@
 using namespace std;
 
 int main(){
-  cv::String s1( "../img/clean_finger.png" );
+  cv::String s1( "../img/lion.png" );
   Image finger(s1);
 
   finger.display("Clean finger", "Clean finger");
 
-  cv::Mat_<float> kernel (3,3);
+  cv::Mat_<float> kernel(3,3);
   for (int i = 0; i < 3; i++){
-    for (int j = 0; j < 4; j++){
+    for (int j = 0; j < 3; j++){
       kernel(i,j) = -1;
     }
   }
@@ -26,5 +26,18 @@ int main(){
   Image res_img(res);
 
   res_img.display("res convol", "res convol");
+
+  cv::Mat_<float> blur(15,15);
+  for (int i = 0; i < 15; i++){
+    for (int j = 0; j < 15; j++){
+      blur(i,j) = 1;
+    }
+  }
+  blur = blur/15;
+  cv::Mat_<float> blurred = convolution(finger(), blur);
+  Image res_blur(blurred);
+
+  res_blur.display("blur", "blur");
+
   return 0;
 }
