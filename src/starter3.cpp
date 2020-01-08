@@ -34,10 +34,14 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k){
       }
     }
   }
+  // normalization of the resultat
+  double min, max;
+  minMaxLoc(res, &min, &max);
+  res = res/max;
   return res;
 }
 
-cv::Mat_<float> convolutionDFT(cv::Mat_<float> k, cv::Mat_<float> f){
+cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k){
     int M, N;
     M = f.rows;
     N = f.cols;

@@ -33,6 +33,10 @@ int main(){
       blur(i,j) = 1;
     }
   }
+  // cv::Mat_<float> add = blur + blur;
+  // cout << add << endl;
+
+
   blur = blur/taille;
   cv::Mat_<float> blurred = convolution(finger(), blur);
   Image res_blur(blurred);
