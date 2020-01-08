@@ -6,6 +6,7 @@
 #include <opencv2/highgui.hpp>
 #include <iostream>
 
+class Image_float;
 
 class Image{
 
@@ -18,9 +19,9 @@ class Image{
         Image(cv::Mat);
         Image(Image_float);
 
-        //Functions for min max
-        double max();
-        double min();
+        //Operator overloading
+        uchar& operator()(int, int);
+        cv::Mat operator()();
 
         //Plotting and saving
         void display(cv::String windowName = "Display finger_print", cv::String imageName = "Display finger_print");
@@ -34,13 +35,16 @@ class Image_float{
 
     public:
         //Constructor
-        Image_float(cv::String);
         Image_float(cv::Mat);
         Image_float(Image);
 
         //Operator overloading
         float& operator()(int, int);
         cv::Mat operator()();
+
+        //Functions for min max
+        double max();
+        double min();
 
         //Rectangles
         Image_float rectangle(int, int, unsigned int, unsigned int, float);
@@ -50,6 +54,6 @@ class Image_float{
         Image_float sym_y();
         Image_float sym_xy();
 
-}
+};
 
 #endif  /* _IMAGES_H_ */
