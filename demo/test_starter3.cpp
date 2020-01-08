@@ -9,17 +9,22 @@
 using namespace std;
 
 int main(){
-  cv::String s1( "../img/clean_finger.png" );
+  cv::String s1( "../img/lion.png" );
   Image finger(s1);
 
   finger.display("Clean finger", "Clean finger");
-  cv::Mat_<float> mat_rien(3,3);
-  mat_rien(1,1) = 1;
-  cout << mat_rien << endl;
-  Image rien(mat_rien);
-  rien.display("rien", "rien");
 
-  // Image res = convolution(finger, rien);
-  // res.display();
+  cv::Mat_<float> kernel (3,4);
+  for (int i = 0; i < 3; i++){
+    for (int j = 0; j < 4; j++){
+      kernel(i,j) = -1;
+    }
+  }
+  kernel(1,1) = 8;
+
+  cv::Mat_<float> res = convolution(finger(), kernel);
+  Image res_img(res);
+
+  res_img.display("res convol", "res convol");
   return 0;
 }

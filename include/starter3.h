@@ -3,7 +3,7 @@
 
 #include "Image.h"
 
-Image convolution(Image, Image);
-Image normalization(Image);
+cv::Mat_<float> convolution(cv::Mat_<float>, cv::Mat_<float>);
+cv::Mat_<float> normalization(cv::Mat_<float>);
 
 #endif
