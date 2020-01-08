@@ -5,5 +5,6 @@
 
 cv::Mat_<float> convolution(cv::Mat_<float>, cv::Mat_<float>);
 cv::Mat_<float> normalization(cv::Mat_<float>);
+cv::Mat_<float> convolutionDFT(cv::Mat_<float>, cv::Mat_<float>);
 
 #endif

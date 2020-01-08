@@ -42,3 +42,24 @@ cv::Mat_<float> normalization(cv::Mat_<float> img){
   mat = mat/sum;
   return mat;
 }
+
+cv::Mat_<float> convolutionDFT(cv::Mat_<float> k, cv::Mat_<float> f){
+    int M, N;
+    M = f.rows;
+    N = f.cols;
+    cv::Mat_<float> conv(M, N);
+    cv::Mat_<float> k_hat, f_hat;
+
+    //Pas opti (cf. padded et getOptimalDFTSize)
+    dft(k, k_hat);
+    dft(f, f_hat);
+
+    for (int i = 0; i < M; i++) {
+        for (int j = 0; j < N; j++)
+            conv(i, j) = k_hat(i, j) * f_hat(i, j);
+    }
+
+    dft(conv, conv, DFT_INVERSE + DFT_SCALE)
+
+    return conv;
+}
