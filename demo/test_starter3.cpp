@@ -9,12 +9,12 @@
 using namespace std;
 
 int main(){
-  cv::String s1( "../img/lion.png" );
+  cv::String s1( "../img/clean_finger.png" );
   Image finger(s1);
 
   finger.display("Clean finger", "Clean finger");
 
-  cv::Mat_<float> kernel (3,4);
+  cv::Mat_<float> kernel (3,3);
   for (int i = 0; i < 3; i++){
     for (int j = 0; j < 4; j++){
       kernel(i,j) = -1;
