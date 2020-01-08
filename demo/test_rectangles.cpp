@@ -13,15 +13,14 @@ int main()
 
     finger.display("Clean finger", "Clean finger");
 
-    Image_float finger_float(finger);
+    /* Image finger_float(finger); */
 
-    Image_float res_float = finger_float.rectangle(10,10,50,10,0);
-    res_float = res_float.rectangle(50, 100, 20, 30, 255);
-    Image res(res_float);
+    Image res = finger.rectangle(10,10,50,10,0);
+    res = res.rectangle(50, 100, 20, 30, 1);
     res.display("Black and white rectangles", "Black and white rectangles");
 
     res.save("rectangles");
-    Image saved("../img/rectangles.png");
+    Image saved("../img/saved/rectangles.png");
     saved.display("Saved image", "Saved image");
 
     return 0;

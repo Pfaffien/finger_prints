@@ -6,53 +6,39 @@
 #include <opencv2/highgui.hpp>
 #include <iostream>
 
-class Image_float;
 
 class Image{
 
     private:
-        cv::Mat_<uchar> img;
+        cv::Mat_<float> pixels;
 
     public:
         //Constructor
         Image(cv::String);
-        Image(cv::Mat);
-        Image(Image_float);
-
-        //Operator overloading
-        uchar& operator()(int, int);
-        cv::Mat operator()();
-
-        //Plotting and saving
-        void display(cv::String windowName = "Display finger_print", cv::String imageName = "Display finger_print");
-        void save(std::string s = "finger_print");
-};
-
-class Image_float{
-
-    private:
-        cv::Mat_<float> img;
-
-    public:
-        //Constructor
-        Image_float(cv::Mat);
-        Image_float(Image);
+        Image(cv::Mat_<float>);
 
         //Operator overloading
         float& operator()(int, int);
-        cv::Mat operator()();
+        cv::Mat_<float> operator()();
 
         //Functions for min max
         double max();
         double min();
 
         //Rectangles
-        Image_float rectangle(int, int, unsigned int, unsigned int, float);
+        Image rectangle(int, int, unsigned int, unsigned int, float);
 
         //Symetries
-        Image_float sym_x();
-        Image_float sym_y();
-        Image_float sym_xy();
+        Image sym_x();
+        Image sym_y();
+        Image sym_xy();
+
+        //Conversion
+        cv::Mat_<uchar> from1to255();
+
+        //Plotting and saving
+        void display(cv::String windowName = "Display finger_print", cv::String imageName = "Display finger_print");
+        void save(std::string s = "finger_print");
 
 };
 

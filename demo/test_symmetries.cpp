@@ -12,22 +12,17 @@ int main()
     Image img(s1);
     img.display("Lion", "Lion");
 
-    Image_float img_float(img);
+    Image img2 = img.sym_y();
+    img2.display("Symmetry along y", "Symmetry along y");
+    img2.save("symmetry_y");
 
-    Image_float img2 = img_float.sym_y();
-    Image img22(img2);
-    img22.display("Symmetry along y", "Symmetry along y");
-    img22.save("symmetry_y");
+    Image img3 = img.sym_x();
+    img3.display("Symmetry along x", "Symmetry along x");
+    img3.save("symmetry_x");
 
-    Image_float img3 = img_float.sym_x();
-    Image img32(img3);
-    img32.display("Symmetry along x", "Symmetry along x");
-    img32.save("symmetry_x");
-
-    Image_float img4 = img_float.sym_xy();
-    Image img42(img4);
-    img42.display("Symmetry along the diagonal", "Symmetry along the diagonal");
-    img42.save("symmetry_xy");
+    Image img4 = img.sym_xy();
+    img4.display("Symmetry along the diagonal", "Symmetry along the diagonal");
+    img4.save("symmetry_xy");
 
     return 0;
 }
