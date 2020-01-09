@@ -164,12 +164,28 @@ double distance_max(cv::Mat_<float> mat, int x_c, int y_c)
 
 cv::Mat_<float> kernel(cv::Mat_<float> initial, float distance, float distance_max)
 {
+
     cv::Mat_<float> k = initial.clone();
     int size = k.rows;
     cv::Mat_<float> id(size, size, (int) 0);
     id(size/2, size/2) = 1;
 
-    k = k * distance/distance_max + id * (distance_max - distance) / distance_max;
+    k = k * distance / distance_max;
+    
+    return k;
+
+}
+
+
+cv::Mat_<float> kernel_blurring(cv::Mat_<float> initial, float distance, float distance_max)
+{
+    cv::Mat_<float> k = initial.clone();
+    int size = k.rows;
+    cv::Mat_<float> id(size, size, (int) 0);
+    id(size/2, size/2) = 1;
+
+    k = kernel(initial, distance, distance_max) + id * (distance_max - distance) / distance_max;
+
     
     return k;
 }
@@ -204,7 +220,7 @@ cv::Mat_<float> convolution_decrease(cv::Mat_<float> f, cv::Mat_<float> k, int x
                     //distance of the center
                     dist = cv::norm(center - tmp);//distance(x_c,y_c,j,i);
                     // std::cout << "distance " << dist_max-dist << std::endl;
-                    kern = kernel(k, dist, dist_max);
+                    kern = kernel_blurring(k, dist, dist_max);
                     // std::cout << kern << std::endl;
 
                     //indices for B
