@@ -7,6 +7,8 @@
 #include "starter3.h"
 #include "Image.h"
 
+using namespace std;
+
 
 int main()
 {
@@ -42,4 +44,27 @@ int main()
     // Difference between naive and first DFT convolution
     Image diff = res_conv - res_convDFT;
     diff.display("Difference", "Difference");
+
+
+    // Main
+    Image finger("../img/clean_finger.png");
+    finger.display("initial", "initial");
+
+    //identity filter
+    int taille = 5;
+    cv::Mat_<float> id(taille,taille, int(0));
+    id(taille/2,taille/2) = 1;
+    //blur filter
+    cv::Mat_<float> blur(taille,taille);
+
+    for (int i = 0; i < taille; i++){
+        for (int j = 0; j < taille; j++){
+            blur(i,j) = 1;
+        }
+    }
+    blur = blur/taille;
+
+    cv::Mat_<float> res = convolution_decrease(finger(), blur, finger().cols/2, finger().rows/2);
+    Image res_img(res);
+    res_img.display("res", "res");
 }
