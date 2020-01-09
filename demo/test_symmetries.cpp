@@ -8,9 +8,9 @@
 
 int main()
 {
-    cv::String s1( "../img/lion.png" );
+    cv::String s1( "../img/clean_finger.png" );
     Image img(s1);
-    img.display("Lion", "Lion");
+    img.display("Finger", "Finger");
 
     Image img2 = img.sym_y();
     img2.display("Symmetry along y", "Symmetry along y");
