@@ -3,7 +3,7 @@
 #include "starter3.h"
 #include "Image.h"
 
-
+//a modifier car proche copier coller
 cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k){
   cv::Mat_<float> res(f.rows, f.cols); //initialization of the result
   //finding the midle of the matrix B
@@ -39,9 +39,7 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k){
     }
   }
   // normalization of the resultat
-  double min, max;
-  minMaxLoc(res, &min, &max);
-  res = res/max;
+  cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
   return res;
 }
 
@@ -54,7 +52,7 @@ cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
     N = f.cols;
     cv::Mat_<float> conv(M, N);
     cv::Mat_<float> k_hat, f_hat;
- 
+
     // Padding
     cv::Mat_<float> padded(M, N, (int) 0);
     cv::Mat_<float> clonedK = k.clone();
@@ -150,8 +148,10 @@ double distance_max(cv::Mat_<float> mat, int x_c, int y_c){
 }
 
 cv::Mat_<float> kernel(cv::Mat_<float> initial, float distance, float distance_max){
-  // return initial*(distance_max-distance)/distance_max;
-  return initial*distance;
+  cv::Mat_<float> k = initial.clone();
+  k = k*(distance_max-distance)/distance_max;
+  // return normalization(k);
+  return k;
 }
 
 cv::Mat_<float> convolution_decrease(cv::Mat_<float> f, cv::Mat_<float> k, int x_c, int y_c){
@@ -198,8 +198,17 @@ cv::Mat_<float> convolution_decrease(cv::Mat_<float> f, cv::Mat_<float> k, int x
     }
   }
   // normalization of the resultat
-  double min, max;
-  minMaxLoc(res, &min, &max);
-  res = res/max;
+  cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
   return res;
+}
+
+cv::Mat_<float> normalization(cv::Mat_<float> mat){
+  float sum = 0;
+  for (int i = 0; i < mat.rows; i++){
+    for (int j = 0; j < mat.cols; j++){
+      sum += mat(i,j);
+    }
+  }
+  cv::Mat_<float> res = mat.clone();
+  return res/sum;
 }
