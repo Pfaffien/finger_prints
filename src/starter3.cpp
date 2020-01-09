@@ -150,7 +150,8 @@ double distance_max(cv::Mat_<float> mat, int x_c, int y_c){
 }
 
 cv::Mat_<float> kernel(cv::Mat_<float> initial, float distance, float distance_max){
-  return initial*(distance_max-distance)/distance_max;
+  // return initial*(distance_max-distance)/distance_max;
+  return initial*distance;
 }
 
 cv::Mat_<float> convolution_decrease(cv::Mat_<float> f, cv::Mat_<float> k, int x_c, int y_c){

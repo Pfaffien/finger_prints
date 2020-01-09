@@ -28,7 +28,7 @@ int main(){
   }
   blur = blur/taille;
 
-  cv::Mat_<float> res = convolution_decrease(finger(), blur, finger().cols/2, finger().rows/2);
+  cv::Mat_<float> res = convolution_decrease(finger(), id, finger().cols/2, finger().rows/2);
   Image res_img(res);
   res_img.display("res", "res");
 }
