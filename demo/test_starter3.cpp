@@ -69,14 +69,14 @@ int main(){
     // cout << blur << endl;
     cv::Mat_<float> res = convolutionDFT(finger(), blur);
     Image res_img(res);
-    // res_img.display("DFT", "DFT");
+    res_img.display("1", "1");
     cout << blur << endl;
-    cv::Mat_<float> res2 = convolution(finger(), blur);
+    cv::Mat_<float> res2 = convolutionDFT(finger(), blur/2);
     Image res_img2(res2);
-    res_img2.display("normal", "normal");
+    res_img2.display("1/2", "1/2");
 
-    // Image diff = res_img-res_img2;
-    // diff.display("diff", "diff");
+    Image diff = res_img-res_img2;
+    diff.display("diff", "diff");
 
     return 0;
 }
