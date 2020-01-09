@@ -5,7 +5,7 @@
 
 //Constructors
 Image::Image(cv::String name){
-    pixels = cv::imread(name, 0);
+    pixels = cv::imread(name, 0).clone();
 
     if (pixels.empty())                   // Check for invalid input
         std::cerr <<  "Could not open or find the image" << std::endl;
@@ -114,14 +114,18 @@ cv::Mat_<uchar> Image::from1to255()
 
 // Plotting and saving
 void Image::display(cv::String windowName, cv::String imageName){
-    cv::Mat_<uchar> disp = this->from1to255();
+    cv::Mat_<float> tmp = pixels.clone();
+    Image tmp_img(tmp);
+    cv::Mat_<uchar> disp = tmp_img.from1to255();
     cv::namedWindow( windowName, cv::WINDOW_AUTOSIZE ); // Create a window for display.
     cv::imshow( imageName, disp );                // Show our image inside it.
     cv::waitKey(0); // Wait for a keystroke in the window
 }
 
 void Image::save(std::string s){
-    cv::Mat_<uchar> disp = this->from1to255();
+    cv::Mat_<float> tmp = pixels.clone();
+    Image tmp_img(tmp);
+    cv::Mat_<uchar> disp = tmp_img.from1to255();
     s  = "../img/saved/" + s + ".png";
     cv::imwrite(s, disp);
 }
