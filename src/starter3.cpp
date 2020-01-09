@@ -3,6 +3,7 @@
 #include "starter3.h"
 #include "Image.h"
 
+
 cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k){
   cv::Mat_<float> res(f.rows, f.cols); //initialization of the result
   //finding the midle of the matrix B
@@ -44,90 +45,89 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k){
   return res;
 }
 
-cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k){
+
+/* Première version, simple et pas opti */
+cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
+{
     int M, N;
     M = f.rows;
     N = f.cols;
-    std::cout << M << std::endl;
-    std::cout << N << std::endl;
     cv::Mat_<float> conv(M, N);
     cv::Mat_<float> k_hat, f_hat;
-    //Pas opti (cf. padded et getOptimalDFTSize)
-    cv::dft(k, k_hat);
-    cv::dft(f, f_hat);
-    std::cout << f_hat << std::endl;
 
-    cv::Mat_<float> padded(M, N);
-    for (int i = 0; i < k_hat.rows; i++) {
-        for (int j = 0; j < k_hat.cols; j++)
-            padded(i, j) = k_hat(i, j);
+    // Padding
+    cv::Mat_<float> padded(M, N, (int) 0);
+    cv::Mat_<float> clonedK = k.clone();
+    for (int i = 0; i < k.rows; i++) {
+        for (int j = 0; j < k.cols; j++)
+            padded(i, j) = clonedK(i, j);
     }
-    // std::cout << padded << std::endl;
 
-    for (int i = 0; i < M; i++) {
-        for (int j = 0; j < N; j++)
-            conv(i, j) = padded(i, j) * f_hat(i, j);
-    }
-    // std::cout << conv << std::endl;
-    cv::idft(conv, conv);
+    // DFT
+    cv::dft(padded, k_hat, 0, k.rows);
+    cv::dft(f, f_hat, 0, f.rows);
 
-    // normalization of the resultat
-    double min, max;
-    minMaxLoc(conv, &min, &max);
-    conv = conv/max;
+    // Product
+    // 0, else it corresponds to M 1D FFT
+    cv::mulSpectrums(f_hat, k_hat, conv, 0);
+ 
+    //If we want to try without using muSpectrums
+    /* for (int i = 0; i < M; i++) { */
+    /*     for (int j = 0; j < N; j++) */
+    /*         conv(i, j) = k_hat(i, j) * f_hat(i, j); */
+    /* } */
+
+    // Inverse DFT
+    cv::idft(conv, conv, cv::DFT_SCALE | cv::DFT_REAL_OUTPUT);
+
+    // Normalization of the result
+    cv::normalize(conv, conv, 0, 1, cv::NORM_MINMAX);
     return conv;
 }
 
-cv::Mat_<float> convolveDFT(cv::Mat_<float> f, cv::Mat_<float> k){
-    int M, N;
-    M = f.rows;
-    N = f.cols;
 
-    cv::Mat planesF[] = {cv::Mat_<float>(f), cv::Mat::zeros(f.size(), CV_32F)};
-    cv::Mat planesK[] = {cv::Mat_<float>(k), cv::Mat::zeros(k.size(), CV_32F)};
+/* Deuxième version optimisée mais très proche du copier coller */
+cv::Mat_<float> cDFT(cv::Mat_<float> A, cv::Mat_<float> B)
+{
+    // reallocate the output array if needed
+    cv::Mat C;
+    C.create(cv::abs(A.rows - B.rows)+1, cv::abs(A.cols - B.cols)+1, A.type());
+    cv::Size dftSize;
 
-    cv::Mat complexF, complexK, complexPad;
+    // calculate the size of DFT transform
+    dftSize.width = cv::getOptimalDFTSize(A.cols + B.cols - 1);
+    dftSize.height = cv::getOptimalDFTSize(A.rows + B.rows - 1);
 
-    cv::Mat_<float> pad(M, N, (int) 0);
-    cv::Mat_<float> clonedK = k.clone();
-    /* std::cout << complexK << std::endl; */
-    /* std::cout << cloned << std::endl; */
-    for (int i = 0; i < k.rows; i++) {
-        for (int j = 0; j < k.cols; j++)
-            pad(i, j) = clonedK(i, j);
-    }
-    /* std::cout << pad << std::endl; */
-    cv::Mat planesPad[] = {pad, cv::Mat::zeros(pad.size(), CV_32F)};
-     
-    cv::merge(planesF, 2, complexF);
-    /* cv::merge(planesK, 2, complexK); */
-    cv::merge(planesPad, 2, complexPad);
+    // allocate temporary buffers and initialize them with 0's
+    cv::Mat tempA(dftSize, A.type(), cv::Scalar::all(0));
+    cv::Mat tempB(dftSize, B.type(), cv::Scalar::all(0));
+
+    // copy A and B to the top-left corners of tempA and tempB, respectively
+    cv::Mat roiA(tempA, cv::Rect(0,0,A.cols,A.rows));
+    A.copyTo(roiA);
+    cv::Mat roiB(tempB, cv::Rect(0,0,B.cols,B.rows));
+    B.copyTo(roiB);
+
+    // now transform the padded A & B in-place;
+    // use "nonzeroRows" hint for faster processing
+    cv::dft(tempA, tempA, 0, A.rows);
+    cv::dft(tempB, tempB, 0, B.rows);
+
+    // multiply the spectrums;
+    // the function handles packed spectrum representations well
+    cv::mulSpectrums(tempA, tempB, tempA, 0);
+
+    // transform the product back from the frequency domain.
+    // Even though all the result rows will be non-zero,
+    // you need only the first C.rows of them, and thus you
+    // pass nonzeroRows == C.rows
+    /* dft(tempA, tempA, DFT_INVERSE + DFT_SCALE, C.rows); */
+    cv::idft(tempA, tempA, cv::DFT_SCALE | cv::DFT_REAL_OUTPUT, C.rows);
     
-    cv::dft(complexF, complexF);
-    /* cv::dft(complexK, complexK); */
-    cv::dft(complexPad, complexPad);
+    // now copy the result back to C.
+    tempA(cv::Rect(0, 0, C.cols, C.rows)).copyTo(C);
+    // all the temporary buffers will be deallocated automatically
+    cv::normalize(C, C, 0, 1, cv::NORM_MINMAX);
 
-    cv::Mat_<float> conv(M, N);
-    /* cv::Mat_<float> padded(M, N); */
-    /* cv::Mat_<float> clonedK = complexK.clone(); */
-    /* /1* std::cout << cloned << std::endl; *1/ */
-    /* for (int i = 0; i < complexK.rows; i++) { */
-    /*     for (int j = 0; j < complexK.cols; j++) */
-    /*         padded(i, j) = clonedK(i, j); */
-    /* } */
-    /* std::cout << padded << std::endl; */
-
-    cv::Mat_<float> clonedF = complexF.clone();
-    cv::Mat_<float> clonedPad = complexPad.clone();
-    for (int i = 0; i < M; i++) {
-        for (int j = 0; j < N; j++)
-            conv(i, j) = clonedPad(i, j) * clonedF(i, j);
-    }
-    /* std::cout << conv << std::endl; */
-
-    cv::idft(conv, conv, cv::DFT_SCALE | cv::DFT_REAL_OUTPUT);
-    cv::normalize(conv, conv, 0, 1, cv::NORM_MINMAX);
-    /* std::cout << conv << std::endl; */
-    
-    return conv;
+    return cv::Mat_<float>(C);
 }
