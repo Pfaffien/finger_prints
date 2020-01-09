@@ -162,6 +162,7 @@ double distance_max(cv::Mat_<float> mat, int x_c, int y_c)
 }
 
 
+/* Vérifier qu'il s'agit bien de ce qu'ils attendent */
 cv::Mat_<float> kernel(cv::Mat_<float> initial, float distance, float distance_max)
 {
 
@@ -170,7 +171,7 @@ cv::Mat_<float> kernel(cv::Mat_<float> initial, float distance, float distance_m
     cv::Mat_<float> id(size, size, (int) 0);
     id(size/2, size/2) = 1;
 
-    k = k * distance / distance_max;
+    k = k * (distance_max - distance) / distance_max;
     
     return k;
 
@@ -184,8 +185,7 @@ cv::Mat_<float> kernel_blurring(cv::Mat_<float> initial, float distance, float d
     cv::Mat_<float> id(size, size, (int) 0);
     id(size/2, size/2) = 1;
 
-    k = kernel(initial, distance, distance_max) + id * (distance_max - distance) / distance_max;
-
+    k = k * distance/distance_max + id * (distance_max - distance) / distance_max;
     
     return k;
 }
