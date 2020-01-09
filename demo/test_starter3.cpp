@@ -11,38 +11,38 @@ using namespace std;
 
 
 int main(){
-    cv::String s1( "../img/lion.png" );
-    Image test(s1);
-
-    test.display("Original", "Original");
-
-    // Filter definition
-    int size = 15;
-    cv::Mat_<float> filter(size, size);
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++)
-            filter(i, j) = 1. / size;
-    }
-    //filter /= size;
-
-    // Naive convolution
-    cv::Mat_<float> conv = convolution(test(), filter);
-    Image res_conv(conv);
-    res_conv.display("Naive filtering", "Naive filtering");
-
-   // First DFT convolution
-    cv::Mat_<float> convDFT = convolutionDFT(test(), filter);
-    Image res_convDFT(convDFT);
-    res_convDFT.display("DFT filtering", "DFT filtering");
-
-    // Second DFT convolution
-    cv::Mat_<float> convDFT2 = cDFT(test(), filter);
-    Image res_convDFT2(convDFT2);
-    res_convDFT2.display("DFT filtering 2", "DFT filtering 2");
-
-    // Difference between naive and first DFT convolution
-    Image diff = res_conv - res_convDFT;
-    diff.display("Difference", "Difference");
+   //  cv::String s1( "../img/lion.png" );
+   //  Image test(s1);
+   //
+   //  test.display("Original", "Original");
+   //
+   //  // Filter definition
+   //  int size = 15;
+   //  cv::Mat_<float> filter(size, size);
+   //  for (int i = 0; i < size; i++) {
+   //      for (int j = 0; j < size; j++)
+   //          filter(i, j) = 1. / size;
+   //  }
+   //  //filter /= size;
+   //
+   //  // Naive convolution
+   //  cv::Mat_<float> conv = convolution(test(), filter);
+   //  Image res_conv(conv);
+   //  res_conv.display("Naive filtering", "Naive filtering");
+   //
+   // // First DFT convolution
+   //  cv::Mat_<float> convDFT = convolutionDFT(test(), filter);
+   //  Image res_convDFT(convDFT);
+   //  res_convDFT.display("DFT filtering", "DFT filtering");
+   //
+   //  // Second DFT convolution
+   //  cv::Mat_<float> convDFT2 = cDFT(test(), filter);
+   //  Image res_convDFT2(convDFT2);
+   //  res_convDFT2.display("DFT filtering 2", "DFT filtering 2");
+   //
+   //  // Difference between naive and first DFT convolution
+   //  Image diff = res_conv - res_convDFT;
+   //  diff.display("Difference", "Difference");
 
 
     // Main
@@ -61,9 +61,22 @@ int main(){
             blur(i,j) = 1;
         }
     }
-    blur = blur/taille;
+    blur = blur/(taille*taille);
 
-    cv::Mat_<float> res = convolution_decrease(finger(), blur, finger().cols/2, finger().rows/2);
+    // cv::Mat_<float> res = convolution_decrease(finger(), id, finger().cols/2, finger().rows/2);
+    // Image res_img(res);
+    // res_img.display("decrease", "decrease");
+    // cout << blur << endl;
+    cv::Mat_<float> res = convolutionDFT(finger(), blur);
     Image res_img(res);
-    res_img.display("res", "res");
+    // res_img.display("DFT", "DFT");
+    cout << blur << endl;
+    cv::Mat_<float> res2 = convolution(finger(), blur);
+    Image res_img2(res2);
+    res_img2.display("normal", "normal");
+
+    // Image diff = res_img-res_img2;
+    // diff.display("diff", "diff");
+
+    return 0;
 }
