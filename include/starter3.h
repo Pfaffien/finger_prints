@@ -7,4 +7,10 @@ cv::Mat_<float> convolution(cv::Mat_<float>, cv::Mat_<float>);
 cv::Mat_<float> convolutionDFT(cv::Mat_<float>, cv::Mat_<float>);
 cv::Mat_<float> convolveDFT(cv::Mat_<float> f, cv::Mat_<float> k);
 
+//euclidian distance between to points
+float distance(int, int, int, int);
+cv::Mat_<float> kernel(cv::Mat_<float>, float);
+double distance_max(cv::Mat_<float>, int, int);
+cv::Mat_<float> convolution_decrease(cv::Mat_<float>, cv::Mat_<float>, int, int);
+
 #endif
