@@ -1,46 +1,55 @@
 #include <iostream>
 #include <cmath>
+#include <opencv2/core/types.hpp>
 #include "starter3.h"
 #include "Image.h"
 
+
 //a modifier car proche copier coller
-cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k){
-  cv::Mat_<float> res(f.rows, f.cols); //initialization of the result
-  //finding the midle of the matrix B
-  int middle_x = k.cols/2;
-  int middle_y = k.rows/2;
-  int mm, nn, ii, jj; //initialization of usefull indices
-  for (int i = 0; i < f.rows; i++){
-    for (int j = 0; j < f.cols; j++){
-      for (int m = 0; m < k.rows; m++){
-        for (int n = 0; n < k.cols; n++){
-          //indices for B
-          mm = k.rows - 1 - m;
-          nn = k.cols - 1 - n;
+cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
+{
+    //initialization of the result
+    cv::Mat_<float> res(f.rows, f.cols);
 
-          //indices for A
-          ii = i + middle_y - mm;
-          jj = j + middle_x - nn;
+    //finding the midle of the matrix B
+    int middle_x = k.cols/2;
+    int middle_y = k.rows/2;
+   
+    int mm, nn, ii, jj; //initialization of usefull indices
+    
+    for (int i = 0; i < f.rows; i++){
+        for (int j = 0; j < f.cols; j++){
+            for (int m = 0; m < k.rows; m++){
+                for (int n = 0; n < k.cols; n++){
+                    //indices for B
+                    mm = k.rows - 1 - m;
+                    nn = k.cols - 1 - n;
 
-          //Are we at the boundary of the image?
-          if (ii >= 0 && ii < f.rows && jj>=0 && jj < f.cols){
-            res(i,j) += f(ii,jj)*k(mm,nn);
-          }
-          //we use the extension to deal with boundaries
-          else{
-            if (ii < 0) ii = 0;
-            if (jj < 0) jj = 0;
-            if (ii >= f.rows) ii = f.rows - 1;
-            if (jj >= f.cols) jj = f.cols - 1;
-            res(i,j) += f(ii,jj)*k(mm,nn);
-          }
+                    //indices for A
+                    ii = i + middle_y - mm;
+                    jj = j + middle_x - nn;
+
+                    //Are we at the boundary of the image?
+                    if (ii >= 0 && ii < f.rows && jj>=0 && jj < f.cols){
+                        res(i,j) += f(ii,jj)*k(mm,nn);
+                    }
+                    //we use the extension to deal with boundaries
+                    else{
+                        if (ii < 0) ii = 0;
+                        if (jj < 0) jj = 0;
+                        if (ii >= f.rows) ii = f.rows - 1;
+                        if (jj >= f.cols) jj = f.cols - 1;
+                        res(i,j) += f(ii,jj)*k(mm,nn);
+                    }
+                }    
+            }
         }
-      }
     }
-  }
-  // normalization of the resultat
-  cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
-  return res;
+    
+    // normalization of the resultat
+    cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
+    
+    return res;
 }
 
 
@@ -130,85 +139,114 @@ cv::Mat_<float> cDFT(cv::Mat_<float> A, cv::Mat_<float> B)
     return cv::Mat_<float>(C);
 }
 
-float distance(int x_c, int y_c, int x, int y){
-  return sqrt(pow(x_c-x,2)+pow(y_c-y,2));
-}
 
 //pas opti
-double distance_max(cv::Mat_<float> mat, int x_c, int y_c){
-  cv::Mat_<float> dist(mat.rows, mat.cols, int(0));
-  for (int i = 0; i < mat.rows; i++){
-    for (int j = 0; j < mat.cols; j++){
-      dist(i,j) = distance(x_c, y_c, j, i);
-    }
-  }
-  double min, max;
-  minMaxLoc(dist, &min, &max);
-  return max;
-}
+double distance_max(cv::Mat_<float> mat, int x_c, int y_c)
+{
+    cv::Point center(x_c, y_c);
+    cv::Point tmp((int) 0, (int) 0);
+    cv::Mat_<float> dist(mat.rows, mat.cols, (int) 0);
 
-cv::Mat_<float> kernel(cv::Mat_<float> initial, float distance, float distance_max){
-  cv::Mat_<float> k = initial.clone();
-  k = k*(distance_max-distance)/distance_max;
-  // return normalization(k);
-  return k;
-}
-
-cv::Mat_<float> convolution_decrease(cv::Mat_<float> f, cv::Mat_<float> k, int x_c, int y_c){
-  cv::Mat_<float> res(f.rows, f.cols); //initialization of the result
-  //finding the midle of the matrix B
-  int middle_x = k.cols/2;
-  int middle_y = k.rows/2;
-  int mm, nn, ii, jj; //initialization of usefull indices
-  cv::Mat_<float> kern(k.rows, k.cols, int(0));
-  float dist;
-  double dist_max = distance_max(f, x_c, y_c);
-  for (int i = 0; i < f.rows; i++){
-    for (int j = 0; j < f.cols; j++){
-      for (int m = 0; m < k.rows; m++){
-        for (int n = 0; n < k.cols; n++){
-          //distance of the center
-          dist = distance(x_c,y_c,j,i);
-          // std::cout << "distance " << dist_max-dist << std::endl;
-          kern = kernel(k, dist, dist_max);
-          // std::cout << kern << std::endl;
-
-          //indices for B
-          mm = k.rows - 1 - m;
-          nn = k.cols - 1 - n;
-
-          //indices for A
-          ii = i + middle_y - mm;
-          jj = j + middle_x - nn;
-
-          //Are we at the boundary of the image?
-          if (ii >= 0 && ii < f.rows && jj>=0 && jj < f.cols){
-            res(i,j) += f(ii,jj)*kern(mm,nn);
-          }
-          //we use the extension to deal with boundaries
-          else{
-            if (ii < 0) ii = 0;
-            if (jj < 0) jj = 0;
-            if (ii >= f.rows) ii = f.rows - 1;
-            if (jj >= f.cols) jj = f.cols - 1;
-            res(i,j) += f(ii,jj)*kern(mm,nn);
-          }
+    for (int i = 0; i < mat.rows; i++){
+        tmp.y = i;
+        for (int j = 0; j < mat.cols; j++){
+            tmp.x = j;
+            dist(i,j) = cv::norm(center - tmp);
         }
-      }
     }
-  }
-  // normalization of the resultat
-  cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
-  return res;
+    
+    double min, max;
+    minMaxLoc(dist, &min, &max);
+    
+    return max;
 }
 
-cv::Mat_<float> normalization(cv::Mat_<float> mat){
-  float sum = 0;
-  for (int i = 0; i < mat.rows; i++){
-    for (int j = 0; j < mat.cols; j++){
-      sum += mat(i,j);
+
+cv::Mat_<float> kernel(cv::Mat_<float> initial, float distance, float distance_max)
+{
+    cv::Mat_<float> k = initial.clone();
+    int size = k.rows;
+    cv::Mat_<float> id(size, size, (int) 0);
+    id(size/2, size/2) = 1;
+
+    k = k * distance/distance_max + id * (distance_max - distance) / distance_max;
+    
+    return k;
+}
+
+
+cv::Mat_<float> convolution_decrease(cv::Mat_<float> f, cv::Mat_<float> k, int x_c, int y_c)
+{
+    //initialization of points
+    cv::Point center(x_c, y_c);
+    cv::Point tmp((int) 0, (int) 0);
+
+    //initialization of the result
+    cv::Mat_<float> res(f.rows, f.cols);
+
+    //finding the midle of the matrix k
+    int middle_x = k.cols/2;
+    int middle_y = k.rows/2;
+    
+    //initialization of usefull indices
+    int mm, nn, ii, jj;
+    cv::Mat_<float> kern(k.rows, k.cols, (int) 0);
+    float dist;
+
+    double dist_max = distance_max(f, x_c, y_c);
+
+    for (int i = 0; i < f.rows; i++){
+        tmp.y = i;
+        for (int j = 0; j < f.cols; j++){
+            tmp.x = j;
+            for (int m = 0; m < k.rows; m++){
+                for (int n = 0; n < k.cols; n++){
+                    //distance of the center
+                    dist = cv::norm(center - tmp);//distance(x_c,y_c,j,i);
+                    // std::cout << "distance " << dist_max-dist << std::endl;
+                    kern = kernel(k, dist, dist_max);
+                    // std::cout << kern << std::endl;
+
+                    //indices for B
+                    mm = k.rows - 1 - m;
+                    nn = k.cols - 1 - n;
+
+                    //indices for A
+                    ii = i + middle_y - mm;
+                    jj = j + middle_x - nn;
+
+                    //Are we at the boundary of the image?
+                    if (ii >= 0 && ii < f.rows && jj>=0 && jj < f.cols){
+                        res(i,j) += f(ii,jj)*kern(mm,nn);
+                    }
+                    //we use the extension to deal with boundaries
+                    else{
+                        if (ii < 0) ii = 0;
+                        if (jj < 0) jj = 0;
+                        if (ii >= f.rows) ii = f.rows - 1;
+                        if (jj >= f.cols) jj = f.cols - 1;
+                        res(i,j) += f(ii,jj)*kern(mm,nn);
+                    }
+                }
+            }
+        }
     }
-  }
-  cv::Mat_<float> res = mat.clone();
-  return res/sum;
+
+    // normalization of the resultat
+    cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
+
+    return res;
+}
+
+
+cv::Mat_<float> normalization(cv::Mat_<float> mat)
+{
+    float sum = 0;
+    for (int i = 0; i < mat.rows; i++){
+        for (int j = 0; j < mat.cols; j++){
+            sum += mat(i,j);
+        }
+    }
+    cv::Mat_<float> res = mat.clone();
+    return res/sum;
 }

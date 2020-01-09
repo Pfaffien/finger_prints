@@ -50,12 +50,11 @@ int main(){
     finger.display("initial", "initial");
 
     //identity filter
-    int taille = 5;
-    cv::Mat_<float> id(taille,taille, int(0));
-    id(taille/2,taille/2) = 1;
+    int taille = 10;
+    cv::Mat_<float> id(taille, taille, (int) 0);
+    id(taille/2, taille/2) = 1;
     //blur filter
     cv::Mat_<float> blur(taille,taille);
-
     for (int i = 0; i < taille; i++){
         for (int j = 0; j < taille; j++){
             blur(i,j) = 1;
@@ -63,20 +62,9 @@ int main(){
     }
     blur = blur/(taille*taille);
 
-    // cv::Mat_<float> res = convolution_decrease(finger(), id, finger().cols/2, finger().rows/2);
-    // Image res_img(res);
-    // res_img.display("decrease", "decrease");
-    // cout << blur << endl;
-    cv::Mat_<float> res = convolutionDFT(finger(), blur);
+    cv::Mat_<float> res = convolution_decrease(finger(), blur, finger().cols/2, finger().rows/2);
     Image res_img(res);
-    // res_img.display("DFT", "DFT");
-    cout << blur << endl;
-    cv::Mat_<float> res2 = convolution(finger(), blur);
-    Image res_img2(res2);
-    res_img2.display("normal", "normal");
-
-    // Image diff = res_img-res_img2;
-    // diff.display("diff", "diff");
+    res_img.display("decrease", "decrease");
 
     return 0;
 }
