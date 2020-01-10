@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "main1.h"
 #include "Image.h"
 
 
@@ -99,6 +100,22 @@ Image Image::sym_y(){
 Image Image::sym_xy(){
     Image new_pixels = (this->sym_x()).sym_y();
     return new_pixels;
+}
+
+
+//Pressure variation
+std::vector<float> Image::pressure(cv::Point center, std::vector<cv::Point> coords, float param)
+{
+    std::vector<float> res;
+    int size = coords.size();
+    float dist;
+
+    for(int i = 0; i < size; i++) {
+        dist = cv::norm(center - coords[i]);
+	res.push_back(c(dist, param));
+    }
+
+    return res;
 }
 
 

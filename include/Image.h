@@ -2,9 +2,13 @@
 #define _IMAGES_H_
 
 #include <opencv2/core.hpp>
+#include <opencv2/core/types.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
+#include <vector>
 #include <iostream>
+
+#include "main1.h"
 
 
 class Image{
@@ -33,6 +37,9 @@ class Image{
         Image sym_x();
         Image sym_y();
         Image sym_xy();
+
+	//Pressure variation
+	std::vector<float> pressure(cv::Point, std::vector<cv::Point>, float param = 1);
 
         //Conversion
         cv::Mat_<uchar> from1to255();
