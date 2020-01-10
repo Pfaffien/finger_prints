@@ -228,8 +228,8 @@ void Image::IntToDoubleIndex(int i, int j, double& x, double& y){
     int max = std::max(rows,cols);
     
     //Compute corresponding coordinate of i in [-1,1]x[-max,max]
-    x = (2*i-rows)/max;
-    y = (2*j-cols)/max;
+    x = (2*i-rows)/(double)max;
+    y = (2*j-cols)/(double)max;
 }
 
 //Third step
@@ -260,7 +260,7 @@ Image Image::rotate(double theta){
     cols = pixels.cols;
     
     //Create a new image that will be the rotation of the original image
-    cv::Mat new_mat = cv::Mat::ones(rows,cols,CV_32F);
+    cv::Mat new_mat = cv::Mat::zeros(rows,cols,CV_32F);
     Image new_img(new_mat);
     
     double x, y, x_prime, y_prime;
@@ -269,7 +269,8 @@ Image Image::rotate(double theta){
         for(int j=0;j<cols;j++){
             //Transform indices to double
             IntToDoubleIndex(i, j, x, y);
-            //Get doouble index of rotated pixel
+            
+            //Get double index of rotated pixel
             rotate_indices(x, y, theta, x_prime, y_prime);
             //Transform rotated pixel indices back to integer inidces
             DoubleToIntIndex(x_prime, y_prime, i_prime, j_prime);
@@ -283,7 +284,7 @@ Image Image::rotate(double theta){
             //TODO this has to be improved
             //Set new pixel to intensity of original pixel
             new_img(i_prime, j_prime) = (*this)(i, j); 
-            std::cerr << "set pixel\n";
+            //std::cerr << "set pixel (" << i_prime <<", " <<j_prime<<") to " << (*this)(i, j)<<"\n";
         }
     }
     
