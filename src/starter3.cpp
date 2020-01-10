@@ -14,9 +14,9 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
     //finding the midle of the matrix B
     int middle_x = k.cols/2;
     int middle_y = k.rows/2;
-   
+
     int mm, nn, ii, jj; //initialization of usefull indices
-    
+
     for (int i = 0; i < f.rows; i++){
         for (int j = 0; j < f.cols; j++){
             for (int m = 0; m < k.rows; m++){
@@ -41,14 +41,14 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
                         if (jj >= f.cols) jj = f.cols - 1;
                         res(i,j) += f(ii,jj)*k(mm,nn);
                     }
-                }    
+                }
             }
         }
     }
-    
+
     // normalization of the resultat
     cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
-    
+
     return res;
 }
 
@@ -154,10 +154,10 @@ double distance_max(cv::Mat_<float> mat, int x_c, int y_c)
             dist(i,j) = cv::norm(center - tmp);
         }
     }
-    
+
     double min, max;
     minMaxLoc(dist, &min, &max);
-    
+
     return max;
 }
 
@@ -172,7 +172,7 @@ cv::Mat_<float> kernel(cv::Mat_<float> initial, float distance, float distance_m
     id(size/2, size/2) = 1;
 
     k = k * (distance_max - distance) / distance_max;
-    
+
     return k;
 
 }
@@ -186,7 +186,7 @@ cv::Mat_<float> kernel_blurring(cv::Mat_<float> initial, float distance, float d
     id(size/2, size/2) = 1;
 
     k = k * distance/distance_max + id * (distance_max - distance) / distance_max;
-    
+
     return k;
 }
 
@@ -203,7 +203,7 @@ cv::Mat_<float> convolution_decrease(cv::Mat_<float> f, cv::Mat_<float> k, int x
     //finding the midle of the matrix k
     int middle_x = k.cols/2;
     int middle_y = k.rows/2;
-    
+
     //initialization of usefull indices
     int mm, nn, ii, jj;
     cv::Mat_<float> kern(k.rows, k.cols, (int) 0);
@@ -215,13 +215,14 @@ cv::Mat_<float> convolution_decrease(cv::Mat_<float> f, cv::Mat_<float> k, int x
         tmp.y = i;
         for (int j = 0; j < f.cols; j++){
             tmp.x = j;
+            //distance of the center
+            dist = cv::norm(center - tmp);//distance(x_c,y_c,j,i);
+            // std::cout << "distance " << dist_max-dist << std::endl;
+            // kern = kernel_blurring(k, dist, dist_max);
+            kern = kernel_test(10, dist, dist_max);
+            // std::cout << kern << std::endl;
             for (int m = 0; m < k.rows; m++){
                 for (int n = 0; n < k.cols; n++){
-                    //distance of the center
-                    dist = cv::norm(center - tmp);//distance(x_c,y_c,j,i);
-                    // std::cout << "distance " << dist_max-dist << std::endl;
-                    kern = kernel_blurring(k, dist, dist_max);
-                    // std::cout << kern << std::endl;
 
                     //indices for B
                     mm = k.rows - 1 - m;
@@ -265,4 +266,23 @@ cv::Mat_<float> normalization(cv::Mat_<float> mat)
     }
     cv::Mat_<float> res = mat.clone();
     return res/sum;
+}
+
+cv::Mat_<float> kernel_test(int size, float dist, float dist_max){
+  cv::Mat_<float> id(size, size, int(0));
+  id(size/2, size/2) = 1;
+  // std::cout << id << std::endl;
+  cv::Mat_<float> blur_1(size, size, int(0));
+  for (int i = size/8; i < size-size/8; i++){
+    for (int j = size/8; j < size - size/8; j++){
+      blur_1(i,j) = 1;
+    }
+  }
+  blur_1 /= pow(size-2*size/8,2);
+  // std::cout << blur_1 << std::endl;
+  cv::Mat_<float> blur_2(size, size, 1);
+  blur_2/=pow(size,2);
+  // std::cout << blur_2 << std::endl;
+  return normalization((dist_max-dist)/dist_max*id + (1-(dist_max-dist)/dist_max)*blur_1 + pow(1-(dist_max-dist)/dist_max,2)*blur_2);
+  // return normalization((dist_max-dist)/dist_max*id + (1-exp(-dist/dist_max))*blur_1 + pow(1-exp(-dist/dist_max),2)*blur_2);
 }

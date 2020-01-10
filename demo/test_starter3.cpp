@@ -65,6 +65,8 @@ int main(){
     cv::Mat_<float> res = convolution_decrease(finger(), blur, finger().cols/2, finger().rows/2);
     Image res_img(res);
     res_img.display("decrease", "decrease");
+    // cv::Mat_<float> test = kernel_test(5, 10, 10);
+    // cout << test << endl;
 
     return 0;
 }
