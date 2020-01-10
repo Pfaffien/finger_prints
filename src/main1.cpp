@@ -9,7 +9,13 @@ float c(float r, float param)
 }
 
 
-std::vector<float> pressure(cv::Point center, std::vector<cv::Point> coords, float param)
+float c_anisotropic()
+{
+    return 0;
+};
+
+
+std::vector<float> pressure(cv::Point center, std::vector<cv::Point> coords, float param, bool iso)
 {
     std::vector<float> res;
     int size = coords.size();

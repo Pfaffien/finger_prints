@@ -8,7 +8,10 @@
 #include <opencv2/highgui.hpp>
 
 
-float c(float, float param = 1);
-std::vector<float> pressure(cv::Point center, std::vector<cv::Point> coords, float param);
+float c_isotropic(float, float param = 1);
+float c_anisotropic();
+//param = 1: white by default
+//iso = 0: anisotropic by default
+std::vector<float> pressure(cv::Point center, std::vector<cv::Point> coords, float param = 1, bool iso = 0);
 
 #endif	/* _MAIN1_H_ */

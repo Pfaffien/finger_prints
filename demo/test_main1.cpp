@@ -26,7 +26,7 @@ int main()
 	}
     }
 
-    Image res = finger.pressure_change(center, coords);
+    Image res = finger.pressure_isotropic(center, coords);
     res.display("Result", "Result");
 
     return 0;

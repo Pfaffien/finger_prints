@@ -39,7 +39,8 @@ class Image{
         Image sym_xy();
 
 	//Pressure variation
-	Image pressure_change(cv::Point, std::vector<cv::Point>, float param = 1);
+	//direction is used to choose if we want black of white
+	Image pressure_isotropic(cv::Point, std::vector<cv::Point>, float param = 1, int direction = 1);
 
         //Conversion
         cv::Mat_<uchar> from1to255();

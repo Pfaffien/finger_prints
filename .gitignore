@@ -33,3 +33,6 @@
 
 # Repository
 build/
+
+# Swap
+*.swp

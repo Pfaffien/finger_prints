@@ -109,13 +109,16 @@ Image Image::sym_xy(){
 
 
 //Pressure variation
-Image Image::pressure_change(cv::Point center, std::vector<cv::Point> coords, float param)
+Image Image::pressure_isotropic(cv::Point center, std::vector<cv::Point> coords, float param, int direction)
 {
     std::vector<float> new_values = pressure(center, coords, param);
     cv::Mat_<float> new_pixels = pixels.clone();
 
     for (int i = 0; i < coords.size(); i++) {
-        new_pixels(coords[i].x, coords[i].y) = 1 - new_values[i];
+	if (direction)
+            new_pixels(coords[i].x, coords[i].y) = 1 - new_values[i];
+	else
+            new_pixels(coords[i].x, coords[i].y) = new_values[i];
     }
 
     Image res(new_pixels);
