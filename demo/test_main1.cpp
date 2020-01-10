@@ -26,9 +26,6 @@ int main()
 	}
     }
 
-//    for (int i = 0; i < finger().cols; i++)
-//	    coords.push_back(cv::Point(50, i));
-
     Image res = finger.pressure_change(center, coords);
     res.display("Result", "Result");
 

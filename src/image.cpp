@@ -115,7 +115,7 @@ Image Image::pressure_change(cv::Point center, std::vector<cv::Point> coords, fl
     cv::Mat_<float> new_pixels = pixels.clone();
 
     for (int i = 0; i < coords.size(); i++) {
-        new_pixels(coords[i].x, coords[i].y) = new_values[i];
+        new_pixels(coords[i].x, coords[i].y) = 1 - new_values[i];
     }
 
     Image res(new_pixels);
