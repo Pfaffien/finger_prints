@@ -12,22 +12,36 @@ int main()
     Image finger("../img/clean_finger.png");
     finger.display("Finger", "Finger");
 
-    int dist = 100;
-    cv::Point center(finger().rows/2, finger().cols/2);
-    cv::Point tmp((int) 0, (int) 0);
-    std::vector<cv::Point> coords;
-    
-    for (int i = 0; i < finger().rows; i++) {
-	tmp.x = i;
-    	for (int j = 0; j < finger().cols; j++) {
-	    tmp.y = j;
-	    if (cv::norm(center - tmp) > dist)
-                coords.push_back(tmp);
-	}
-    }
+    int dist = 50;
+    cv::Point center(finger().cols/2, finger().rows/2);
 
-    Image res = finger.pressure_isotropic(center, coords);
-    res.display("Result", "Result");
+    //White outside a disk
+    cv::Point tmp((int) 0, (int) 0);
+    std::vector<cv::Point> coords = finger.outside_disk(center, dist);
+    Image res = finger.pressure_isotropic(center, coords, 0.02);
+    res.display("White outside disk", "White outside disk");
+
+
+    //Ellipse
+    int a = 80;
+    int b = 40;
+    std::vector<cv::Point> ell = points_ellipse(center, a, b);
+    Image test(finger().clone());
+    
+    for (std::vector<cv::Point>::iterator i = ell.begin(); i != ell.end(); i++)
+        test((*i).y, (*i).x) = 1;
+
+    test.display("Ellipse", "Ellipse");
+    
+    /* Utilisation d'une fonction quelconque en dehors d'une certaine ellipse */
+    Image test2(finger().clone());
+    cv::Point tmp3((int) 0, (int) 0);
+    std::vector<cv::Point> coord = test2.outside_ellipse(center, a, b);
+
+    for (std::vector<cv::Point>::iterator i = coord.begin(); i != coord.end(); i++)
+        test2((*i).y, (*i).x) = 1;
+    
+    test2.display("White outside ellipse", "White outside ellipse");
 
     return 0;
 }

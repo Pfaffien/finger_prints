@@ -38,9 +38,14 @@ class Image{
         Image sym_y();
         Image sym_xy();
 
-	//Pressure variation
-	//direction is used to choose if we want black of white
-	Image pressure_isotropic(cv::Point, std::vector<cv::Point>, float param = 1, int direction = 1);
+        //Points of the image outside the geometric figure
+        std::vector<cv::Point> outside_disk(cv::Point, float);
+        //Eventuellement le faire pour une ellipse quelconque
+        std::vector<cv::Point> outside_ellipse(cv::Point, float, float);
+
+	    //Pressure variation
+	    //direction is used to choose if we want black of white
+	    Image pressure_isotropic(cv::Point, std::vector<cv::Point>, float param = 1, int direction = 1);
 
         //Conversion
         cv::Mat_<uchar> from1to255();
