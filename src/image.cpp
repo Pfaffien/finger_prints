@@ -1,4 +1,9 @@
 #include <iostream>
+#include <vector>
+#include <opencv2/core.hpp>
+#include <opencv2/core/types.hpp>
+#include <opencv2/highgui.hpp>
+
 
 #include "main1.h"
 #include "Image.h"
@@ -104,16 +109,16 @@ Image Image::sym_xy(){
 
 
 //Pressure variation
-std::vector<float> Image::pressure(cv::Point center, std::vector<cv::Point> coords, float param)
+Image Image::pressure_change(cv::Point center, std::vector<cv::Point> coords, float param)
 {
-    std::vector<float> res;
-    int size = coords.size();
-    float dist;
+    std::vector<float> new_values = pressure(center, coords, param);
+    cv::Mat_<float> new_pixels = pixels.clone();
 
-    for(int i = 0; i < size; i++) {
-        dist = cv::norm(center - coords[i]);
-	res.push_back(c(dist, param));
+    for (int i = 0; i < coords.size(); i++) {
+        new_pixels(coords[i].x, coords[i].y) = new_values[i];
     }
+
+    Image res(new_pixels);
 
     return res;
 }

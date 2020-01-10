@@ -39,7 +39,7 @@ class Image{
         Image sym_xy();
 
 	//Pressure variation
-	std::vector<float> pressure(cv::Point, std::vector<cv::Point>, float param = 1);
+	Image pressure_change(cv::Point, std::vector<cv::Point>, float param = 1);
 
         //Conversion
         cv::Mat_<uchar> from1to255();
