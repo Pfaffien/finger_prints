@@ -1,8 +1,13 @@
 # Add this line to the CMakeLists.txt containing tests
-include_directories(include)
+find_package(OpenCV REQUIRED)
 
-add_executable(test_gtest test_gtest.cpp ../src/image.cpp)
-target_link_libraries(test_gtest gtest)# libFingerPrint)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
+set(SRC_DIR ../src)
+
+add_executable(test_gtest test_gtest.cpp ${SRC_DIR}/image.cpp)
+target_include_directories(test_gtest PUBLIC src test)
+target_link_libraries(test_gtest gtest ${OpenCV_LIBS})# libFingerPrint)
 
 add_test (NAME gtest
     COMMAND test_gtest
