@@ -31,6 +31,8 @@ cv::Mat_<float> Image::operator()() const {
 }
 
 Image Image::operator-(const Image &img) {
+    if (((*this)().rows != img().rows) && ((*this)().cols != img().cols))
+        throw std::runtime_error("Image dimensions do not match");
     return Image((*this)() - img());
 }
 
