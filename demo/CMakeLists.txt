@@ -13,5 +13,6 @@ add_executable(rectangles test_rectangles.cpp ${SRC_DIR}/image.cpp)
 # )
 target_include_directories(symmetries PUBLIC src)
 target_include_directories(rectangles PUBLIC src)
-target_link_libraries( symmetries ${OpenCV_LIBS} )
-target_link_libraries( rectangles ${OpenCV_LIBS} )
+
+target_link_libraries( symmetries ${OpenCV_LIBS} libFingerPrint)
+target_link_libraries( rectangles ${OpenCV_LIBS} libFingerPrint)
