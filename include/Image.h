@@ -117,6 +117,7 @@ class Image{
           imageName name of the image
         */
         void display(cv::String windowName = "Display finger_print", cv::String imageName = "Display finger_print");
+
         /**
         * \brief save the image in the folder img/saved
         * \param s name of the saved image
