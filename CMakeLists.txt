@@ -11,7 +11,7 @@ include_directories(include)
 
 add_subdirectory(src)
 add_subdirectory(include)
-#add_subdirectory(doc)
+add_subdirectory(doc)
 add_subdirectory(demo)
 
 # # Download googletest while doing the configuration
