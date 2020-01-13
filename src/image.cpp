@@ -8,7 +8,8 @@ Image::Image(cv::String name){
     pixels = cv::imread(name, 0);
 
     if (pixels.empty())                   // Check for invalid input
-        std::cerr <<  "Could not open or find the image" << std::endl;
+        throw std::runtime_error("Could not open or find the image");
+        /* std::cerr <<  "Could not open or find the image" << std::endl; */
     
     pixels /= 255.;
 }
@@ -20,6 +21,8 @@ Image::Image(cv::Mat_<float> matrix){
 
 //Operator overloading
 float& Image::operator()(int row, int col){
+    if (row < 0 || row >= pixels.rows || col < 0 || col >= pixels.cols)
+        throw std::runtime_error("Index out of range");
     return pixels(row,col);
 }
 
@@ -28,6 +31,8 @@ cv::Mat_<float> Image::operator()() const {
 }
 
 Image Image::operator-(const Image &img) {
+    if (((*this)().rows != img().rows) && ((*this)().cols != img().cols))
+        throw std::runtime_error("Image dimensions do not match");
     return Image((*this)() - img());
 }
 
