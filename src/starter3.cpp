@@ -1,3 +1,11 @@
+/**
+ * \file starter3.cpp
+ * \brief Usefull functions to answer the part starter 3 and main 3
+ * \author Thomas.B Clara.B
+ * \version 0.1
+ * \date 01/12/20
+ */
+
 #include <iostream>
 #include <cmath>
 #include <opencv2/core/types.hpp>
@@ -5,13 +13,12 @@
 #include "Image.h"
 
 
-//a modifier car proche copier coller
 cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
 {
     //initialization of the result
     cv::Mat_<float> res(f.rows, f.cols);
 
-    //finding the midle of the matrix B
+    //finding the midle of the matrix k
     int middle_x = k.cols/2;
     int middle_y = k.rows/2;
 
@@ -21,11 +28,11 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
         for (int j = 0; j < f.cols; j++){
             for (int m = 0; m < k.rows; m++){
                 for (int n = 0; n < k.cols; n++){
-                    //indices for B
+                    //indices for k
                     mm = k.rows - 1 - m;
                     nn = k.cols - 1 - n;
 
-                    //indices for A
+                    //indices for f
                     ii = i + middle_y - mm;
                     jj = j + middle_x - nn;
 
@@ -45,10 +52,8 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
             }
         }
     }
-
     // normalization of the resultat
     cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
-
     return res;
 }
 
@@ -93,55 +98,8 @@ cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
 }
 
 
-/* Deuxième version optimisée mais très proche du copier coller */
-cv::Mat_<float> cDFT(cv::Mat_<float> A, cv::Mat_<float> B)
-{
-    // reallocate the output array if needed
-    cv::Mat C;
-    C.create(cv::abs(A.rows - B.rows)+1, cv::abs(A.cols - B.cols)+1, A.type());
-    cv::Size dftSize;
-
-    // calculate the size of DFT transform
-    dftSize.width = cv::getOptimalDFTSize(A.cols + B.cols - 1);
-    dftSize.height = cv::getOptimalDFTSize(A.rows + B.rows - 1);
-
-    // allocate temporary buffers and initialize them with 0's
-    cv::Mat tempA(dftSize, A.type(), cv::Scalar::all(0));
-    cv::Mat tempB(dftSize, B.type(), cv::Scalar::all(0));
-
-    // copy A and B to the top-left corners of tempA and tempB, respectively
-    cv::Mat roiA(tempA, cv::Rect(0,0,A.cols,A.rows));
-    A.copyTo(roiA);
-    cv::Mat roiB(tempB, cv::Rect(0,0,B.cols,B.rows));
-    B.copyTo(roiB);
-
-    // now transform the padded A & B in-place;
-    // use "nonzeroRows" hint for faster processing
-    cv::dft(tempA, tempA, 0, A.rows);
-    cv::dft(tempB, tempB, 0, B.rows);
-
-    // multiply the spectrums;
-    // the function handles packed spectrum representations well
-    cv::mulSpectrums(tempA, tempB, tempA, 0);
-
-    // transform the product back from the frequency domain.
-    // Even though all the result rows will be non-zero,
-    // you need only the first C.rows of them, and thus you
-    // pass nonzeroRows == C.rows
-    /* dft(tempA, tempA, DFT_INVERSE + DFT_SCALE, C.rows); */
-    cv::idft(tempA, tempA, cv::DFT_SCALE | cv::DFT_REAL_OUTPUT, C.rows);
-
-    // now copy the result back to C.
-    tempA(cv::Rect(0, 0, C.cols, C.rows)).copyTo(C);
-    // all the temporary buffers will be deallocated automatically
-    cv::normalize(C, C, 0, 1, cv::NORM_MINMAX);
-
-    return cv::Mat_<float>(C);
-}
-
-
 //pas opti
-double distance_max(cv::Mat_<float> mat, int x_c, int y_c)
+float distance_max(cv::Mat_<float> mat, int x_c, int y_c)
 {
     cv::Point center(x_c, y_c);
     cv::Point tmp((int) 0, (int) 0);
@@ -158,40 +116,34 @@ double distance_max(cv::Mat_<float> mat, int x_c, int y_c)
     double min, max;
     minMaxLoc(dist, &min, &max);
 
-    return max;
+    return (float)max;
 }
 
 
-/* Vérifier qu'il s'agit bien de ce qu'ils attendent */
-cv::Mat_<float> kernel(cv::Mat_<float> initial, float distance, float distance_max)
+cv::Mat_<float> kernel_decrease(int size, float distance, float distance_max)
 {
-
-    cv::Mat_<float> k = initial.clone();
-    int size = k.rows;
     cv::Mat_<float> id(size, size, (int) 0);
     id(size/2, size/2) = 1;
 
-    k = k * (distance_max - distance) / distance_max;
+    id = id * (distance_max - distance) / distance_max;
 
-    return k;
+    return id;
 
 }
 
 
-cv::Mat_<float> kernel_blurring(cv::Mat_<float> initial, float distance, float distance_max)
+cv::Mat_<float> kernel_blur(int size, float distance, float distance_max)
 {
-    cv::Mat_<float> k = initial.clone();
-    int size = k.rows;
+    cv::Mat_<float> k(size, size, 1);
+    k /= pow(size, 2);
     cv::Mat_<float> id(size, size, (int) 0);
     id(size/2, size/2) = 1;
-
     k = k * distance/distance_max + id * (distance_max - distance) / distance_max;
-
     return k;
 }
 
 
-cv::Mat_<float> convolution_decrease(cv::Mat_<float> f, cv::Mat_<float> k, int x_c, int y_c)
+cv::Mat_<float> convolution_complex(cv::Mat_<float> f, int size, int x_c, int y_c, bool decrease)
 {
     //initialization of points
     cv::Point center(x_c, y_c);
@@ -200,35 +152,33 @@ cv::Mat_<float> convolution_decrease(cv::Mat_<float> f, cv::Mat_<float> k, int x
     //initialization of the result
     cv::Mat_<float> res(f.rows, f.cols);
 
-    //finding the midle of the matrix k
-    int middle_x = k.cols/2;
-    int middle_y = k.rows/2;
+    //finding the midle for the kernel
+    int middle_x = size/2;
+    int middle_y = size/2;
 
-    //initialization of usefull indices
+    //initialization of usefull indices and values
     int mm, nn, ii, jj;
-    cv::Mat_<float> kern(k.rows, k.cols, (int) 0);
+    cv::Mat_<float> kern(size, size, (int) 0);
     float dist;
-
-    double dist_max = distance_max(f, x_c, y_c);
+    float dist_max = distance_max(f, x_c, y_c);
 
     for (int i = 0; i < f.rows; i++){
         tmp.y = i;
         for (int j = 0; j < f.cols; j++){
             tmp.x = j;
             //distance of the center
-            dist = cv::norm(center - tmp);//distance(x_c,y_c,j,i);
-            // std::cout << "distance " << dist_max-dist << std::endl;
-            // kern = kernel_blurring(k, dist, dist_max);
-            kern = kernel_test(10, dist, dist_max);
-            // std::cout << kern << std::endl;
-            for (int m = 0; m < k.rows; m++){
-                for (int n = 0; n < k.cols; n++){
+            dist = cv::norm(center - tmp);
+            //creation of the kernel
+            if (decrease) kern = kernel_decrease(size, dist, dist_max);
+            else kern = kernel_blur(size, dist, dist_max);
+            for (int m = 0; m < size; m++){
+                for (int n = 0; n < size; n++){
 
-                    //indices for B
-                    mm = k.rows - 1 - m;
-                    nn = k.cols - 1 - n;
+                    //indices for the kernel
+                    mm = size - 1 - m;
+                    nn = size - 1 - n;
 
-                    //indices for A
+                    //indices for F
                     ii = i + middle_y - mm;
                     jj = j + middle_x - nn;
 
@@ -251,7 +201,6 @@ cv::Mat_<float> convolution_decrease(cv::Mat_<float> f, cv::Mat_<float> k, int x
 
     // normalization of the resultat
     cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
-
     return res;
 }
 
@@ -279,10 +228,7 @@ cv::Mat_<float> kernel_test(int size, float dist, float dist_max){
     }
   }
   blur_1 /= pow(size-2*size/8,2);
-  // std::cout << blur_1 << std::endl;
   cv::Mat_<float> blur_2(size, size, 1);
   blur_2/=pow(size,2);
-  // std::cout << blur_2 << std::endl;
   return normalization((dist_max-dist)/dist_max*id + (1-(dist_max-dist)/dist_max)*blur_1 + pow(1-(dist_max-dist)/dist_max,2)*blur_2);
-  // return normalization((dist_max-dist)/dist_max*id + (1-exp(-dist/dist_max))*blur_1 + pow(1-exp(-dist/dist_max),2)*blur_2);
 }
