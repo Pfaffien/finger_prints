@@ -20,6 +20,7 @@
 /**
  * \fn float c_isotropic (float, float param = 1)
  * \brief Definition of an isotropic function
+ * \param
  * \return Result of the isotropic function
  */
 float c_isotropic(float, float param = 1);
@@ -27,6 +28,7 @@ float c_isotropic(float, float param = 1);
 /**
  * \fn float c_anisotropic (int, int, cv::Point, float)
  * \brief Definition of an anisotropic function
+ * \param
  * \return Result of the anisotropic function
  */
 float c_anisotropic(int, int, cv::Point, float);

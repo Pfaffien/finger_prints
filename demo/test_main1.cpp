@@ -1,3 +1,11 @@
+/**
+ * \file main1.h
+ * \brief Usefull functions to answer the part main 1
+ * \author Thomas.B Clara.B
+ * \version 0.1
+ * \date 01/13/20
+ */
+
 #include <iostream>
 #include <vector>
 #include <opencv2/core.hpp>
@@ -27,12 +35,12 @@ int main()
     int b = 80;
     std::vector<cv::Point> ell = points_ellipse(center, a, b);
     Image test(finger().clone());
-    
+
     for (std::vector<cv::Point>::iterator i = ell.begin(); i != ell.end(); i++)
         test((*i).y, (*i).x) = 1;
 
     test.display("Ellipse", "Ellipse");
-    
+
     /* Utilisation d'une fonction quelconque en dehors d'une certaine ellipse */
     Image test2(finger().clone());
     cv::Point tmp3((int) 0, (int) 0);
