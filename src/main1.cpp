@@ -4,7 +4,7 @@
 #include "main1.h"
 
 
-float c(float r, float param)
+float c_isotropic(float r, float param)
 {
     return exp(- param * r);
 }
@@ -14,7 +14,7 @@ float c(float r, float param)
  * il faut d'abord réfléchir à ce qu'on prend comme classe de fonctions */
 float c_anisotropic(int x, int y, cv::Point center, float param)
 {
-    return exp(- sqrt(3*pow(x-center.x, 2) + pow(y-center.y, 2)) * param);
+    return exp(- sqrt(2*pow(x-center.x, 2) + pow(y-center.y, 2)) * param);
     /* return exp(- param * (x + y - center.x - center.y)); */
     /* return 1 / sqrt(param * (x - center.x) + y - center.y); */
 };
@@ -29,7 +29,7 @@ std::vector<float> pressure(cv::Point center, std::vector<cv::Point> coords, flo
     if (iso) {
         for (int i = 0; i < size; i++) {
             dist = cv::norm(center - coords[i]);
-	        res.push_back(c(dist, param));
+	        res.push_back(c_isotropic(dist, param));
         }
     } else {
         for (int i = 0; i < size; i++)

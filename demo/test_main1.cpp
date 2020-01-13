@@ -21,7 +21,7 @@ int main()
     finger.display("Finger", "Finger");
 
     int dist = 50;
-    cv::Point center(finger().cols/2, finger().rows/2);
+    cv::Point center(7*finger().cols/16, 9*finger().rows/16);
 
     //White outside a disk
     cv::Point tmp((int) 0, (int) 0);
@@ -31,8 +31,8 @@ int main()
 
 
     //Ellipse
-    int a = 40;
-    int b = 80;
+    int a = 60;
+    int b = 120;
     std::vector<cv::Point> ell = points_ellipse(center, a, b);
     Image test(finger().clone());
 
@@ -44,15 +44,21 @@ int main()
     /* Utilisation d'une fonction quelconque en dehors d'une certaine ellipse */
     Image test2(finger().clone());
     cv::Point tmp3((int) 0, (int) 0);
-    /* std::vector<cv::Point> coord = test2.outside_ellipse(center, a, b); */
-    std::vector<cv::Point> coord;
-    for (int i = 0; i < test().rows; i++) {
-        for (int j = 0; j < test().cols; j++)
-            coord.push_back(cv::Point(j, i));
+    std::vector<cv::Point> coord = test2.outside_ellipse(center, a, b);
+    /* std::vector<cv::Point> coord; */
+    /* for (int i = 0; i < test().rows; i++) { */
+    /*     for (int j = 0; j < test().cols; j++) */
+    /*         coord.push_back(cv::Point(j, i)); */
+    /* } */
+
+    for (std::vector<cv::Point>::iterator i = coord.begin(); i != coord.end(); i++) {
+        test2((*i).y, (*i).x) *= (1-c_anisotropic((*i).x, (*i).y, center, 0.0002));
+        test2((*i).y, (*i).x) = 1 - test2((*i).y, (*i).x);
     }
 
-    for (std::vector<cv::Point>::iterator i = coord.begin(); i != coord.end(); i++)
-        test2((*i).y, (*i).x) *= (1-c_anisotropic((*i).x, (*i).y, center, 0.02));
+    /* for (std::vector<cv::Point>::iterator i = outside.begin(); i != outside.end(); i++) { */
+    /*     test2((*i).y, (*i).x) = 1 - test2((*i).y, (*i).x); */
+    /* } */
     
     test2.display("White outside ellipse", "White outside ellipse");
 
