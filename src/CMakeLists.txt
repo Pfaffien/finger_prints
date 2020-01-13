@@ -1,8 +1,6 @@
 # Create new project
 project (libFingerPrint)
 
-include_directories(include)
-
 set(SRC_DIR ../src)
 
 # Create variable containing all the CXX sources

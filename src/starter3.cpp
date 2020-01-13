@@ -59,6 +59,9 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
 
 
 /* Easy version */
+/*
+ * \TODO résoudre le problème
+ */
 cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
 {
     int M, N;
@@ -98,7 +101,6 @@ cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
 }
 
 
-//pas opti
 float distance_max(cv::Mat_<float> mat, int x_c, int y_c)
 {
     cv::Point center(x_c, y_c);
