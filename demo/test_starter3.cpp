@@ -24,8 +24,9 @@ int main(){
 
     //starter3
     //Id
-    cv::Mat_<float> id(3,3, int(0));
-    id(1,1) = 1;
+    int size = 20;
+    cv::Mat_<float> id(size, size, int(0));
+    id(size/2, size/2) = 1;
 
     cv::Mat_<float> conv_id = convolution(finger(), id);
     Image classic_id(conv_id);
@@ -37,9 +38,16 @@ int main(){
     dft_id.display("DFT id", "DFT id");
     dft_id.save("DFT id");
 
+    //Diff
+    Image diff_id = classic_id - dft_id;
+    diff_id.display("diff id", "diff id");
+    diff_id.save("diff id");
 
+    cv::destroyAllWindows();
+    
     //Blurring
-    int size = 5;
+    finger.display("initial", "initial");
+    size = 5;
     cv::Mat_<float> blur(size, size, 1);
     blur /= pow(size, 2);
 
@@ -52,12 +60,6 @@ int main(){
     Image dft_blur(convDFT_blur);
     dft_blur.display("DFT blur", "DFT blur");
     dft_blur.save("DFT blur");
-
-
-    //Diff
-    Image diff_id = classic_id - dft_id;
-    diff_id.display("diff id", "diff id");
-    diff_id.save("diff id");
 
     Image diff_blur = classic_blur - dft_blur;
     diff_blur.display("diff blur", "diff blur");

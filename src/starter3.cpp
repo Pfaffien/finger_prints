@@ -58,45 +58,35 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
 }
 
 
-/* Easy version */
-/*
- * \TODO résoudre le problème
- */
 cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
 {
-    int M, N;
-    M = f.rows;
-    N = f.cols;
+    std::cout << "r" << f.rows << " c" << f.cols << std::endl;
+    int M = f.rows+k.rows-1;
+    int N = f.cols+k.cols-1;
     cv::Mat_<float> conv(M, N);
-    cv::Mat_<float> k_hat, f_hat;
+    cv::Mat_<float> res(f.rows, f.cols);
 
-    // Padding
-    cv::Mat_<float> padded(M, N, (int)0);
-    for (int i = 0; i < k.rows; i++) {
-        for (int j = 0; j < k.cols; j++)
-            padded(i, j) = k(i, j);
-    }
+    //padding of f and k
+    cv::Mat_<float> paddedk, paddedf;
+    cv::copyMakeBorder(k, paddedk, 0, M - k.rows, 0, N - k.cols, cv::BORDER_CONSTANT, cv::Scalar::all(0));
+    cv::copyMakeBorder(f, paddedf, 0, M - f.rows, 0, N - f.cols, cv::BORDER_CONSTANT, cv::Scalar::all(0));
 
     // DFT
-    cv::dft(padded, k_hat, 0, k.rows);
-    cv::dft(f, f_hat, 0, f.rows);
+    cv::Mat_<float> k_hat, f_hat;
+    cv::dft(paddedk, k_hat, 0, k.rows);
+    cv::dft(paddedf, f_hat, 0, f.rows);
 
     // Product
-    // 0, else it corresponds to M 1D FFT
-    cv::mulSpectrums(f_hat, k_hat, conv, 0, true);
-
-    //If we want to try without using muSpectrums
-    /* for (int i = 0; i < M; i++) { */
-    /*     for (int j = 0; j < N; j++) */
-    /*         conv(i, j) = k_hat(i, j) * f_hat(i, j); */
-    /* } */
+    cv::mulSpectrums(f_hat, k_hat, conv, 0);
 
     // Inverse DFT
-    cv::idft(conv, conv, cv::DFT_SCALE | cv::DFT_REAL_OUTPUT);
+    cv::idft(conv, conv, cv::DFT_SCALE, f.rows+k.cols-1);
+    std::cout << "r" << conv.rows << " c" << conv.cols << std::endl;
+    res = conv(cv::Rect(k.cols/2, k.rows/2, f.cols, f.rows));
 
     // Normalization of the result
-    cv::normalize(conv, conv, 0, 1, cv::NORM_MINMAX);
-    return conv;
+    cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
+    return res;
 }
 
 
