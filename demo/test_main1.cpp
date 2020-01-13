@@ -23,8 +23,8 @@ int main()
 
 
     //Ellipse
-    int a = 80;
-    int b = 40;
+    int a = 40;
+    int b = 80;
     std::vector<cv::Point> ell = points_ellipse(center, a, b);
     Image test(finger().clone());
     
@@ -39,7 +39,7 @@ int main()
     std::vector<cv::Point> coord = test2.outside_ellipse(center, a, b);
 
     for (std::vector<cv::Point>::iterator i = coord.begin(); i != coord.end(); i++)
-        test2((*i).y, (*i).x) = 1;
+        test2((*i).y, (*i).x) = c_anisotropic((*i).x, (*i).y, center, 0.002);
     
     test2.display("White outside ellipse", "White outside ellipse");
 

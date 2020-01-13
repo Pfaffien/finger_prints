@@ -130,7 +130,7 @@ std::vector<cv::Point> Image::outside_ellipse(cv::Point center, float a, float b
 {
     std::vector<cv::Point> coords;
     cv::Point tmp((int) 0, (int) 0);
-    float dist;
+    float dist, maximum;
     cv::Point focus1, focus2;
 
     if (a == b) {
@@ -150,11 +150,13 @@ std::vector<cv::Point> Image::outside_ellipse(cv::Point center, float a, float b
         focus2.y = center.y + dist;
     }
 
+    maximum = std::max(a, b);
+
     for (int i = 0; i < pixels.rows; i++) {
 	    tmp.y = i;
     	for (int j = 0; j < pixels.cols; j++) {
 	        tmp.x = j;
-            if (cv::norm(tmp - focus1) + cv::norm(tmp - focus2) > 2*a)
+            if (cv::norm(tmp - focus1) + cv::norm(tmp - focus2) > 2*maximum)
                 coords.push_back(cv::Point(tmp.x, tmp.y));
 	    }
     }
@@ -166,7 +168,7 @@ std::vector<cv::Point> Image::outside_ellipse(cv::Point center, float a, float b
 //Pressure variation
 Image Image::pressure_isotropic(cv::Point center, std::vector<cv::Point> coords, float param, int direction)
 {
-    std::vector<float> new_values = pressure(center, coords, param);
+    std::vector<float> new_values = pressure(center, coords, param, false);
     cv::Mat_<float> new_pixels = pixels.clone();
 
     for (int i = 0; i < coords.size(); i++) {
