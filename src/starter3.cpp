@@ -53,7 +53,7 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
 }
 
 
-/* Première version, simple et pas opti */
+/* Easy version */
 cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
 {
     int M, N;
@@ -90,53 +90,6 @@ cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
     // Normalization of the result
     cv::normalize(conv, conv, 0, 1, cv::NORM_MINMAX);
     return conv;
-}
-
-
-/* Deuxième version optimisée mais très proche du copier coller */
-cv::Mat_<float> cDFT(cv::Mat_<float> A, cv::Mat_<float> B)
-{
-    // reallocate the output array if needed
-    cv::Mat C;
-    C.create(cv::abs(A.rows - B.rows)+1, cv::abs(A.cols - B.cols)+1, A.type());
-    cv::Size dftSize;
-
-    // calculate the size of DFT transform
-    dftSize.width = cv::getOptimalDFTSize(A.cols + B.cols - 1);
-    dftSize.height = cv::getOptimalDFTSize(A.rows + B.rows - 1);
-
-    // allocate temporary buffers and initialize them with 0's
-    cv::Mat tempA(dftSize, A.type(), cv::Scalar::all(0));
-    cv::Mat tempB(dftSize, B.type(), cv::Scalar::all(0));
-
-    // copy A and B to the top-left corners of tempA and tempB, respectively
-    cv::Mat roiA(tempA, cv::Rect(0,0,A.cols,A.rows));
-    A.copyTo(roiA);
-    cv::Mat roiB(tempB, cv::Rect(0,0,B.cols,B.rows));
-    B.copyTo(roiB);
-
-    // now transform the padded A & B in-place;
-    // use "nonzeroRows" hint for faster processing
-    cv::dft(tempA, tempA, 0, A.rows);
-    cv::dft(tempB, tempB, 0, B.rows);
-
-    // multiply the spectrums;
-    // the function handles packed spectrum representations well
-    cv::mulSpectrums(tempA, tempB, tempA, 0);
-
-    // transform the product back from the frequency domain.
-    // Even though all the result rows will be non-zero,
-    // you need only the first C.rows of them, and thus you
-    // pass nonzeroRows == C.rows
-    /* dft(tempA, tempA, DFT_INVERSE + DFT_SCALE, C.rows); */
-    cv::idft(tempA, tempA, cv::DFT_SCALE | cv::DFT_REAL_OUTPUT, C.rows);
-
-    // now copy the result back to C.
-    tempA(cv::Rect(0, 0, C.cols, C.rows)).copyTo(C);
-    // all the temporary buffers will be deallocated automatically
-    cv::normalize(C, C, 0, 1, cv::NORM_MINMAX);
-
-    return cv::Mat_<float>(C);
 }
 
 
@@ -268,21 +221,26 @@ cv::Mat_<float> normalization(cv::Mat_<float> mat)
     return res/sum;
 }
 
-cv::Mat_<float> kernel_test(int size, float dist, float dist_max){
-  cv::Mat_<float> id(size, size, int(0));
-  id(size/2, size/2) = 1;
-  // std::cout << id << std::endl;
-  cv::Mat_<float> blur_1(size, size, int(0));
-  for (int i = size/8; i < size-size/8; i++){
-    for (int j = size/8; j < size - size/8; j++){
-      blur_1(i,j) = 1;
+
+cv::Mat_<float> kernel_test(int size, float dist, float dist_max)
+{
+    cv::Mat_<float> id(size, size, int(0));
+    id(size/2, size/2) = 1;
+    // std::cout << id << std::endl;
+    cv::Mat_<float> blur_1(size, size, int(0));
+    
+    for (int i = size/8; i < size-size/8; i++){
+        for (int j = size/8; j < size - size/8; j++){
+            blur_1(i,j) = 1;
+        }
     }
-  }
-  blur_1 /= pow(size-2*size/8,2);
-  // std::cout << blur_1 << std::endl;
-  cv::Mat_<float> blur_2(size, size, 1);
-  blur_2/=pow(size,2);
-  // std::cout << blur_2 << std::endl;
-  return normalization((dist_max-dist)/dist_max*id + (1-(dist_max-dist)/dist_max)*blur_1 + pow(1-(dist_max-dist)/dist_max,2)*blur_2);
-  // return normalization((dist_max-dist)/dist_max*id + (1-exp(-dist/dist_max))*blur_1 + pow(1-exp(-dist/dist_max),2)*blur_2);
+    
+    blur_1 /= pow(size-2*size/8,2);
+    // std::cout << blur_1 << std::endl;
+    cv::Mat_<float> blur_2(size, size, 1);
+    blur_2/=pow(size,2);
+    // std::cout << blur_2 << std::endl;
+
+    return normalization((dist_max-dist)/dist_max*id + (1-(dist_max-dist)/dist_max)*blur_1 + pow(1-(dist_max-dist)/dist_max,2)*blur_2);
+    // return normalization((dist_max-dist)/dist_max*id + (1-exp(-dist/dist_max))*blur_1 + pow(1-exp(-dist/dist_max),2)*blur_2);
 }

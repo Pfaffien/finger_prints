@@ -26,17 +26,7 @@ cv::Mat_<float> convolution(cv::Mat_<float>, cv::Mat_<float>);
  * \param A, B matrices to convolve
  * \return Result of the convolution
  */
-cv::Mat_<float> cDFT(cv::Mat_<float>, cv::Mat_<float>);
-
-
-/**
- * \fn cv::Mat_<float> convolution(cv::Mat_<float> A, cv::Mat_<float> B)
- * \brief Performs the optimized convolution of the two matrices using the
-    DFT method (close to copy and paste)
- * \param A, B matrices to convolve
- * \return Result of the convolution
- */
-cv::Mat_<float> cDFT(cv::Mat_<float>, cv::Mat_<float>);
+cv::Mat_<float> convolutionDFT(cv::Mat_<float>, cv::Mat_<float>);
 
 
 /**
