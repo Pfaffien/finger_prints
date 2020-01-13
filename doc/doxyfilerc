@@ -733,7 +733,7 @@ WARN_LOGFILE           =
 # spaces.
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = ${CMAKE_SOURCE_DIR}/include
+INPUT                  = ${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/demo
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1783,13 +1783,13 @@ XML_OUTPUT             = xml
 # validating XML parser to check the syntax of the XML files.
 # This tag requires that the tag GENERATE_XML is set to YES.
 
-XML_SCHEMA             =
+#XML_SCHEMA             =
 
 # The XML_DTD tag can be used to specify a XML DTD, which can be used by a
 # validating XML parser to check the syntax of the XML files.
 # This tag requires that the tag GENERATE_XML is set to YES.
 
-XML_DTD                =
+#XML_DTD                =
 
 # If the XML_PROGRAMLISTING tag is set to YES doxygen will dump the program
 # listings (including syntax highlighting and cross-referencing information) to

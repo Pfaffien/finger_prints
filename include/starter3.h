@@ -2,8 +2,8 @@
 #define _STARTER3_H
 
 /**
- * \file main1.h
- * \brief Usefull functions to answer the part starter 3
+ * \file starter3.h
+ * \brief Usefull functions to answer the part starter 3 and main 3
  * \author Thomas.B Clara.B
  * \version 0.1
  * \date 01/12/20
@@ -30,49 +30,50 @@ cv::Mat_<float> convolutionDFT(cv::Mat_<float>, cv::Mat_<float>);
 
 
 /**
- * \fn cv::Mat_<float> kernel(cv::Mat_<float> K, float dist, float dist_max)
+ * \fn cv::Mat_<float> kernel_decrease(int size, float dist, float dist_max)
  * \brief Creates a filter that decreases the energy when the distance to the
     center increases
- * \param K initial kernel
-    dist distance to the center
-    dist_max maximum distance to the center
+ * \param size size of the kernel
+ * \param dist distance to the center
+ * \param dist_max maximum distance to the center
  * \return Matrix of the filter
  */
-cv::Mat_<float> kernel(cv::Mat_<float>, float, float);
+cv::Mat_<float> kernel_decrease(int, float, float);
 
 
 /**
- * \fn cv::Mat_<float> kernel_blurring(cv::Mat_<float> K, float dist, float dist_max)
+ * \fn cv::Mat_<float> kernel_blur(int size, float dist, float dist_max)
  * \brief Creates a filter that blurs the image when the distance to the center
     increases
- * \param K initial kernel
-    dist distance to the center
-    dist_max maximum distance to the center
+ * \param size size of the kernel
+ * \param dist distance to the center
+ * \param dist_max maximum distance to the center
  * \return Matrix of the filter
  */
-cv::Mat_<float> kernel_blurring(cv::Mat_<float>, float, float);
+cv::Mat_<float> kernel_blur(int , float, float);
 
 
 /**
- * \fn double distance_max(cv::Mat_<float> I, int x_c, int y_c)
+ * \fn float distance_max(int size, int x_c, int y_c)
  * \brief Computes the maximum distance to the center point
- * \param I matrix of the image
-    x_c, y_c coordinates of the center
+ * \param size size of the filter
+ * \param x_c, y_c coordinates of the center
  * \return Maximum distance to the center
  */
-double distance_max(cv::Mat_<float>, int, int);
+float distance_max(cv::Mat_<float>, int, int);
 
 
 /**
- * \fn cv::Mat_<float> convolution_decrease(cv::Mat_<float> F, cv::Mat_<float> K, int x_c, int y_c)
+ * \fn cv::Mat_<float> convolution_complex(cv::Mat_<float> F, int size, int x_c, int y_c, bool decrease)
  * \brief Computes the convolution product of the matrix of the image and a kernel
     which depends of the distance to the center of each point
  * \param F matrix of the image
-    K initial kernel
-    x_c, y_c coordinates of the center
+ * \param size size of the kernel
+ * \param x_c, y_c coordinates of the center
+ * \param decrease perform a decreasing of the energy is true a blurring if false
  * \return Result of the convolution
  */
-cv::Mat_<float> convolution_decrease(cv::Mat_<float>, cv::Mat_<float>, int, int);
+cv::Mat_<float> convolution_complex(cv::Mat_<float>, int, int, int, bool decrease = true);
 
 
 /**
@@ -83,7 +84,16 @@ cv::Mat_<float> convolution_decrease(cv::Mat_<float>, cv::Mat_<float>, int, int)
  */
 cv::Mat_<float> normalization(cv::Mat_<float>);
 
-
+/**
+ * \fn cv::Mat_<float> kernel_test(int size, float dist, float dist_max)
+ * \brief Creates a filter that blurs the image when the distance to the center
+    increases : other method
+ * \param size size of the kernel
+ * \param dist distance to the center
+ * \param dist_max maximum distance to the center
+ * \return Matrix of the filter
+ */
 cv::Mat_<float> kernel_test(int, float, float);
 //pourquoi pas essayer le flou de gauss
+
 #endif
