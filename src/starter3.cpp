@@ -16,7 +16,7 @@
 cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
 {
     //initialization of the result
-    cv::Mat_<float> res(f.rows, f.cols);
+    cv::Mat_<float> res(f.rows, f.cols, int(0));
 
     //finding the midle of the matrix k
     int middle_x = k.cols/2;
@@ -60,10 +60,9 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
 
 cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
 {
-    std::cout << "r" << f.rows << " c" << f.cols << std::endl;
     int M = f.rows+k.rows-1;
     int N = f.cols+k.cols-1;
-    cv::Mat_<float> conv(M, N);
+    cv::Mat_<float> conv(M, N, int(0));
     cv::Mat_<float> res(f.rows, f.cols);
 
     //padding of f and k
@@ -73,19 +72,16 @@ cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
 
     // DFT
     cv::Mat_<float> k_hat, f_hat;
-    cv::dft(paddedk, k_hat, 0, k.rows);
-    cv::dft(paddedf, f_hat, 0, f.rows);
+    cv::dft(paddedk, k_hat, 0, M);
+    cv::dft(paddedf, f_hat, 0, M);
 
     // Product
     cv::mulSpectrums(f_hat, k_hat, conv, 0);
 
     // Inverse DFT
-    cv::idft(conv, conv, cv::DFT_SCALE, f.rows+k.cols-1);
-    std::cout << "r" << conv.rows << " c" << conv.cols << std::endl;
+    cv::idft(conv, conv, cv::DFT_SCALE, M);
     res = conv(cv::Rect(k.cols/2, k.rows/2, f.cols, f.rows));
 
-    // Normalization of the result
-    cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
     return res;
 }
 

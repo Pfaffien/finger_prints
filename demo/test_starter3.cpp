@@ -24,7 +24,7 @@ int main(){
 
     //starter3
     //Id
-    int size = 20;
+    int size = 3;
     cv::Mat_<float> id(size, size, int(0));
     id(size/2, size/2) = 1;
 
@@ -44,10 +44,10 @@ int main(){
     diff_id.save("diff id");
 
     cv::destroyAllWindows();
-    
+
     //Blurring
     finger.display("initial", "initial");
-    size = 5;
+    size = 21;
     cv::Mat_<float> blur(size, size, 1);
     blur /= pow(size, 2);
 
