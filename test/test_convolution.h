@@ -103,7 +103,6 @@ TEST(convolution, fft)
 
   // Convolution
   cv::Mat_<float> conv_k = convolutionDFT(f2, k);
-  std::cout << conv_k << std::endl;
   cv::Mat_<float> res(5, 5, 100);
   res(2,1) = 50;
   res(1,2) = 50;
@@ -111,7 +110,6 @@ TEST(convolution, fft)
   res(2,3) = 50;
   res(3,2) = 50;
   cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
-  std::cout << res << std::endl;
 
   for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++)

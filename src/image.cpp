@@ -31,7 +31,7 @@ Image Image::operator-(const Image &img){
     cv::Mat_<float> im1 = (*this)().clone();
     cv::Mat_<float> im2 = img();
     cv::Mat_<float> diff = im1-im2;
-    return Image(diff);
+    return Image(abs(diff));
 }
 
 

@@ -52,7 +52,7 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
             }
         }
     }
-    // normalization of the resultat
+    // normalization of the result
     cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
     return res;
 }
@@ -68,7 +68,7 @@ cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
     //padding of f and k
     cv::Mat_<float> paddedk, paddedf;
     cv::copyMakeBorder(k, paddedk, 0, M - k.rows, 0, N - k.cols, cv::BORDER_CONSTANT, cv::Scalar::all(0));
-    cv::copyMakeBorder(f, paddedf, 0, M - f.rows, 0, N - f.cols, cv::BORDER_CONSTANT, cv::Scalar::all(0));
+    cv::copyMakeBorder(f, paddedf, 0, M - f.rows, 0, N - f.cols, cv::BORDER_REPLICATE);
 
     // DFT
     cv::Mat_<float> k_hat, f_hat;
@@ -81,6 +81,9 @@ cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
     // Inverse DFT
     cv::idft(conv, conv, cv::DFT_SCALE, M);
     res = conv(cv::Rect(k.cols/2, k.rows/2, f.cols, f.rows));
+
+    // normalization of the result
+    cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
 
     return res;
 }
