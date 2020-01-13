@@ -5,12 +5,11 @@
 
 //Constructors
 Image::Image(cv::String name){
-    pixels = cv::imread(name, 0);
+    pixels = cv::imread(name, 0).clone();
 
     if (pixels.empty())                   // Check for invalid input
         throw std::runtime_error("Could not open or find the image");
         /* std::cerr <<  "Could not open or find the image" << std::endl; */
-    
     pixels /= 255.;
 }
 
@@ -30,10 +29,11 @@ cv::Mat_<float> Image::operator()() const {
     return pixels;
 }
 
-Image Image::operator-(const Image &img) {
-    if (((*this)().rows != img().rows) && ((*this)().cols != img().cols))
-        throw std::runtime_error("Image dimensions do not match");
-    return Image((*this)() - img());
+Image Image::operator-(const Image &img){
+    cv::Mat_<float> im1 = (*this)().clone();
+    cv::Mat_<float> im2 = img();
+    cv::Mat_<float> diff = im1-im2;
+    return Image(abs(diff));
 }
 
 

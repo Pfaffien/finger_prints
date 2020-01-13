@@ -9,6 +9,8 @@
 #include "test_getters.h"
 #include "test_difference.h"
 #include "test_minmax.h"
+#include "test_convolution.h"
+#include "test_distmax.h"
 
 
 int main(int argc,char *argv[]) {
