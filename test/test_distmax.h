@@ -11,14 +11,14 @@
 
 TEST(distmax, max)
 {
-    cv::Mat_<float> mat(4, 9, (int) 0);
-    cv::Point center(1, 0);
-    cv::Point furthest(4, 8);
+    cv::Mat_<float> mat(4, 4, (int) 0);
+    cv::Point center(0, 0);
+    cv::Point furthest(3, 3);
     
-    double dist = cv::norm(center - furthest);
-    double estimated_dist = distance_max(mat, center.x, center.y);
+    float dist = cv::norm(center - furthest);
+    float estimated_dist = distance_max(mat, center.x, center.y);
 
-    EXPECT_DOUBLE_EQ(estimated_dist, dist);
+    EXPECT_FLOAT_EQ(estimated_dist, dist);
 }
 
 
