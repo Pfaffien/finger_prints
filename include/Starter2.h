@@ -48,6 +48,7 @@ class Image{
         void DoubleToIntIndex(double x_prime, double y_prime, int& x, int& y);
         void rotate_indices(double x, double y, double theta, double& x_prime, double& y_prime);
         Image rotate(double theta);
+        void Interpolate();
 };
 
 #endif  /* _IMAGES_H_ */

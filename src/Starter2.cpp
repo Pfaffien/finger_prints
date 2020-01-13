@@ -259,6 +259,7 @@ Image Image::rotate(double theta){
     rows = pixels.rows;
     cols = pixels.cols;
     
+    
     //Create a new image that will be the rotation of the original image
     cv::Mat new_mat = cv::Mat::zeros(rows,cols,CV_32F);
     Image new_img(new_mat);
@@ -290,6 +291,81 @@ Image Image::rotate(double theta){
     
     return new_img;
     
+}
+
+void Image::Interpolate(){
+    
+    //Get dimensions of image
+    int rows, cols;
+    rows = pixels.rows;
+    cols = pixels.cols;
+    int max = std::max(rows,cols);
+    
+    //Create a new image that will be the rotation of the original image
+    cv::Mat new_mat = cv::Mat::zeros(rows,cols,CV_32F);
+    Image new_img(new_mat);
+    
+    double x, y, x_rot, y_rot;
+    int neighbour_x, neighbour_y;
+    
+    double interp_x1, interp_x2, dist_x, dist_y;
+    
+    
+    //Loop over all pixels
+    for(int i=1; i<rows-1;i++){
+        for(int j=1;j<cols-1;j++){
+            if((*this)(i,j) == 0){
+                std::cerr << "set value\n";
+                (*this)(i,j) = 0.25*((*this)(i-1,j)+(*this)(i+1,j)+(*this)(i,j-1)+(*this)(i,j+1));
+            }
+            
+            
+            
+            
+            
+            
+            
+            
+            /*
+            //Transform indices to double
+            IntToDoubleIndex(i, j, x, y);
+            
+            //Get double index of rotated pixel
+            rotate_indices(x, y, theta, x_rot, y_rot);        
+            
+            //Go back to (0,rows)x(0,cols) range
+            x_rot = (x_rot*max+rows)/2.;
+            y_rot = (y_rot*max+cols)/2.;
+            //Determine nearest neighbour pixel
+            neighbour_x = floor(x_rot);
+            neighbour_y = floor(y_rot);
+            
+            dist_x = x_rot-neighbour_x;
+            dist_y = y_rot-neighbour_y;
+            
+            //Check if computed pixel is in range (0,rows)x(0,cols)
+            if((neighbour_x < 0) ||(neighbour_x >=rows-1)){
+                continue;
+            }
+            if((neighbour_y < 0) || (neighbour_y >=cols-1)){
+                continue;
+            }
+            
+            //Interpolate value
+            //Interpolation in x-direction
+            interp_x1 = (1.-dist_x)*(*this)(i,j)
+                        + dist_x*(*this)(i+1,j);
+            interp_x2 = (1.-dist_x)*(*this)(i,j+1)
+                        + dist_x*(*this)(i+1,j+1);
+            //Interpolation in y-direction
+            new_img(neighbour_x, neighbour_y) = (1.-dist_y)*interp_x1 + dist_y * interp_x2;
+            
+            */
+        
+        }
+    }
+    
+   // return new_img;
 }
 
 

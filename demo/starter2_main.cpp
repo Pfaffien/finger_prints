@@ -14,6 +14,7 @@ int main()
     finger.display("Clean finger", "Clean finger");
 
     Image rotate = finger.rotate(45.);
+    finger.Interpolate();
     std::cerr << "rotation done \n";
     rotate.display("Rotated finger", "Rotated finger");
 
