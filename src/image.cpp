@@ -9,7 +9,7 @@ Image::Image(cv::String name){
 
     if (pixels.empty())                   // Check for invalid input
         std::cerr <<  "Could not open or find the image" << std::endl;
-    
+
     pixels /= 255.;
 }
 
@@ -28,7 +28,10 @@ cv::Mat_<float> Image::operator()() const {
 }
 
 Image Image::operator-(const Image &img){
-    return Image((*this)() - img());
+    cv::Mat_<float> im1 = (*this)().clone();
+    cv::Mat_<float> im2 = img();
+    cv::Mat_<float> diff = im1-im2;
+    return Image(diff);
 }
 
 

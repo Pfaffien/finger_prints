@@ -71,11 +71,10 @@ cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
     cv::Mat_<float> k_hat, f_hat;
 
     // Padding
-    cv::Mat_<float> padded(M, N, (int) 0);
-    cv::Mat_<float> clonedK = k.clone();
+    cv::Mat_<float> padded(M, N, (int)0);
     for (int i = 0; i < k.rows; i++) {
         for (int j = 0; j < k.cols; j++)
-            padded(i, j) = clonedK(i, j);
+            padded(i, j) = k(i, j);
     }
 
     // DFT
@@ -84,7 +83,7 @@ cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
 
     // Product
     // 0, else it corresponds to M 1D FFT
-    cv::mulSpectrums(f_hat, k_hat, conv, 0);
+    cv::mulSpectrums(f_hat, k_hat, conv, 0, true);
 
     //If we want to try without using muSpectrums
     /* for (int i = 0; i < M; i++) { */
@@ -226,13 +225,13 @@ cv::Mat_<float> kernel_test(int size, float dist, float dist_max)
     id(size/2, size/2) = 1;
     // std::cout << id << std::endl;
     cv::Mat_<float> blur_1(size, size, int(0));
-    
+
     for (int i = size/8; i < size-size/8; i++){
         for (int j = size/8; j < size - size/8; j++){
             blur_1(i,j) = 1;
         }
     }
-        
+
     blur_1 /= pow(size-2*size/8,2);
     cv::Mat_<float> blur_2(size, size, 1);
     blur_2/=pow(size,2);
