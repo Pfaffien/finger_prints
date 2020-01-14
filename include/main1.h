@@ -1,7 +1,6 @@
 #ifndef _MAIN1_H_
 #define _MAIN1_H_
 
-
 /**
  * \file main1.h
  * \brief Usefull functions to answer the part main 1
@@ -16,6 +15,9 @@
 #include <opencv2/core.hpp>
 #include <opencv2/core/types.hpp>
 #include <opencv2/highgui.hpp>
+#include <cmath>
+
+#define PI 3.14159265359
 
 /**
  * \fn float c_isotropic (float r, float param = 1)
@@ -66,7 +68,6 @@ std::vector<float> linspace(float, float, int, bool endpoint = false);
  * \param center center of the ellipse
  * \param a,b semi axes of the ellipse
  * \return Returns the vector of Points
-
 */
 std::vector<cv::Point> points_ellipse(cv::Point, float, float);
 

@@ -6,12 +6,6 @@
  * \date 01/14/20
  */
 
-#include <iostream>
-#include <vector>
-#include <opencv2/core.hpp>
-#include <opencv2/core/types.hpp>
-#include <opencv2/highgui.hpp>
-
 #include "Image.h"
 #include "main1.h"
 

@@ -1,8 +1,4 @@
-#define PI 3.14159265359
-#include <cmath>
-
 #include "main1.h"
-
 
 float c_isotropic(float r, float param, int func)
 {
