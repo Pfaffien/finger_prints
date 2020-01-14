@@ -26,7 +26,7 @@ int main()
     std::vector<Image> vect;
 
     img_ones.display("White image");
-    
+
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < size; j++) {
             for (int k = 0; k < size; k++)
@@ -37,13 +37,13 @@ int main()
     }
 
     vect[0].display("Selected class of function");
-    vect[0].save("selected_function.png");
+    vect[0].save("selected_function");
     vect[1].display("Exponential");
-    vect[1].save("exponential_solution.png");
+    vect[1].save("exponential_solution");
     vect[2].display("Inverse");
-    vect[2].save("inverse_solution.png");
+    vect[2].save("inverse_solution");
 
-    
+
     // Test of the selected class of function
     vector<cv::Point> points = finger.matrix2vector();
 
@@ -51,9 +51,9 @@ int main()
     Image aniso = finger.pressure(center, points);
 
     iso.display("Isotropic");
-    iso.save("isotropic.png");
+    iso.save("isotropic");
     aniso.display("Anisotropic");
-    aniso.save("anisotropic.png");
+    aniso.save("anisotropic");
 
     return 0;
 }

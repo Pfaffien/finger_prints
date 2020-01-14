@@ -26,17 +26,17 @@ int main(){
     cv::Mat_<float> conv_id = convolution(finger(), id);
     Image classic_id(conv_id);
     classic_id.display("classic id");
-    classic_id.save("classic id");
+    classic_id.save("classic_id");
 
     cv::Mat_<float> convDFT_id = convolutionDFT(finger(), id);
     Image dft_id(convDFT_id);
     dft_id.display("DFT id");
-    dft_id.save("DFT id");
+    dft_id.save("DFT_id");
 
     //Diff
     Image diff_id = classic_id - dft_id;
     diff_id.display("diff id");
-    diff_id.save("diff id");
+    diff_id.save("diff_id");
 
     cv::destroyAllWindows();
 
@@ -49,16 +49,16 @@ int main(){
     cv::Mat_<float> conv_blur = convolution(finger(), blur);
     Image classic_blur(conv_blur);
     classic_blur.display("classic blur");
-    classic_blur.save("classic blur");
+    classic_blur.save("classic_blur");
 
     cv::Mat_<float> convDFT_blur = convolutionDFT(finger(), blur);
     Image dft_blur(convDFT_blur);
     dft_blur.display("DFT blur");
-    dft_blur.save("DFT blur");
+    dft_blur.save("DFT_blur");
 
     Image diff_blur = classic_blur - dft_blur;
     diff_blur.display("diff blur");
-    diff_blur.save("diff blur");
+    diff_blur.save("diff_blur");
 
     cv::destroyAllWindows();
 
@@ -69,7 +69,7 @@ int main(){
     cv::Mat_<float> dec = convolution_complex(finger(), size, finger().cols/2, finger().rows/2);
     Image dec_img(dec);
     dec_img.display("energy decreasing");
-    dec_img.save("Energy decreasing");
+    dec_img.save("Energy_decreasing");
 
     cv::Mat_<float> convblur = convolution_complex(finger(), size, finger().cols/2, finger().rows/2, false);
     Image blur_img(convblur);
@@ -81,7 +81,7 @@ int main(){
     std::vector<cv::Point> pts = blur_img.matrix2vector();
     Image best = blur_img.pressure(center, pts, false, 30, 0.0002, 0.0001);
     best.display("Best");
-    best.save("best.png");
+    best.save("best");
 
     return 0;
 }

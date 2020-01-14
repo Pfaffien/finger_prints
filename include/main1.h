@@ -56,8 +56,8 @@ std::vector<float> coeffs(cv::Point center, std::vector<cv::Point> coords, float
  * \brief Creates a vector of floats between a and b
  * \param a value of the first point
  * \param b value of the last point
- * \size number of points in the vector
- * \endpoint if false the vector is of size size if not its size is size+1
+ * \param size number of points in the vector
+ * \param endpoint if false the vector is of size size if not its size is size+1
  * \return Returns the vector of points
 */
 std::vector<float> linspace(float, float, int, bool endpoint = false);
