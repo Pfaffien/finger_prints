@@ -17,6 +17,7 @@
 #include <vector>
 #include <iostream>
 
+#include "opencv2/highgui/highgui.hpp"
 #include "main1.h"
 
 
@@ -33,15 +34,15 @@ class Image{
         //Constructors
         /**
         * \brief Constructor
-        * \param Image path
+        * \param path Image path
         */
-        Image(cv::String);
+        Image(cv::String path);
 
         /**
         * \brief Constructor
-        * \param Matrix of pixels
+        * \param mat Matrix of pixels
         */
-        Image(cv::Mat_<float>);
+        Image(cv::Mat_<float> mat);
 
         //Operator overloading
         /**
@@ -81,9 +82,9 @@ class Image{
         /**
         * \brief Change the value of the pixels in a rectangle
         * \param x, y coordinates of the upper left point of the rectangle
-          length length of the rectangle
-          width width of the rectangle
-          color color of the pixels in the rectangle
+        * \param length length of the rectangle
+        * \param width width of the rectangle
+        * \param color color of the pixels in the rectangle
         * \return Image with the modified pixels
         */
         Image rectangle(int x, int y, unsigned int length, unsigned int width, float color);
@@ -125,10 +126,9 @@ class Image{
         //Plotting and saving
         /**
         * \brief Display the image
-        * \param windowname name of the window
-          imageName name of the image
+        * \param imageName name of the image
         */
-        void display(cv::String windowName = "Display finger_print", cv::String imageName = "Display finger_print");
+        void display(cv::String imageName = "Display finger_print");
 
         /**
         * \brief save the image in the folder img/saved

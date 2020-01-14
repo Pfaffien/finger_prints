@@ -1,8 +1,12 @@
-#include <opencv2/core.hpp>
-#include <opencv2/core/types.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/highgui.hpp>
-#include <iostream>
+/**
+ * \file test_starter3.cpp
+ * \brief Test for sections starter1 : symmetries
+ * \author Thomas.B Carole.B
+ * \version 0.1
+ * \date 01/12/20
+ */
+
+
 #include "Image.h"
 
 

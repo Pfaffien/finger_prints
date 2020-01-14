@@ -1,10 +1,3 @@
-#include <iostream>
-#include <vector>
-#include <opencv2/core.hpp>
-#include <opencv2/core/types.hpp>
-#include <opencv2/highgui.hpp>
-
-
 #include "main1.h"
 #include "Image.h"
 
@@ -15,7 +8,6 @@ Image::Image(cv::String name){
 
     if (pixels.empty())                   // Check for invalid input
         throw std::runtime_error("Could not open or find the image");
-        /* std::cerr <<  "Could not open or find the image" << std::endl; */
     pixels /= 255.;
 }
 
@@ -64,8 +56,8 @@ Image Image::rectangle(int x_begin, int y_begin,
     cv::Mat_<float> new_mat = pixels.clone();
     Image new_pixels(new_mat);
 
-    for (int i = x_begin; i < x_begin + length; i++){
-        for (int j = y_begin; j < y_begin + width; j++){
+    for (int i = y_begin; i < y_begin + length; i++){
+        for (int j = x_begin; j < x_begin + width; j++){
             new_pixels(i,j) = color;
         }
     }
@@ -193,18 +185,16 @@ Image Image::pressure(cv::Point center, std::vector<cv::Point> coords, bool iso,
 cv::Mat_<uchar> Image::from1to255()
 {
     cv::Mat_<uchar> res = pixels*255;
-    /* res *= 255; */
-    /* res = pixels.clone(); */
     return res;
 }
 
 
 // Plotting and saving
-void Image::display(cv::String windowName, cv::String imageName){
+void Image::display(cv::String imageName){
     cv::Mat_<float> tmp = pixels.clone();
     Image tmp_img(tmp);
     cv::Mat_<uchar> disp = tmp_img.from1to255();
-    cv::namedWindow( windowName, cv::WINDOW_AUTOSIZE ); // Create a window for display.
+    cv::namedWindow( imageName, cv::WINDOW_AUTOSIZE ); // Create a window for display.
     cv::imshow( imageName, disp );                // Show our image inside it.
     cv::waitKey(0); // Wait for a keystroke in the window
 }
