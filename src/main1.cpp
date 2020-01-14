@@ -4,7 +4,7 @@ float c_isotropic(float r, float param, int func)
 {
     switch (func) {
         case 0:
-            return 1 - exp(- param / pow(r, 16));
+            return 1 - exp(- 1 / (param * pow(r, 2)));
             break;
         case 1:
             return exp(- param * r);
@@ -13,7 +13,7 @@ float c_isotropic(float r, float param, int func)
             return 1 / (1 + param * r);
             break;
         default:
-            return 1 - exp(- param / pow(r, 16));;
+            return 1 - exp(- 1 / (param* pow(r, 2)));;
     }
 }
 
