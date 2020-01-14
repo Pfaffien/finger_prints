@@ -3,6 +3,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <iostream>
+#include <vector>
 #include "Image.h"
 
 
