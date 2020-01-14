@@ -23,7 +23,7 @@
  * \param
  * \return Result of the isotropic function
  */
-float c_isotropic(float, float param = 1);
+float c_isotropic(float, float param = 1, int func = 0);
 
 /**
  * \fn float c_anisotropic (int, int, cv::Point, float)

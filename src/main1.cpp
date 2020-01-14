@@ -4,20 +4,26 @@
 #include "main1.h"
 
 
-float c_isotropic(float r, float param)
+float c_isotropic(float r, float param, int func)
 {
-    return exp(- param * r);
+    switch (func) {
+        case 0:
+            return 1 - exp(- param / pow(r, 16));
+            break;
+        case 1:
+            return exp(- param * r);
+            break;
+        case 2:
+            return 1 / (1 + param * r);
+            break;
+        default:
+            return 1 - exp(- param / pow(r, 16));;
+    }
 }
 
 
-/* Je me suis un peu amusé mais c'est pas bon !
- * il faut d'abord réfléchir à ce qu'on prend comme classe de fonctions */
 float c_anisotropic(int x, int y, cv::Point center, float param_x, float param_y, float param)
 {
-    // return exp(- sqrt(param_x*pow(x-center.x, 2) + param_y*pow(y-center.y, 2)) * param);
-    // return 1/(param*pow(pow(x,2)+pow(y,2), 1/4)+1);
-    /* return exp(- param * (x + y - center.x - center.y)); */
-    /* return 1 / sqrt(param * (x - center.x) + y - center.y); */
     return 1-exp(-param/pow(param_x*pow(x-center.x, 2) + param_y*pow(y-center.y, 2), 8));
 };
 
