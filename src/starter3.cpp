@@ -140,7 +140,7 @@ cv::Mat_<float> convolution_complex(cv::Mat_<float> f, int size, int x_c, int y_
     cv::Point tmp((int) 0, (int) 0);
 
     //initialization of the result
-    cv::Mat_<float> res(f.rows, f.cols);
+    cv::Mat_<float> res(f.rows, f.cols, (int) 0);
 
     //finding the midle for the kernel
     int middle_x = size/2;

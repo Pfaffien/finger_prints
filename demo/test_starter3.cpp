@@ -69,7 +69,7 @@ int main(){
 
     //main3
     finger.display("initial", "initial");
-    size = 10;
+    size = 21;
 
     cv::Mat_<float> dec = convolution_complex(finger(), size, finger().cols/2, finger().rows/2);
     Image dec_img(dec);
@@ -80,6 +80,13 @@ int main(){
     Image blur_img(convblur);
     blur_img.display("blurring", "blurring");
     blur_img.save("Blurring");
+
+    //Using main1
+    cv::Point center(blur_img().cols/2, blur_img().rows/2);
+    std::vector<cv::Point> pts = blur_img.matrix2vector();
+    Image best = blur_img.pressure(center, pts, false, 30, 0.0002, 0.0001);
+    best.display("Best", "Best");
+    best.save("best.png");
 
     return 0;
 }
