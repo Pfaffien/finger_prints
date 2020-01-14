@@ -22,7 +22,7 @@ float c_isotropic(float r, float param, int func)
 float c_anisotropic(int x, int y, cv::Point center, float param_x, float param_y, float param)
 {
     return 1-exp(-param/pow(param_x*pow(x-center.x, 2) + param_y*pow(y-center.y, 2), 8));
-};
+}
 
 
 std::vector<float> coeffs(cv::Point center, std::vector<cv::Point> coords, float param_x, float param_y, float param, bool iso)

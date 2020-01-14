@@ -1,6 +1,7 @@
 #include "main1.h"
 #include "Image.h"
 
+//TODO méthodes convolutions
 
 //Constructors
 Image::Image(cv::String name){
