@@ -6,9 +6,7 @@
  * \date 01/12/20
  */
 
-#include <iostream>
-#include <cmath>
-#include <opencv2/core/types.hpp>
+
 #include "starter3.h"
 #include "Image.h"
 
