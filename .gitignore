@@ -33,4 +33,6 @@
 
 # Repository
 build/
-img/saved/
+
+# Swap
+*.swp

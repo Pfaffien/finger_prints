@@ -1,5 +1,11 @@
 #include <iostream>
+#include <vector>
+#include <opencv2/core.hpp>
+#include <opencv2/core/types.hpp>
+#include <opencv2/highgui.hpp>
 
+
+#include "main1.h"
 #include "Image.h"
 
 
@@ -102,6 +108,82 @@ Image Image::sym_y(){
 Image Image::sym_xy(){
     Image new_pixels = (this->sym_x()).sym_y();
     return new_pixels;
+}
+
+//All pixels into a vector
+std::vector<cv::Point> Image::matrix2vector()
+{
+    std::vector<cv::Point> coord;
+
+    for (int i = 0; i < (*this)().rows; i++) {
+        for (int j = 0; j < (*this)().cols; j++)
+            coord.push_back(cv::Point(j, i));
+    }
+
+    return coord;
+}
+
+//Set of points of the image outside the geometric figure
+std::vector<cv::Point> Image::outside_ellipse(cv::Point center, float a, float b)
+{
+    std::vector<cv::Point> coords;
+    cv::Point tmp((int) 0, (int) 0);
+    float dist, maximum;
+    cv::Point focus1, focus2;
+
+    if (a == b) {
+        focus1 = center;
+        focus2 = center;
+    } else if (a > b) {
+        dist = sqrt(a*a - b*b);
+        focus1.x = center.x - dist;
+        focus1.y = center.y;
+        focus2.x = center.x + dist;
+        focus2.y = center.y;
+    } else if (a < b) {
+        dist = sqrt(b*b - a*a);
+        focus1.x = center.x;
+        focus1.y = center.y - dist;
+        focus2.x = center.x;
+        focus2.y = center.y + dist;
+    }
+
+    maximum = std::max(a, b);
+
+    for (int i = 0; i < pixels.rows; i++) {
+	    tmp.y = i;
+    	for (int j = 0; j < pixels.cols; j++) {
+	        tmp.x = j;
+            if (cv::norm(tmp - focus1) + cv::norm(tmp - focus2) > 2*maximum)
+                coords.push_back(cv::Point(tmp.x, tmp.y));
+	    }
+    }
+
+    return coords;
+}
+
+
+//Pressure variation
+Image Image::pressure(cv::Point center, std::vector<cv::Point> coords, bool iso, float param, float param_x, float param_y)//, int direction)
+{
+    std::vector<float> new_values = coeffs(center, coords, param_x, param_y, param, iso);
+    cv::Mat_<float> new_pixels = pixels.clone();
+    Image ones(cv::Mat_<float>((*this)().rows, (*this)().cols, 1));
+    Image diff = ones - new_pixels;
+
+    /* for (int i = 0; i < coords.size(); i++) { */
+    /* 	if (direction) */
+    /*         new_pixels(coords[i].y, coords[i].x) = 1 - new_values[i]; */
+	    /* else */
+    /*         new_pixels(coords[i].y, coords[i].x) = new_values[i]; */
+    /* } */
+
+    for (int i = 0; i < new_values.size(); i++)
+        diff(coords[i].y, coords[i].x) *= new_values[i];
+
+    diff = ones - diff;
+
+    return diff;
 }
 
 
