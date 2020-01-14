@@ -31,11 +31,11 @@ float c_isotropic(float, float param = 1);
  * \param
  * \return Result of the anisotropic function
  */
-float c_anisotropic(int, int, cv::Point, float param_x = 0.00035, float param_y = 0.00035/2, float param = 50);
+float c_anisotropic(int, int, cv::Point, float param_x = 0.00035, float param_y = 0.000175, float param = 50);
 
 //param = 1: white by default
 //iso = 0: anisotropic by default
-std::vector<float> pressure(cv::Point center, std::vector<cv::Point> coords, float param = 1, bool iso = 0);
+std::vector<float> coeffs(cv::Point center, std::vector<cv::Point> coords, float param_x = 0.00035, float param_y = 0.000175, float param = 50, bool iso = false);
 
 // N points par defaut, N+1 si endpoint = true
 std::vector<float> linspace(float, float, int, bool endpoint = false);

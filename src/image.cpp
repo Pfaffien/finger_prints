@@ -107,25 +107,20 @@ Image Image::sym_xy(){
     return new_pixels;
 }
 
-
-//Set of points of the image outside the geometric figure
-std::vector<cv::Point> Image::outside_disk(cv::Point center, float radius)
+//All pixels into a vector
+std::vector<cv::Point> Image::matrix2vector()
 {
-    cv::Point tmp((int) 0, (int) 0);
-    std::vector<cv::Point> coords;
-    
-    for (int i = 0; i < pixels.rows; i++) {
-	    tmp.y = i;
-    	for (int j = 0; j < pixels.cols; j++) {
-	        tmp.x = j;
-	        if (cv::norm(center - tmp) > radius)
-                coords.push_back(tmp);
-	    }
+    std::vector<cv::Point> coord;
+
+    for (int i = 0; i < (*this)().rows; i++) {
+        for (int j = 0; j < (*this)().cols; j++)
+            coord.push_back(cv::Point(j, i));
     }
 
-    return coords;
+    return coord;
 }
 
+//Set of points of the image outside the geometric figure
 std::vector<cv::Point> Image::outside_ellipse(cv::Point center, float a, float b)
 {
     std::vector<cv::Point> coords;
@@ -166,21 +161,26 @@ std::vector<cv::Point> Image::outside_ellipse(cv::Point center, float a, float b
 
 
 //Pressure variation
-Image Image::pressure_isotropic(cv::Point center, std::vector<cv::Point> coords, float param, int direction)
+Image Image::pressure(cv::Point center, std::vector<cv::Point> coords, bool iso, float param, float param_x, float param_y)//, int direction)
 {
-    std::vector<float> new_values = pressure(center, coords, param, false);
+    std::vector<float> new_values = coeffs(center, coords, param_x, param_y, param, iso);
     cv::Mat_<float> new_pixels = pixels.clone();
+    Image ones(cv::Mat_<float>((*this)().rows, (*this)().cols, 1));
+    Image diff = ones - new_pixels;
 
-    for (int i = 0; i < coords.size(); i++) {
-    	if (direction)
-            new_pixels(coords[i].y, coords[i].x) = 1 - new_values[i];
-	    else
-            new_pixels(coords[i].y, coords[i].x) = new_values[i];
-    }
+    /* for (int i = 0; i < coords.size(); i++) { */
+    /* 	if (direction) */
+    /*         new_pixels(coords[i].y, coords[i].x) = 1 - new_values[i]; */
+	    /* else */
+    /*         new_pixels(coords[i].y, coords[i].x) = new_values[i]; */
+    /* } */
 
-    Image res(new_pixels);
+    for (int i = 0; i < new_values.size(); i++)
+        diff(coords[i].y, coords[i].x) *= new_values[i];
 
-    return res;
+    diff = ones - diff;
+
+    return diff;
 }
 
 

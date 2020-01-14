@@ -22,7 +22,7 @@ float c_anisotropic(int x, int y, cv::Point center, float param_x, float param_y
 };
 
 
-std::vector<float> pressure(cv::Point center, std::vector<cv::Point> coords, float param, bool iso)
+std::vector<float> coeffs(cv::Point center, std::vector<cv::Point> coords, float param_x, float param_y, float param, bool iso)
 {
     std::vector<float> res;
     int size = coords.size();
@@ -35,7 +35,7 @@ std::vector<float> pressure(cv::Point center, std::vector<cv::Point> coords, flo
         }
     } else {
         for (int i = 0; i < size; i++)
-            res.push_back(c_anisotropic(coords[i].x, coords[i].y, center, param));
+            res.push_back(c_anisotropic(coords[i].x, coords[i].y, center, param_x, param_y, param));
     }
 
     return res;
