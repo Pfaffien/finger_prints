@@ -27,6 +27,7 @@ int main()
     cv::Point tmp((int) 0, (int) 0);
     std::vector<cv::Point> coords = finger.outside_disk(center, dist);
     Image res = finger.pressure_isotropic(center, coords, 0.02);
+    Image ones(cv::Mat_<float>(finger().rows, finger().cols, 1));
     res.display("White outside disk", "White outside disk");
 
 
@@ -44,18 +45,22 @@ int main()
     /* Utilisation d'une fonction quelconque en dehors d'une certaine ellipse */
     Image test2(finger().clone());
     cv::Point tmp3((int) 0, (int) 0);
-    std::vector<cv::Point> coord = test2.outside_ellipse(center, a, b);
-    /* std::vector<cv::Point> coord; */
-    /* for (int i = 0; i < test().rows; i++) { */
-    /*     for (int j = 0; j < test().cols; j++) */
-    /*         coord.push_back(cv::Point(j, i)); */
-    /* } */
-
-    for (std::vector<cv::Point>::iterator i = coord.begin(); i != coord.end(); i++) {
-        test2((*i).y, (*i).x) *= (1-c_anisotropic((*i).x, (*i).y, center, 0.0002));
-        test2((*i).y, (*i).x) = 1 - test2((*i).y, (*i).x);
+    /* std::vector<cv::Point> coord = test2.outside_ellipse(center, a, b); */
+    std::vector<cv::Point> coord;
+    for (int i = 0; i < test().rows; i++) {
+        for (int j = 0; j < test().cols; j++)
+            coord.push_back(cv::Point(j, i));
     }
 
+    Image diff = ones - finger;
+    for (std::vector<cv::Point>::iterator i = coord.begin(); i != coord.end(); i++) {
+        /* test2((*i).y, (*i).x) *= (1-c_anisotropic((*i).x, (*i).y, center, 0.0002)); */
+        /* test2((*i).y, (*i).x) = 1 - test2((*i).y, (*i).x); */
+        diff((*i).y, (*i).x) *= (c_anisotropic((*i).x, (*i).y, center, 3, 1, 0.01));
+    }
+
+    diff = ones - diff;
+    diff.display("Diff", "Diff");
     /* for (std::vector<cv::Point>::iterator i = outside.begin(); i != outside.end(); i++) { */
     /*     test2((*i).y, (*i).x) = 1 - test2((*i).y, (*i).x); */
     /* } */

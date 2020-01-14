@@ -12,9 +12,9 @@ float c_isotropic(float r, float param)
 
 /* Je me suis un peu amusé mais c'est pas bon !
  * il faut d'abord réfléchir à ce qu'on prend comme classe de fonctions */
-float c_anisotropic(int x, int y, cv::Point center, float param)
+float c_anisotropic(int x, int y, cv::Point center, float param_x, float param_y, float param)
 {
-    return exp(- sqrt(2*pow(x-center.x, 2) + pow(y-center.y, 2)) * param);
+    return exp(- sqrt(param_x*pow(x-center.x, 2) + param_y*pow(y-center.y, 2)) * param);
     /* return exp(- param * (x + y - center.x - center.y)); */
     /* return 1 / sqrt(param * (x - center.x) + y - center.y); */
 };
