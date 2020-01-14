@@ -4,47 +4,67 @@
 #include "Starter2.h"
 
 
-//Constructors
+//Constructor 
 Image::Image(cv::String name){
-    pixels = cv::imread(name, 0);
-
-    if (pixels.empty())                   // Check for invalid input
-        std::cerr <<  "Could not open or find the image" << std::endl;
     
+    //Read the image into a cv::Mat matrix
+    pixels = cv::imread(name, 0);
+    
+    //Check for invalid input
+    if (pixels.empty())                   
+        std::cerr <<  "Could not open or find the image " << name << std::endl;
+    
+    //Divide values of matrix by 255 to get floatingpoint values inside [0,1]
     pixels /= 255.;
+    
+    //Set rows and cols
+    rows = pixels.rows;
+    cols = pixels.cols;
 }
 
+//Constructor
 Image::Image(cv::Mat_<float> matrix){
+    //Clone matrix
     pixels = matrix.clone();
+    
+    //Set rows and cols
+    rows = pixels.rows;
+    cols = pixels.cols;
 }
 
 
-//Operator overloading
+//Operator overloading to get intensity value of a pixel
 float& Image::operator()(int row, int col){
-    return pixels(row,col);
+    //Check for invalid input
+    if(row>=rows || row<0 || col>=cols || col<0){
+        std::cerr << "Warning: trying to acces pixel outside of image range. Returning pixel (0,0)!\n";
+        return pixels(0,0);
+    }else{
+        return pixels(row,col);
+    }
 }
 
+//Operator overloading to get the whole image matrix
 cv::Mat_<float> Image::operator()(){
     return pixels;
 }
 
-
-//Min max
-double Image::max(){
+//Compute maximal intensity value of image matrix
+double Image::Max(){
     double min, max;
     minMaxLoc(pixels, &min, &max);
     return max;
 }
 
-double Image::min(){
+//Compute maximal intensity value of image matrix
+double Image::Min(){
     double min, max;
     minMaxLoc(pixels, &min, &max);
     return min;
 }
 
-
 //Rectangle
-Image Image::rectangle(int x_begin, int y_begin,
+Image Image::Rectangle(int x_begin, int y_begin,
                         unsigned int length, unsigned int width,
                     float color){
     cv::Mat_<float> new_mat = pixels.clone();
@@ -61,11 +81,8 @@ Image Image::rectangle(int x_begin, int y_begin,
 
 
 //Symetries
-Image Image::sym_x(){
-    int rows, cols;
-    rows = pixels.rows;
-    cols = pixels.cols;
-
+Image Image::Sym_x(){
+    
     cv::Mat new_mat = pixels.clone();
     Image new_pixels(new_mat);
 
@@ -77,11 +94,8 @@ Image Image::sym_x(){
     return new_pixels;
 }
 
-Image Image::sym_y(){
-    int rows, cols;
-    rows = pixels.rows;
-    cols = pixels.cols;
-
+Image Image::Sym_y(){
+    
     cv::Mat new_mat = pixels.clone();
     Image new_img(new_mat);
 
@@ -93,32 +107,37 @@ Image Image::sym_y(){
     return new_img;
 }
 
-Image Image::sym_xy(){
-    Image new_img = (this->sym_x()).sym_y();
+Image Image::Sym_xy(){
+    Image new_img = (this->Sym_x()).Sym_y();
     return new_img;
 }
 
 
-// Conversion
-cv::Mat_<uchar> Image::from1to255()
+// Conversion from intensity values in [0,1] to values in [0,255]
+cv::Mat_<uchar> Image::From1to255()
 {
     cv::Mat_<uchar> res = pixels*255;
-    /* res *= 255; */
-    /* res = pixels.clone(); */
     return res;
 }
 
 
-// Plotting and saving
-void Image::display(cv::String windowName, cv::String imageName){
-    cv::Mat_<uchar> disp = this->from1to255();
-    cv::namedWindow( windowName, cv::WINDOW_AUTOSIZE ); // Create a window for display.
-    cv::imshow( imageName, disp );                // Show our image inside it.
-    cv::waitKey(0); // Wait for a keystroke in the window
+//Plotting
+void Image::Display(cv::String windowName, cv::String imageName){
+    //Convert intensity values back to [0,255]
+    cv::Mat_<uchar> disp = this->From1to255();
+    //Create a window for displaying
+    cv::namedWindow( windowName, cv::WINDOW_AUTOSIZE ); 
+    //Show the image inside the created window
+    cv::imshow( imageName, disp ); 
+    //Wait for a keystroke in the window to close it
+    cv::waitKey(0); 
 }
 
-void Image::save(std::string s){
-    cv::Mat_<uchar> disp = this->from1to255();
+//Saving
+void Image::Save(std::string s){
+    //Convert intensity values back to [0,255]
+    cv::Mat_<uchar> disp = this->From1to255();
+    //Save image as png-file
     s  = "../img/saved/" + s + ".png";
     cv::imwrite(s, disp);
 }
@@ -174,107 +193,60 @@ void Image::save(std::string s){
     
 }*/
 
-/*double PixelTransformX(int i, int j, double a, double b, double t_x){
-    
-    int rows, cols;
-    rows = pixels.rows;
-    cols = pixels.cols;
-    
-    double x,y;
-    double x_prime;
-    int max = std::max(rows,cols);
-    
-    //Compute corresponding coordinate of i in [-1,1]x[-max,max]
-    x = (2*i-rows)/max;
-    y = (2*j-cols)/max;
-    
-    //Compute transformation of coordinates
-    x_prime = a*x-b*y+t_x;
-    
-    return x_prime;
-    
-}
 
-double PixelTransformY(int i, int j, double a, double b, double t_y){
-    
-    int rows, cols;
-    rows = pixels.rows;
-    cols = pixels.cols;
-    
-    double x,y;
-    double y_prime;
-    int max = std::max(rows,cols);
-    
-    //Compute corresponding coordinate of i in [-1,1]x[-max,max]
-    x = (2*i-rows)/max;
-    y = (2*j-cols)/max;
-    
-    //Compute transformation of coordinates
-    y_prime = b*x+a*y+t_y;
-    
-    return y_prime;
-    
-}*/
-
-
-//This are the functions from Thursday
-
-//transform integer indices to double indices (first step)
+//Transform indices from [0,rows]x[0,cols] to double indices in [-1,1]x[-a,a], where a is aspect ratio of the image
 void Image::IntToDoubleIndex(int i, int j, double& x, double& y){
-    int rows, cols;
-    rows = pixels.rows;
-    cols = pixels.cols;
     
+    //Get maximum of rows and cols
     int max = std::max(rows,cols);
     
-    //Compute corresponding coordinate of i in [-1,1]x[-max,max]
+    //Compute corresponding coordinate of (i,j) in [-1,1]x[-a,a]
     x = (2*i-rows)/(double)max;
     y = (2*j-cols)/(double)max;
 }
 
-//Third step
-void Image::DoubleToIntIndex(double x_prime, double y_prime, int& x, int& y){
-    int rows, cols;
-    rows = pixels.rows;
-    cols = pixels.cols;
+//Transform indices from [-1,1]x[-a,a] to indices in [0,rows]x[0,cols], by applying the inverse formula of IntToDoubleIndex plus rounding
+void Image::DoubleToIntIndex(double x, double y, int& i, int& j){
     
+    //Get maximum of rows and cols
     int max = std::max(rows,cols);
     
-    //Compute corresponding coordinate of i in [0,rows]x[0,cols]
-    x = round((x_prime*max+rows)/2.);
-    y = round((y_prime*max+cols)/2.);
+    //Compute corresponding coordinate of (x,y) in [0,rows]x[0,cols]
+    i = round((x*max+rows)/2.);
+    j = round((y*max+cols)/2.);
 }
 
-//transforms double indices x,y of original image to rotated double indices of new image
-void Image::rotate_indices(double x, double y, double theta, double& x_prime, double& y_prime){
+//Rotating double indices (x,y) by a given value theta. The resulting indices are called x_prime, y_prime.
+void Image::RotateIndices(double x, double y, double theta, double& x_prime, double& y_prime){
     
     x_prime = std::cos(theta)*x-std::sin(theta)*y;
     y_prime = std::sin(theta)*x + std::cos(theta)*y;
 }
 
 //Compute pure rotation (without interpolation)
-Image Image::rotate(double theta){
-    //Get dimensions of image
-    int rows, cols;
-    rows = pixels.rows;
-    cols = pixels.cols;
-    
+Image Image::Rotation(double theta){
     
     //Create a new image that will be the rotation of the original image
     cv::Mat new_mat = cv::Mat::zeros(rows,cols,CV_32F);
     Image new_img(new_mat);
     
+    //Auxiliary indexing variables
     double x, y, x_prime, y_prime;
     int i_prime, j_prime;
+    
+    //Loop over all pixel in original image
     for(int i=0; i<rows;i++){
         for(int j=0;j<cols;j++){
+            
             //Transform indices to double
             IntToDoubleIndex(i, j, x, y);
             
-            //Get double index of rotated pixel
-            rotate_indices(x, y, theta, x_prime, y_prime);
-            //Transform rotated pixel indices back to integer inidces
+            //Rotate indices
+            RotateIndices(x, y, theta, x_prime, y_prime);
+            
+            //Transform rotated pixel indices back to integer indices
             DoubleToIntIndex(x_prime, y_prime, i_prime, j_prime);
+            
             //Check if computed pixel is in range (0,rows)x(0,cols)
             if((i_prime < 0) ||(i_prime >=rows)){
                 continue;
@@ -282,10 +254,9 @@ Image Image::rotate(double theta){
             if((j_prime < 0) || (j_prime >=cols)){
                 continue;
             }
-            //TODO this has to be improved
+            
             //Set new pixel to intensity of original pixel
             new_img(i_prime, j_prime) = (*this)(i, j); 
-            //std::cerr << "set pixel (" << i_prime <<", " <<j_prime<<") to " << (*this)(i, j)<<"\n";
         }
     }
     
@@ -293,82 +264,130 @@ Image Image::rotate(double theta){
     
 }
 
-void Image::Interpolate(){
+//Apply bilinear interpolation to a given image matrix
+void Image::BilinearInterpolation(){
     
     //Get dimensions of image
     int rows, cols;
     rows = pixels.rows;
-    cols = pixels.cols;
-    int max = std::max(rows,cols);
+    cols = pixels.cols; 
     
-    //Create a new image that will be the rotation of the original image
-    cv::Mat new_mat = cv::Mat::zeros(rows,cols,CV_32F);
-    Image new_img(new_mat);
-    
-    double x, y, x_rot, y_rot;
-    int neighbour_x, neighbour_y;
-    
-    double interp_x1, interp_x2, dist_x, dist_y;
-    
-    
-    //Loop over all pixels
-    for(int i=1; i<rows-1;i++){
-        for(int j=1;j<cols-1;j++){
-            if((*this)(i,j) == 0){
-                std::cerr << "set value\n";
-                (*this)(i,j) = 0.25*((*this)(i-1,j)+(*this)(i+1,j)+(*this)(i,j-1)+(*this)(i,j+1));
+    //Loop over all pixels to find the non-affected ones
+    for(int i=0; i<rows;i++){
+        for(int j=0;j<cols;j++){
+            if((*this)(i,j) == 1){
+                if(i==0){
+                    if(j==0)
+                        (*this)(i,j) = 0.5*((*this)(i+1,j)+(*this)(i,j+1));
+                    else
+                        (*this)(i,j) = 0.333*((*this)(i+1,j)+(*this)(i,j-1)+(*this)(i,j+1));
+                }
+                else if(j==0){
+                    (*this)(i,j) = 0.333*((*this)(i+1,j)+(*this)(i-1,j)+(*this)(i,j+1));
+                }
+                else if(i==rows){
+                    if(j==cols)
+                        (*this)(i,j) = 0.5*((*this)(i-1,j)+(*this)(i,j-1));
+                    else
+                        (*this)(i,j) = 0.333*((*this)(i-1,j)+(*this)(i,j-1)+(*this)(i,j+1));
+                }
+                else if(j==cols){
+                    (*this)(i,j) = 0.333*((*this)(i+1,j)+(*this)(i-1,j)+(*this)(i,j-1));
+                }
+                else
+                    (*this)(i,j) = 0.25*((*this)(i-1,j)+(*this)(i+1,j)+(*this)(i,j-1)+(*this)(i,j+1));
             }
             
-            
-            
-            
-            
-            
-            
-            
-            /*
-            //Transform indices to double
-            IntToDoubleIndex(i, j, x, y);
-            
-            //Get double index of rotated pixel
-            rotate_indices(x, y, theta, x_rot, y_rot);        
-            
-            //Go back to (0,rows)x(0,cols) range
-            x_rot = (x_rot*max+rows)/2.;
-            y_rot = (y_rot*max+cols)/2.;
-            //Determine nearest neighbour pixel
-            neighbour_x = floor(x_rot);
-            neighbour_y = floor(y_rot);
-            
-            dist_x = x_rot-neighbour_x;
-            dist_y = y_rot-neighbour_y;
-            
-            //Check if computed pixel is in range (0,rows)x(0,cols)
-            if((neighbour_x < 0) ||(neighbour_x >=rows-1)){
-                continue;
-            }
-            if((neighbour_y < 0) || (neighbour_y >=cols-1)){
-                continue;
-            }
-            
-            //Interpolate value
-            //Interpolation in x-direction
-            interp_x1 = (1.-dist_x)*(*this)(i,j)
-                        + dist_x*(*this)(i+1,j);
-            interp_x2 = (1.-dist_x)*(*this)(i,j+1)
-                        + dist_x*(*this)(i+1,j+1);
-            //Interpolation in y-direction
-            new_img(neighbour_x, neighbour_y) = (1.-dist_y)*interp_x1 + dist_y * interp_x2;
-            
-            */
-        
         }
     }
-    
-   // return new_img;
 }
 
 
+//Backward method for performing image rotation with bilinear interpolation
+Image Image::BackwardInterpolation(double theta){
+    
+    //Get maximum of rows and cols
+    int max = std::max(rows,cols);
+    
+    //Create a new image that will be the rotation of the original image. Pixels get the default value 1
+    cv::Mat new_mat = cv::Mat::ones(rows,cols,CV_32F);
+    Image new_img(new_mat);
+    
+    //Auxiliary variables
+    double x, y, x_rot, y_rot;
+    int neighbour_x, neighbour_y;
+    double interp_x1, interp_x2, dist_x, dist_y;
+    
+    //Loop over all pixels in rotated image
+    for(int i=1; i<rows;i++){
+        for(int j=1;j<cols;j++){
+    
+            //Transform pixel indices to coordinates in [-1,1]x[-a,a], where a is aspect ratio of the image
+            IntToDoubleIndex(i, j, x, y);
+            
+            //Rotate the coordinates by a given value theta
+            RotateIndices(x, y, theta, x_rot, y_rot);        
+            
+            //Transform the coordinates back to the [0,rows-1]x[0,cols-1] range
+            x_rot = (x_rot*max+rows)/2.;
+            y_rot = (y_rot*max+cols)/2.;
+            
+            //Determine indices of nearest neighbouring pixel of given coordinate
+            neighbour_x = floor(x_rot);
+            neighbour_y = floor(y_rot);
+            
+            //Check if computed neighbouring pixel is in range [0,rows-1]x[0,cols-1]
+            if((neighbour_x < 0) ||(neighbour_x >=rows)){
+                //If true, continue with next pixel, cuurent pixel will keep default value 1
+                continue;
+            }
+            if((neighbour_y < 0) || (neighbour_y >=cols)){
+                //If true, continue with next pixel, cuurent pixel will keep default value 1
+                continue;
+            }
+            
+            //Compute distance of coordinates to neighbouring pixel in x- and y-direction
+            dist_x = x_rot-neighbour_x;
+            dist_y = y_rot-neighbour_y; 
+            
+            //Handle boundaries seperately
+            if((neighbour_x == rows-1)&&(neighbour_y == cols-1)){
+                new_img(i,j) = (*this)(rows-1,cols-1);
+            }else if(neighbour_x == rows-1){
+                //Interpolation in y-direction
+                new_img(i, j) = (1.-dist_y)*(*this)(neighbour_x,neighbour_y) + dist_y * (*this)(neighbour_x,neighbour_y+1);
+            }else if(neighbour_y == cols-1){
+                //Interpolation in x-direction
+                new_img(i, j) = (1.-dist_x)*(*this)(neighbour_x,neighbour_y) + dist_x * (*this)(neighbour_x+1,neighbour_y);
+            }else{
+                //Bilinear interpolation
+                //Interpolate value in x-direction
+                interp_x1 = (1.-dist_x)*(*this)(neighbour_x,neighbour_y)
+                            + dist_x*(*this)(neighbour_x+1,neighbour_y);
+                interp_x2 = (1.-dist_x)*(*this)(neighbour_x,neighbour_y+1)
+                            + dist_x*(*this)(neighbour_x+1,neighbour_y+1);
+                //Interpolation in y-direction
+                new_img(i, j) = (1.-dist_y)*interp_x1 + dist_y * interp_x2;
+            }        
+        }
+    }
+    
+    return new_img;
+}
 
-
-
+//Compute the difference between two image matrices
+Image Image::DifferenceMatrix(Image second){
+    
+    //Create new matrix for storing the difference
+    cv::Mat new_mat = cv::Mat::zeros(rows,cols,CV_32F);
+    Image image_diff(new_mat);
+    
+    //Loop over all pixels
+    for(int i=0; i<rows;i++){
+        for(int j=0;j<cols;j++){
+            image_diff(i, j) = std::abs(  (*this)(i,j) - second(i,j) );
+        }
+    }
+    
+    return image_diff;
+}
