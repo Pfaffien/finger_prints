@@ -14,7 +14,7 @@ using namespace std;
 int main()
 {
     Image finger("../img/clean_finger.png");
-    finger.display("Finger", "Finger");
+    finger.display("Finger");
     cv::Point center(7*finger().cols/16, 9*finger().rows/16);
 
     // Test of radial functions
@@ -25,7 +25,7 @@ int main()
     Image copy = img_ones().clone();
     std::vector<Image> vect;
 
-    img_ones.display("White image", "White image");
+    img_ones.display("White image");
     
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < size; j++) {
@@ -36,11 +36,11 @@ int main()
         copy = Image(img_ones().clone());
     }
 
-    vect[0].display("Selected class of function", "Selected class of function");
+    vect[0].display("Selected class of function");
     vect[0].save("selected_function.png");
-    vect[1].display("Exponential", "Exponential");
+    vect[1].display("Exponential");
     vect[1].save("exponential_solution.png");
-    vect[2].display("Inverse", "Inverse");
+    vect[2].display("Inverse");
     vect[2].save("inverse_solution.png");
 
     
@@ -50,9 +50,9 @@ int main()
     Image iso = finger.pressure(center, points, false, 50, 0.00035, 0.00035);
     Image aniso = finger.pressure(center, points);
 
-    iso.display("Isotropic", "Isotropic");
+    iso.display("Isotropic");
     iso.save("isotropic.png");
-    aniso.display("Anisotropic", "Anisotropic");
+    aniso.display("Anisotropic");
     aniso.save("anisotropic.png");
 
     return 0;
