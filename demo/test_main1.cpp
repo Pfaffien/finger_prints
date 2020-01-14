@@ -15,6 +15,8 @@
 #include "Image.h"
 #include "main1.h"
 
+using namespace std;
+
 int main()
 {
     Image finger("../img/clean_finger.png");
@@ -23,12 +25,12 @@ int main()
     int dist = 50;
     cv::Point center(7*finger().cols/16, 9*finger().rows/16);
 
-    //White outside a disk
-    cv::Point tmp((int) 0, (int) 0);
-    std::vector<cv::Point> coords = finger.outside_disk(center, dist);
-    Image res = finger.pressure_isotropic(center, coords, 0.02);
+    // //White outside a disk
+    // cv::Point tmp((int) 0, (int) 0);
+    // std::vector<cv::Point> coords = finger.outside_disk(center, dist);
+    // Image res = finger.pressure_isotropic(center, coords, 0.02);
     Image ones(cv::Mat_<float>(finger().rows, finger().cols, 1));
-    res.display("White outside disk", "White outside disk");
+    // res.display("White outside disk", "White outside disk");
 
 
     //Ellipse
@@ -40,7 +42,7 @@ int main()
     for (std::vector<cv::Point>::iterator i = ell.begin(); i != ell.end(); i++)
         test((*i).y, (*i).x) = 1;
 
-    test.display("Ellipse", "Ellipse");
+    // test.display("Ellipse", "Ellipse");
 
     /* Utilisation d'une fonction quelconque en dehors d'une certaine ellipse */
     Image test2(finger().clone());
@@ -56,7 +58,8 @@ int main()
     for (std::vector<cv::Point>::iterator i = coord.begin(); i != coord.end(); i++) {
         /* test2((*i).y, (*i).x) *= (1-c_anisotropic((*i).x, (*i).y, center, 0.0002)); */
         /* test2((*i).y, (*i).x) = 1 - test2((*i).y, (*i).x); */
-        diff((*i).y, (*i).x) *= (c_anisotropic((*i).x, (*i).y, center, 3, 1, 0.01));
+        cout << c_anisotropic((*i).x, (*i).y, center, 0.1, 0.01, 50) << endl;
+        diff((*i).y, (*i).x) *= c_anisotropic((*i).x, (*i).y, center, 0.005, 0.001, 1);
     }
 
     diff = ones - diff;
@@ -64,8 +67,8 @@ int main()
     /* for (std::vector<cv::Point>::iterator i = outside.begin(); i != outside.end(); i++) { */
     /*     test2((*i).y, (*i).x) = 1 - test2((*i).y, (*i).x); */
     /* } */
-    
-    test2.display("White outside ellipse", "White outside ellipse");
+
+    // test2.display("White outside ellipse", "White outside ellipse");
 
     return 0;
 }
