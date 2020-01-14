@@ -58,8 +58,9 @@ int main()
     for (std::vector<cv::Point>::iterator i = coord.begin(); i != coord.end(); i++) {
         /* test2((*i).y, (*i).x) *= (1-c_anisotropic((*i).x, (*i).y, center, 0.0002)); */
         /* test2((*i).y, (*i).x) = 1 - test2((*i).y, (*i).x); */
-        cout << c_anisotropic((*i).x, (*i).y, center, 0.1, 0.01, 50) << endl;
-        diff((*i).y, (*i).x) *= c_anisotropic((*i).x, (*i).y, center, 0.005, 0.001, 1);
+        // cout << c_anisotropic((*i).x, (*i).y, center, 0.1, 0.01, 50) << endl;
+        float param_x = 0.00035;
+        diff((*i).y, (*i).x) *= c_anisotropic((*i).x, (*i).y, center);
     }
 
     diff = ones - diff;

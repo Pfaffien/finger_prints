@@ -31,7 +31,7 @@ float c_isotropic(float, float param = 1);
  * \param
  * \return Result of the anisotropic function
  */
-float c_anisotropic(int, int, cv::Point, float param_x = 1, float param_y = 1, float param = 1);
+float c_anisotropic(int, int, cv::Point, float param_x = 0.00035, float param_y = 0.00035/2, float param = 50);
 
 //param = 1: white by default
 //iso = 0: anisotropic by default

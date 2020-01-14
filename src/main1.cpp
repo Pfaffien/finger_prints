@@ -18,7 +18,7 @@ float c_anisotropic(int x, int y, cv::Point center, float param_x, float param_y
     // return 1/(param*pow(pow(x,2)+pow(y,2), 1/4)+1);
     /* return exp(- param * (x + y - center.x - center.y)); */
     /* return 1 / sqrt(param * (x - center.x) + y - center.y); */
-    return 1-exp(-param/pow(param_x*pow(x-center.x, 2) + param_y*pow(y-center.y, 2),2));
+    return 1-exp(-param/pow(param_x*pow(x-center.x, 2) + param_y*pow(y-center.y, 2), 8));
 };
 
 
