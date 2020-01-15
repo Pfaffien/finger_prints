@@ -5,10 +5,10 @@ include_directories( ${OpenCV_INCLUDE_DIRS} )
 
 set(SRC_DIR ../src)
 
-add_executable(symmetries test_symmetries.cpp ${SRC_DIR}/image.cpp ${SRC_DIR}/main1.cpp)
-add_executable(rectangles test_rectangles.cpp ${SRC_DIR}/image.cpp ${SRC_DIR}/main1.cpp)
+add_executable(symmetries test_symmetries.cpp ${SRC_DIR}/image.cpp ${SRC_DIR}/main1.cpp ${SRC_DIR}/starter3.cpp)
+add_executable(rectangles test_rectangles.cpp ${SRC_DIR}/image.cpp ${SRC_DIR}/main1.cpp ${SRC_DIR}/starter3.cpp)
 add_executable(starter3 test_starter3.cpp ${SRC_DIR}/image.cpp ${SRC_DIR}/starter3.cpp ${SRC_DIR}/main1.cpp)
-add_executable(main1 test_main1.cpp ${SRC_DIR}/image.cpp ${SRC_DIR}/main1.cpp)
+add_executable(main1 test_main1.cpp ${SRC_DIR}/image.cpp ${SRC_DIR}/main1.cpp ${SRC_DIR}/starter3.cpp)
 # target_link_libraries(exe
 #     PUBLIC
 #     libFingerPrint

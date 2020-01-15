@@ -24,6 +24,16 @@ float& Image::operator()(int row, int col){
     return pixels(row,col);
 }
 
+Image Image::operator*(cv::Mat_<float> filter) {
+    cv::Mat_<float> conv = convolutionDFT((*this)(), filter);
+    return Image(conv);
+}
+
+Image Image::operator*(Image filter) {
+    cv::Mat_<float> conv = convolutionDFT((*this)(), filter());
+    return Image(conv);
+}
+
 cv::Mat_<float> Image::operator()() const {
     return pixels;
 }
