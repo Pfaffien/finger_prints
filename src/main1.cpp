@@ -1,6 +1,12 @@
 #include "main1.h"
 
-
+ 
+/*
+ * Réfléchir à comment inclure un angle dans la définition
+ * et choisir de l'appliquer seulement aux pixels dans une direction
+ * donnée, et utiliser un tirage aléatoire de points dépendant du
+ * tirage précédent 
+ */
 float c_isotropic(float r, float param, int func)
 {
     switch (func) {
