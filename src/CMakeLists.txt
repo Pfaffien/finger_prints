@@ -1,12 +1,14 @@
 # Create new project
 project (libFingerPrint)
 
-include_directories(include)
+set(SRC_DIR ../src)
 
 # Create variable containing all the CXX sources
 set(SOURCES
-    src/image.cpp
+    ${SRC_DIR}/image.cpp
+    ${SRC_DIR}/main1.cpp
+    ${SRC_DIR}/starter3.cpp
 )
 
 # Add all the sources to the project
-# add_library(${PROJECT_NAME} ${SOURCES})
+add_library(${PROJECT_NAME} ${SOURCES})

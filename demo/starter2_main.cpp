@@ -3,7 +3,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <iostream>
-#include "Starter2.h"
+#include "Image.h"
 
 /*! \mainpage
  * This is the fingerprint programming project of Thomas Bauer, Clara Bourgoin, Carole Bellet and Svenja Bünder.
