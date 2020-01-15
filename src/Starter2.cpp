@@ -23,7 +23,7 @@ Image::Image(cv::String name){
 }
 
 //Constructor
-Image::Image(cv::Mat_<float> matrix){
+Image::Image(const cv::Mat_<float>& matrix){
     //Clone matrix
     pixels = matrix.clone();
     
@@ -80,7 +80,7 @@ Image Image::Rectangle(int x_begin, int y_begin,
 }
 
 
-//Symetries
+//Symmetries
 Image Image::Sym_x(){
     
     cv::Mat new_mat = pixels.clone();
@@ -108,8 +108,7 @@ Image Image::Sym_y(){
 }
 
 Image Image::Sym_xy(){
-    Image new_img = (this->Sym_x()).Sym_y();
-    return new_img;
+    return (this->Sym_x()).Sym_y();
 }
 
 
@@ -227,7 +226,7 @@ void Image::RotateIndices(double x, double y, double theta, double& x_prime, dou
 Image Image::Rotation(double theta){
     
     //Create a new image that will be the rotation of the original image
-    cv::Mat new_mat = cv::Mat::zeros(rows,cols,CV_32F);
+    cv::Mat new_mat = cv::Mat::ones(rows,cols,CV_32F);
     Image new_img(new_mat);
     
     //Auxiliary indexing variables
@@ -267,33 +266,34 @@ Image Image::Rotation(double theta){
 //Apply bilinear interpolation to a given image matrix
 void Image::BilinearInterpolation(){
     
-    //Get dimensions of image
-    int rows, cols;
-    rows = pixels.rows;
-    cols = pixels.cols; 
-    
     //Loop over all pixels to find the non-affected ones
     for(int i=0; i<rows;i++){
         for(int j=0;j<cols;j++){
+            //Check if pixel is corner or boundary pixel
             if((*this)(i,j) == 1){
                 if(i==0){
                     if(j==0)
                         (*this)(i,j) = 0.5*((*this)(i+1,j)+(*this)(i,j+1));
+                    else if(j==cols-1)
+                        (*this)(i,j) = 0.5*((*this)(i+1,j)+(*this)(i,j-1));
                     else
-                        (*this)(i,j) = 0.333*((*this)(i+1,j)+(*this)(i,j-1)+(*this)(i,j+1));
+                        (*this)(i,j) = (1./3.)*((*this)(i+1,j)+(*this)(i,j-1)+(*this)(i,j+1));
+                }
+                else if(i==rows-1){
+                    if(j==cols-1)
+                        (*this)(i,j) = 0.5*((*this)(i-1,j)+(*this)(i,j-1));
+                    else if(j==0)
+                        (*this)(i,j) = 0.5*((*this)(i-1,j)+(*this)(i,j+1));
+                    else
+                        (*this)(i,j) = (1./3.)*((*this)(i-1,j)+(*this)(i,j-1)+(*this)(i,j+1));
                 }
                 else if(j==0){
-                    (*this)(i,j) = 0.333*((*this)(i+1,j)+(*this)(i-1,j)+(*this)(i,j+1));
+                    (*this)(i,j) = (1./3.)*((*this)(i+1,j)+(*this)(i-1,j)+(*this)(i,j+1));
                 }
-                else if(i==rows){
-                    if(j==cols)
-                        (*this)(i,j) = 0.5*((*this)(i-1,j)+(*this)(i,j-1));
-                    else
-                        (*this)(i,j) = 0.333*((*this)(i-1,j)+(*this)(i,j-1)+(*this)(i,j+1));
+                else if(j==cols-1){
+                    (*this)(i,j) = (1./3.)*((*this)(i+1,j)+(*this)(i-1,j)+(*this)(i,j-1));
                 }
-                else if(j==cols){
-                    (*this)(i,j) = 0.333*((*this)(i+1,j)+(*this)(i-1,j)+(*this)(i,j-1));
-                }
+                //Interpolation for non-boundary pixels
                 else
                     (*this)(i,j) = 0.25*((*this)(i-1,j)+(*this)(i+1,j)+(*this)(i,j-1)+(*this)(i,j+1));
             }

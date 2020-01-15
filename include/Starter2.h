@@ -25,7 +25,7 @@ class Image{
     public:
         //Constructor
         Image(cv::String);                  //!< Construct image from given string
-        Image(cv::Mat_<float>);             //!< Construct image from given matrix
+        Image(const cv::Mat_<float>& matrix);             //!< Construct image from given matrix
 
         //Operator overloading
         float& operator()(int, int);        //!< Get pixel value of image matrix
