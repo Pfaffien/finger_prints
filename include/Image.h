@@ -114,7 +114,7 @@ class Image{
 
 	    //Pressure variation
 	    //direction is used to choose if we want black of white
-	    Image pressure(cv::Point, std::vector<cv::Point>,  bool iso = false, float param = 50, float param_x = 0.00035, float param_y = 0.000175);//, int direction = 1);
+	    Image pressure(cv::Point, std::vector<cv::Point>,  bool iso = false, float param = 50, float param_x = 0.00035, float param_y = 0.000175, int direction = 1);
 
         //Conversion
         /**

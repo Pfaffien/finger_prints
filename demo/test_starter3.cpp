@@ -83,5 +83,31 @@ int main(){
     best.display("Best");
     best.save("best");
 
+
+    //Report
+    //3
+    cv::Mat_<float> blur3(3, 3, 1);
+    blur3 /= pow(size, 2);
+    cv::Mat_<float> convDFT_blur3 = convolution(finger(), blur3);
+    Image dft_blur3(convDFT_blur3);
+    dft_blur3.display("DFT blur 3");
+    dft_blur3.save("DFT_blur3");
+    
+    //9
+    cv::Mat_<float> blur9(9, 9, 1);
+    blur9 /= pow(size, 2);
+    cv::Mat_<float> convDFT_blur9 = convolution(finger(), blur9);
+    Image dft_blur9(convDFT_blur9);
+    dft_blur9.display("DFT blur9");
+    dft_blur9.save("DFT_blur9");
+    
+    //21
+    cv::Mat_<float> blur21(21, 21, 1);
+    blur21 /= pow(size, 2);
+    cv::Mat_<float> convDFT_blur21 = convolution(finger(), blur21);
+    Image dft_blur21(convDFT_blur21);
+    dft_blur21.display("DFT blur21");
+    dft_blur21.save("DFT_blur21");
+
     return 0;
 }

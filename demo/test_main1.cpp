@@ -48,12 +48,15 @@ int main()
     vector<cv::Point> points = finger.matrix2vector();
 
     Image iso = finger.pressure(center, points, false, 50, 0.00035, 0.00035);
-    Image aniso = finger.pressure(center, points);
-
+    Image aniso0 = finger.pressure(center, points, false, 50, 0.00035, 0.000175, 0);
+    Image aniso1 = finger.pressure(center, points);
+        
     iso.display("Isotropic");
     iso.save("isotropic");
-    aniso.display("Anisotropic");
-    aniso.save("anisotropic");
+    aniso0.display("Anisotropic (direction 0)");
+    aniso0.save("anisotropic0");
+    aniso1.display("Anisotropic (direction 1)");
+    aniso1.save("anisotropic1");
 
     return 0;
 }
