@@ -60,6 +60,10 @@ int main(){
     diff_blur.display("diff blur");
     diff_blur.save("diff_blur");
 
+    //Using a method
+    Image conv_method = finger*blur;
+    conv_method.display("Convolution method of Image");
+
     cv::destroyAllWindows();
 
     //main3
@@ -83,10 +87,7 @@ int main(){
     best.display("Best");
     best.save("best");
 
-    //Using a method
-    Image conv_method = finger*blur;
-    conv_method.display("Convolution method of Image");
-
+    
 
 
 //  //Report
