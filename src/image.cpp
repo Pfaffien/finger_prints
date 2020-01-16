@@ -134,7 +134,16 @@ Image Image::sym_y(){
 }
 
 Image Image::sym_xy(){
-    return (this->sym_x()).sym_y();
+    
+    cv::Mat_<float> new_mat(cols, rows);
+    Image new_img(new_mat);
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++)
+            new_img(j, i) = (*this)(i, j);
+    }
+
+    return new_img;
 }
 
 //All pixels into a vector
