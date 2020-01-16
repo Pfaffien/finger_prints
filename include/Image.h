@@ -19,6 +19,7 @@
 
 #include "opencv2/highgui/highgui.hpp"
 #include "main1.h"
+#include "starter3.h"
 
 
 /**
@@ -51,6 +52,10 @@ class Image{
         * \return Pixel of index (i,j)
         */
         float& operator()(int i, int j);
+        
+        //Convolution
+        Image operator*(cv::Mat_<float>);
+        Image operator*(Image);
 
         /**
         * \brief Getter of the matrix of pixels
@@ -63,7 +68,7 @@ class Image{
         * \param img Image
         * \return this-img
         */
-        Image operator-(const Image & img);
+        Image operator-(const Image &);
 
         //Functions for min max
         /**

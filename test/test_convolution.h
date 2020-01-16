@@ -117,4 +117,47 @@ TEST(convolution, fft)
   }
 }
 
+TEST(convolution, methods)
+{
+    //f
+    cv::Mat_<float> f(5, 5, 100);
+    f(2,2) = 150;
+    Image img(f);
+
+    //
+    cv::Mat_<float> k(3, 3, (int) 0);
+    k(0,1) = -1;
+    k(1,0) = -1;
+    k(2,1) = -1;
+    k(1,2) = -1;
+    k(1,1) = 5;
+
+    //Convolution
+    Image conv = img*k;
+
+    // Convolution
+    cv::Mat_<float> res(5, 5, 100);
+    res(2,1) = 50;
+    res(1,2) = 50;
+    res(2,2) = 350;
+    res(2,3) = 50;
+    res(3,2) = 50;
+    cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++)
+            EXPECT_NEAR(conv(i, j), res(i, j), 0.001);
+    }
+    
+
+    //
+    Image filter(k);
+    Image conv2 = img*filter;
+   
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++)
+            EXPECT_NEAR(conv2(i, j), res(i, j), 0.001);
+    }
+}
+
 #endif  /* _TEST_CONVOLUTION_H_ */
