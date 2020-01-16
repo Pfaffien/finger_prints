@@ -6,7 +6,7 @@
  * \date 01/14/20
  */
 
-#include "Image.h"
+#include "image.h"
 #include "main1.h"
 
 using namespace std;
@@ -50,7 +50,7 @@ int main()
     Image iso = finger.pressure(center, points, false, 50, 0.00035, 0.00035);
     Image aniso0 = finger.pressure(center, points, false, 50, 0.00035, 0.000175, 0);
     Image aniso1 = finger.pressure(center, points);
-        
+
     iso.display("Isotropic");
     iso.save("isotropic");
     aniso0.display("Anisotropic (direction 0)");

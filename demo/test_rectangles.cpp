@@ -7,7 +7,7 @@
  */
 
 
-#include "Image.h"
+#include "image.h"
 
 
 int main()

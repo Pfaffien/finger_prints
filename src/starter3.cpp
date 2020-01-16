@@ -8,7 +8,7 @@
 
 
 #include "starter3.h"
-#include "Image.h"
+#include "image.h"
 
 
 cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
@@ -67,7 +67,7 @@ cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
     cv::Mat_<float> paddedk, paddedf;
     cv::copyMakeBorder(k, paddedk, 0, M - k.rows, 0, N - k.cols,
                        cv::BORDER_CONSTANT, cv::Scalar::all(0));
-    cv::copyMakeBorder(f, paddedf, 0, M - f.rows, 0, N - f.cols, 
+    cv::copyMakeBorder(f, paddedf, 0, M - f.rows, 0, N - f.cols,
                        cv::BORDER_REPLICATE);
 
     // DFT

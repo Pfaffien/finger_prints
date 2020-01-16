@@ -6,7 +6,7 @@
 #include <opencv2/highgui.hpp>
 #include <iostream>
 
-#include "Image.h"
+#include "image.h"
 #include "gtest/gtest.h"
 
 
