@@ -42,7 +42,7 @@ int main(){
 
     //Blurring
     finger.display("initial");
-    size = 21;
+    size = 9;
     cv::Mat_<float> blur(size, size, 1);
     blur /= pow(size, 2);
 
@@ -92,7 +92,7 @@ int main(){
     Image dft_blur3(convDFT_blur3);
     dft_blur3.display("DFT blur 3");
     dft_blur3.save("DFT_blur3");
-    
+
     //9
     cv::Mat_<float> blur9(9, 9, 1);
     blur9 /= pow(size, 2);
@@ -100,7 +100,7 @@ int main(){
     Image dft_blur9(convDFT_blur9);
     dft_blur9.display("DFT blur9");
     dft_blur9.save("DFT_blur9");
-    
+
     //21
     cv::Mat_<float> blur21(21, 21, 1);
     blur21 /= pow(size, 2);

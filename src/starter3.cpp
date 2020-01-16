@@ -116,7 +116,6 @@ cv::Mat_<float> kernel_decrease(int size, float distance, float distance_max)
     id = id * (distance_max - distance) / distance_max;
 
     return id;
-
 }
 
 
