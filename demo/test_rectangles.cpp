@@ -19,8 +19,8 @@ int main()
 
     /* Image finger_float(finger); */
 
-    Image res = finger.rectangle(10,10,50,10,0);
-    res = res.rectangle(50, 100, 20, 30, 1);
+    Image res = finger.rectangle(180,150,70,30,0);
+    res = res.rectangle(50, 100, 60, 100, 1);
     res.display("Black and white rectangles");
 
     res.save("rectangles");
