@@ -1,6 +1,6 @@
 # Digital analysis of fingerprints
 
-This project aims to create a C++ library for image processing in the specific case of fingerprints recognition.
+This project aims to create a C++ library for image preprocessing in the specific case of fingerprints recognition. Given a set of optical fingerprint images, we find mathematical filters and models which best simulate artefacts that could occur during the fingerprint acquisition.
 
 ## Getting Started
 
