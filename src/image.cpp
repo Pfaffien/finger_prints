@@ -191,23 +191,19 @@ std::vector<cv::Point> Image::outside_ellipse(cv::Point center, float a, float b
 
 //Pressure variation
 Image Image::pressure(cv::Point center, std::vector<cv::Point> coords, 
-                      bool iso, float param, float param_x, float param_y,
-                      int direction)
+                      bool iso, float param, float param_x, float param_y)
 {
     std::vector<float> new_values = coeffs(center, coords, param_x,
                                            param_y, param, iso);
     cv::Mat_<float> new_pixels = pixels.clone();
     Image ones(cv::Mat_<float>((*this)().rows, (*this)().cols, 1));
-    Image diff = new_pixels.clone();
   
-    if (direction)
-        diff = ones - new_pixels;
+    Image diff = ones - new_pixels;
     
     for (int i = 0; i < new_values.size(); i++)
         diff(coords[i].y, coords[i].x) *= new_values[i];
 
-    if (direction)
-        diff = ones - diff;
+    diff = ones - diff;
 
     return diff;
 }
