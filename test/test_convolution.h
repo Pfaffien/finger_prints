@@ -7,7 +7,7 @@
 
 #include "gtest/gtest.h"
 #include "starter3.h"
-#include "Image.h"
+#include "image.h"
 
 
 TEST(convolution, naive)

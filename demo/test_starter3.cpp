@@ -7,7 +7,7 @@
  */
 
 #include "starter3.h"
-#include "Image.h"
+#include "image.h"
 
 using namespace std;
 
@@ -69,12 +69,15 @@ int main(){
     finger.display("initial");
     size = 21;
 
-    cv::Mat_<float> dec = convolution_complex(finger(), size, finger().cols/2, finger().rows/2);
+    cv::Mat_<float> dec = convolution_complex(finger(), size, finger().cols/2,
+                                              finger().rows/2);
     Image dec_img(dec);
     dec_img.display("energy decreasing");
     dec_img.save("Energy_decreasing");
 
-    cv::Mat_<float> convblur = convolution_complex(finger(), size, finger().cols/2, finger().rows/2, false);
+    cv::Mat_<float> convblur = convolution_complex(finger(), size,
+                                                   finger().cols/2,
+                                                   finger().rows/2, false);
     Image blur_img(convblur);
     blur_img.display("blurring");
     blur_img.save("Blurring");
@@ -86,30 +89,31 @@ int main(){
     best.display("Best");
     best.save("best");
 
-     // //Report
-     // //3
-     // cv::Mat_<float> blur3(3, 3, 1);
-     // blur3 /= pow(size, 2);
-     // cv::Mat_<float> convDFT_blur3 = convolution(finger(), blur3);
-     // Image dft_blur3(convDFT_blur3);
-     // dft_blur3.display("DFT blur 3");
-     // dft_blur3.save("DFT_blur3");
-     //
-     // //9
-     // cv::Mat_<float> blur9(9, 9, 1);
-     // blur9 /= pow(size, 2);
-     // cv::Mat_<float> convDFT_blur9 = convolution(finger(), blur9);
-     // Image dft_blur9(convDFT_blur9);
-     // dft_blur9.display("DFT blur9");
-     // dft_blur9.save("DFT_blur9");
-     //
-     // //21
-     // cv::Mat_<float> blur21(21, 21, 1);
-     // blur21 /= pow(size, 2);
-     // cv::Mat_<float> convDFT_blur21 = convolution(finger(), blur21);
-     // Image dft_blur21(convDFT_blur21);
-     // dft_blur21.display("DFT blur21");
-     // dft_blur21.save("DFT_blur21");
+
+    //Report
+    //3
+    cv::Mat_<float> blur3(3, 3, 1);
+    blur3 /= pow(size, 2);
+    cv::Mat_<float> convDFT_blur3 = convolution(finger(), blur3);
+    Image dft_blur3(convDFT_blur3);
+    dft_blur3.display("DFT blur 3");
+    dft_blur3.save("DFT_blur3");
+
+    //9
+    cv::Mat_<float> blur9(9, 9, 1);
+    blur9 /= pow(size, 2);
+    cv::Mat_<float> convDFT_blur9 = convolution(finger(), blur9);
+    Image dft_blur9(convDFT_blur9);
+    dft_blur9.display("DFT blur9");
+    dft_blur9.save("DFT_blur9");
+
+    //21
+    cv::Mat_<float> blur21(21, 21, 1);
+    blur21 /= pow(size, 2);
+    cv::Mat_<float> convDFT_blur21 = convolution(finger(), blur21);
+    Image dft_blur21(convDFT_blur21);
+    dft_blur21.display("DFT blur21");
+    dft_blur21.save("DFT_blur21");
 
     return 0;
 }

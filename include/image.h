@@ -1,23 +1,25 @@
-#ifndef _IMAGES_H_
-#define _IMAGES_H_
+#ifndef IMAGE_H_
+#define IMAGE_H_
 
 /**
  * \file Image.h
  * \brief Definition of the basis of the image
- * \author Thomas.B Clara.B Carole.B Svenja.B
+ * \author Thomas B. Clara B. Carole B. Svenja B.
  * \version 0.1
  * \date 01/12/20
  */
 
+#include <iostream>
+#include <vector>
 
 #include <opencv2/core.hpp>
 #include <opencv2/core/types.hpp>
-#include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
-#include <vector>
-#include <iostream>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
-#include "opencv2/highgui/highgui.hpp"
+
 #include "main1.h"
 #include "starter3.h"
 
@@ -30,6 +32,7 @@ class Image{
 
     private:
         cv::Mat_<float> pixels; /** Matrix of the pixels of the image */
+        int rows, cols;
 
     public:
         //Constructors
@@ -37,13 +40,13 @@ class Image{
         * \brief Constructor
         * \param path Image path
         */
-        Image(cv::String path);
+        Image(cv::String);
 
         /**
         * \brief Constructor
         * \param mat Matrix of pixels
         */
-        Image(cv::Mat_<float> mat);
+        Image(const cv::Mat_<float>&);
 
         //Operator overloading
         /**
@@ -56,6 +59,7 @@ class Image{
         //Convolution
         Image operator*(cv::Mat_<float>);
         Image operator*(Image);
+
 
         /**
         * \brief Getter of the matrix of pixels
@@ -134,13 +138,25 @@ class Image{
         * \param imageName name of the image
         */
         void display(cv::String imageName = "Display finger_print");
+        void Display(cv::String, cv::String);
 
         /**
         * \brief save the image in the folder img/saved
         * \param s name of the saved image
         */
         void save(std::string s = "finger_print");
+        void Save(std::string);
 
+
+        //Scaled Rotation function
+        //Image scaled_rotation(double, double, double, double);
+        void IntToDoubleIndex(int i, int j, double& x, double& y);
+        void DoubleToIntIndex(double x_prime, double y_prime, int& x, int& y);
+        void RotateIndices(double x, double y, double theta, double& x_prime, double& y_prime);
+        Image Rotation(double theta);
+        void BilinearInterpolation();
+        Image BackwardInterpolation(double theta);
+        Image DifferenceMatrix(Image second);
 };
 
-#endif  /* _IMAGES_H_ */
+#endif  // IMAGES_H_ 

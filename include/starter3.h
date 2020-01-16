@@ -9,7 +9,7 @@
  * \date 01/12/20
  */
 
-#include "Image.h"
+#include "image.h"
 
 /**
  * \fn cv::Mat_<float> convolution(cv::Mat_<float> A, cv::Mat_<float> B)

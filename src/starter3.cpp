@@ -8,7 +8,7 @@
 
 
 #include "starter3.h"
-#include "Image.h"
+#include "image.h"
 
 
 cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
@@ -22,10 +22,10 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
 
     int mm, nn, ii, jj; //initialization of usefull indices
 
-    for (int i = 0; i < f.rows; i++){
-        for (int j = 0; j < f.cols; j++){
-            for (int m = 0; m < k.rows; m++){
-                for (int n = 0; n < k.cols; n++){
+    for (int i = 0; i < f.rows; i++) {
+        for (int j = 0; j < f.cols; j++) {
+            for (int m = 0; m < k.rows; m++) {
+                for (int n = 0; n < k.cols; n++) {
                     //indices for k
                     mm = k.rows - 1 - m;
                     nn = k.cols - 1 - n;
@@ -35,11 +35,11 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
                     jj = j + middle_x - nn;
 
                     //Are we at the boundary of the image?
-                    if (ii >= 0 && ii < f.rows && jj>=0 && jj < f.cols){
+                    if (ii >= 0 && ii < f.rows && jj>=0 && jj < f.cols) {
                         res(i,j) += f(ii,jj)*k(mm,nn);
                     }
                     //we use the extension to deal with boundaries
-                    else{
+                    else {
                         if (ii < 0) ii = 0;
                         if (jj < 0) jj = 0;
                         if (ii >= f.rows) ii = f.rows - 1;
@@ -58,15 +58,17 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
 
 cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
 {
-    int M = f.rows+k.rows-1;
-    int N = f.cols+k.cols-1;
+    int M = f.rows + k.rows-1;
+    int N = f.cols + k.cols-1;
     cv::Mat_<float> conv(M, N, int(0));
     cv::Mat_<float> res(f.rows, f.cols);
 
     //padding of f and k
     cv::Mat_<float> paddedk, paddedf;
-    cv::copyMakeBorder(k, paddedk, 0, M - k.rows, 0, N - k.cols, cv::BORDER_CONSTANT, cv::Scalar::all(0));
-    cv::copyMakeBorder(f, paddedf, 0, M - f.rows, 0, N - f.cols, cv::BORDER_REPLICATE);
+    cv::copyMakeBorder(k, paddedk, 0, M - k.rows, 0, N - k.cols,
+                       cv::BORDER_CONSTANT, cv::Scalar::all(0));
+    cv::copyMakeBorder(f, paddedf, 0, M - f.rows, 0, N - f.cols,
+                       cv::BORDER_REPLICATE);
 
     // DFT
     cv::Mat_<float> k_hat, f_hat;
@@ -93,9 +95,9 @@ float distance_max(cv::Mat_<float> mat, int x_c, int y_c)
     cv::Point tmp((int) 0, (int) 0);
     cv::Mat_<float> dist(mat.rows, mat.cols, (int) 0);
 
-    for (int i = 0; i < mat.rows; i++){
+    for (int i = 0; i < mat.rows; i++) {
         tmp.y = i;
-        for (int j = 0; j < mat.cols; j++){
+        for (int j = 0; j < mat.cols; j++) {
             tmp.x = j;
             dist(i,j) = cv::norm(center - tmp);
         }
@@ -125,12 +127,13 @@ cv::Mat_<float> kernel_blur(int size, float distance, float distance_max)
     k /= pow(size, 2);
     cv::Mat_<float> id(size, size, (int) 0);
     id(size/2, size/2) = 1;
-    k = k * distance/distance_max + id * (distance_max - distance) / distance_max;
+    k = k * distance/distance_max + id * (distance_max - distance)/distance_max;
     return k;
 }
 
 
-cv::Mat_<float> convolution_complex(cv::Mat_<float> f, int size, int x_c, int y_c, bool decrease)
+cv::Mat_<float> convolution_complex(cv::Mat_<float> f, int size, int x_c,
+                                    int y_c, bool decrease)
 {
     //initialization of points
     cv::Point center(x_c, y_c);
@@ -158,8 +161,8 @@ cv::Mat_<float> convolution_complex(cv::Mat_<float> f, int size, int x_c, int y_
             //creation of the kernel
             if (decrease) kern = kernel_decrease(size, dist, dist_max);
             else kern = kernel_blur(size, dist, dist_max);
-            for (int m = 0; m < size; m++){
-                for (int n = 0; n < size; n++){
+            for (int m = 0; m < size; m++) {
+                for (int n = 0; n < size; n++) {
 
                     //indices for the kernel
                     mm = size - 1 - m;
@@ -170,11 +173,11 @@ cv::Mat_<float> convolution_complex(cv::Mat_<float> f, int size, int x_c, int y_
                     jj = j + middle_x - nn;
 
                     //Are we at the boundary of the image?
-                    if (ii >= 0 && ii < f.rows && jj>=0 && jj < f.cols){
+                    if (ii >= 0 && ii < f.rows && jj>=0 && jj < f.cols) {
                         res(i,j) += f(ii,jj)*kern(mm,nn);
                     }
                     //we use the extension to deal with boundaries
-                    else{
+                    else {
                         if (ii < 0) ii = 0;
                         if (jj < 0) jj = 0;
                         if (ii >= f.rows) ii = f.rows - 1;
@@ -195,8 +198,8 @@ cv::Mat_<float> convolution_complex(cv::Mat_<float> f, int size, int x_c, int y_
 cv::Mat_<float> normalization(cv::Mat_<float> mat)
 {
     float sum = 0;
-    for (int i = 0; i < mat.rows; i++){
-        for (int j = 0; j < mat.cols; j++){
+    for (int i = 0; i < mat.rows; i++) {
+        for (int j = 0; j < mat.cols; j++) {
             sum += mat(i,j);
         }
     }
@@ -212,15 +215,15 @@ cv::Mat_<float> kernel_test(int size, float dist, float dist_max)
     // std::cout << id << std::endl;
     cv::Mat_<float> blur_1(size, size, int(0));
 
-    for (int i = size/8; i < size-size/8; i++){
-        for (int j = size/8; j < size - size/8; j++){
+    for (int i = size/8; i < size-size/8; i++) {
+        for (int j = size/8; j < size-size/8; j++) {
             blur_1(i,j) = 1;
         }
     }
 
     blur_1 /= pow(size-2*size/8,2);
     cv::Mat_<float> blur_2(size, size, 1);
-    blur_2/=pow(size,2);
+    blur_2 /= pow(size,2);
 
     return normalization((dist_max-dist)/dist_max*id + (1-(dist_max-dist)/dist_max)*blur_1 + pow(1-(dist_max-dist)/dist_max,2)*blur_2);
 }
