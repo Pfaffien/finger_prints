@@ -37,7 +37,7 @@ cmake ..
 make
 ```
 <!-- Change the structure of the program to save images in a build/img repository -->
-When executing a demo, the created images are stored in `<ROOT>/img/saved/`.
+When executing a demo, the created images are stored in `<PROJECT_ROOT>/img/saved/`.
 
 ## Running the tests
 
@@ -68,10 +68,10 @@ Unit tests can be found in the `test` repository. They test some of the most imp
 
 ## Authors
 
-* **Thomas Bauer** - *Description du boulot éventuellement* - [Pfaffien](https://github.com/Pfaffien)
-* **Carole Bellet** - *Idem* - [bellecar](https://github.com/bellecar)
-* **Clara Bourgoin** - *Idem* - [Clarajuliealexia](https://github.com/Clarajuliealexia)
-* **Svenja Bünder** - *Ide* - [bunders](https://github.com/bunders)
+* **Thomas Bauer** - [Pfaffien](https://github.com/Pfaffien)
+* **Carole Bellet** - [bellecar](https://github.com/bellecar)
+* **Clara Bourgoin** - [Clarajuliealexia](https://github.com/Clarajuliealexia)
+* **Svenja Bünder** - [bunders](https://github.com/bunders)
 
 
 ## License
