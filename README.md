@@ -1,4 +1,4 @@
-# Project Title
+# Digital analysis of fingerprints
 
 This project aims to create a C++ library for image processing in the specific case of fingerprints recognition.
 
