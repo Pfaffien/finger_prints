@@ -72,12 +72,14 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Thomas Bauer** - *Description du boulot éventuellement* - [Pfaffien](https://github.com/Pfaffien)
+* **Carole Bellet** - *Idem* - [bellecar](https://github.com/bellecar)
+* **Clara Bourgoin** - *Idem* - [Clarajuliealexia](https://github.com/Clarajuliealexia)
+* **Svenja Bünder** - *Ide* - [bunders](https://github.com/bunders)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
 ## License
-
+[![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-nd/4.0/)
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Acknowledgments
