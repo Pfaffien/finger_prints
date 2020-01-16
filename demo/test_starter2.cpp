@@ -1,3 +1,9 @@
+/*! \file test_starter2.cpp
+ * \brief Main function for Starter 2
+ * 
+ * In this file, the functions that where implemented for Starter 2 are tested and the resulting images are displayed. The functions used can be found in \ref image.h.
+ */
+
 #include <opencv2/core.hpp>
 #include <opencv2/core/types.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -10,7 +16,7 @@
  * Clara Bourgoin, Carole Bellet and Svenja Bünder.
  * The project consists of several files and classes and this
  * documentation should help to navigate through the code.
- * The most important class is Image.h which represents the
+ * The most important class is \ref image.h which represents the
  * images we are working on.
  */
 
@@ -21,24 +27,24 @@ int main()
     Image finger(s1);
 
     //Display original image
-    finger.Display("Clean finger", "Clean finger");
+    finger.display("Clean finger");
 
     //Rotate finger without interpolation
     Image rotate1 = finger.Rotation(0.25*M_PI);
-    rotate1.Display("Rotated finger 1", "Rotated finger 1");
+    rotate1.display("Rotated finger 1");
 
     Image rotate2 = finger.Rotation(0.25*M_PI);
 
     //Rotate finger with first interpolation method
     rotate2.BilinearInterpolation();
-    rotate2.Display("Rotated finger 2", "Rotated finger 2");
+    rotate2.display("Rotated finger 2");
 
     //Rotate finger using backward interpolation
-    Image rotate3 = finger.BackwardInterpolation(1.75*M_PI);
-    rotate3.Display("Rotated finger 3", "Rotated finger 3");
+    Image rotate3 = finger.InverseRotation(0.25*M_PI);
+    rotate3.display("Rotated finger 3");
 
     //Take a look at difference
-    Image diff = rotate3.DifferenceMatrix(rotate2);
-    diff.Display("Difference", "Difference");
+    Image diff = rotate3 - rotate2;
+    diff.display("Difference");
     return 0;
 }

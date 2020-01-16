@@ -3,7 +3,7 @@
 
 /**
  * \file main1.h
- * \brief Usefull functions to answer the part main 1
+ * \brief Useful functions to answer the part main 1
  * \author Thomas.B Clara.B
  * \version 0.1
  * \date 01/14/20

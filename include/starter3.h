@@ -3,7 +3,7 @@
 
 /**
  * \file starter3.h
- * \brief Usefull functions to answer the part starter 3 and main 3
+ * \brief Useful functions to answer the part starter 3 and main 3
  * \author Thomas.B Clara.B
  * \version 0.1
  * \date 01/12/20

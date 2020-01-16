@@ -226,39 +226,26 @@ cv::Mat_<uchar> Image::from1to255()
 }
 
 
-//Plotting
-void Image::Display(cv::String windowName, cv::String imageName){
+// Plotting and saving
+void Image::display(cv::String imageName){
     //Convert intensity values back to [0,255]
-    cv::Mat_<uchar> disp = this->from1to255();
+    cv::Mat_<float> tmp = pixels.clone();
+    Image tmp_img(tmp);
+    cv::Mat_<uchar> disp = tmp_img.from1to255();
     //Create a window for displaying
-    cv::namedWindow( windowName, cv::WINDOW_AUTOSIZE ); 
+    cv::namedWindow( imageName, cv::WINDOW_AUTOSIZE );
     //Show the image inside the created window
     cv::imshow( imageName, disp ); 
     //Wait for a keystroke in the window to close it
-    cv::waitKey(0); 
-}
-
-//Saving
-void Image::Save(std::string s){
-    //Convert intensity values back to [0,255]
-    cv::Mat_<uchar> disp = this->from1to255();
-    //Save image as png-file
-}
-
-// Plotting and saving
-void Image::display(cv::String imageName){
-    cv::Mat_<float> tmp = pixels.clone();
-    Image tmp_img(tmp);
-    cv::Mat_<uchar> disp = tmp_img.from1to255();
-    cv::namedWindow( imageName, cv::WINDOW_AUTOSIZE ); // Create a window for display.
-    cv::imshow( imageName, disp );                // Show our image inside it.
-    cv::waitKey(0); // Wait for a keystroke in the window
+    cv::waitKey(0);
 }
 
 void Image::save(std::string filename){
+    //Convert intensity values back to [0,255]
     cv::Mat_<float> tmp = pixels.clone();
     Image tmp_img(tmp);
     cv::Mat_<uchar> disp = tmp_img.from1to255();
+    //Save image as png-file
     filename  = "../img/saved/" + filename + ".png";
     cv::imwrite(filename, disp);
 }
@@ -315,7 +302,7 @@ void Image::save(std::string filename){
 }*/
 
 
-//Transform indices from [0,rows]x[0,cols] to double indices in [-1,1]x[-a,a], where a is aspect ratio of the image
+//Transform indices from [0,rows-1]x[0,cols-1] to double indices in [-1,1]x[-a,a], where a is aspect ratio of the image
 void Image::IntToDoubleIndex(int i, int j, double& x, double& y){
     
     //Get maximum of rows and cols
@@ -326,14 +313,14 @@ void Image::IntToDoubleIndex(int i, int j, double& x, double& y){
     y = (2*j-cols)/(double)max;
 }
 
-//Transform indices from [-1,1]x[-a,a] to indices in [0,rows]x[0,cols], 
+//Transform indices from [-1,1]x[-a,a] to indices in [0,rows-1]x[0,cols-1], 
 // by applying the inverse formula of IntToDoubleIndex plus rounding
 void Image::DoubleToIntIndex(double x, double y, int& i, int& j){
     
     //Get maximum of rows and cols
     int max = std::max(rows,cols);
     
-    //Compute corresponding coordinate of (x,y) in [0,rows]x[0,cols]
+    //Compute corresponding coordinate of (x,y) in [0,rows-1]x[0,cols-1]
     i = round((x*max+rows)/2.);
     j = round((y*max+cols)/2.);
 }
@@ -421,7 +408,7 @@ void Image::BilinearInterpolation(){
 
 
 //Backward method for performing image rotation with bilinear interpolation
-Image Image::BackwardInterpolation(double theta){
+Image Image::InverseRotation(double theta){
     
     //Get maximum of rows and cols
     int max = std::max(rows,cols);
@@ -445,7 +432,7 @@ Image Image::BackwardInterpolation(double theta){
             IntToDoubleIndex(i, j, x, y);
             
             //Rotate the coordinates by a given value theta
-            RotateIndices(x, y, theta, x_rot, y_rot);        
+            RotateIndices(x, y, 2*M_PI - theta, x_rot, y_rot);        
             
             //Transform the coordinates back to the [0,rows-1]x[0,cols-1] range
             x_rot = (x_rot*max + rows)/2.;
@@ -491,7 +478,7 @@ Image Image::BackwardInterpolation(double theta){
     return new_img;
 }
 
-//Compute the difference between two image matrices
+/*//Compute the difference between two image matrices
 Image Image::DifferenceMatrix(Image second){
     
     //Create new matrix for storing the difference
@@ -506,4 +493,4 @@ Image Image::DifferenceMatrix(Image second){
     }
     
     return image_diff;
-}
+}*/
