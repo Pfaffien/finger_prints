@@ -66,12 +66,15 @@ int main(){
     finger.display("initial");
     size = 21;
 
-    cv::Mat_<float> dec = convolution_complex(finger(), size, finger().cols/2, finger().rows/2);
+    cv::Mat_<float> dec = convolution_complex(finger(), size, finger().cols/2, 
+                                              finger().rows/2);
     Image dec_img(dec);
     dec_img.display("energy decreasing");
     dec_img.save("Energy_decreasing");
 
-    cv::Mat_<float> convblur = convolution_complex(finger(), size, finger().cols/2, finger().rows/2, false);
+    cv::Mat_<float> convblur = convolution_complex(finger(), size, 
+                                                   finger().cols/2, 
+                                                   finger().rows/2, false);
     Image blur_img(convblur);
     blur_img.display("blurring");
     blur_img.save("Blurring");

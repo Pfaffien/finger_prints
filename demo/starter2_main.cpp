@@ -6,9 +6,12 @@
 #include "Image.h"
 
 /*! \mainpage
- * This is the fingerprint programming project of Thomas Bauer, Clara Bourgoin, Carole Bellet and Svenja Bünder.
- * The project consists of several files and classes and this documentation should help to navigate through the code.
- * The most important class is Image.h which represents the images we are working on.
+ * This is the fingerprint programming project of Thomas Bauer,
+ * Clara Bourgoin, Carole Bellet and Svenja Bünder.
+ * The project consists of several files and classes and this 
+ * documentation should help to navigate through the code.
+ * The most important class is Image.h which represents the 
+ * images we are working on.
  */
 
 int main()
