@@ -2,7 +2,7 @@
 #define IMAGE_H_
 
 /**
- * \file Image.h
+ * \file image.h
  * \brief Definition of the basis of the image
  * \author Thomas B. Clara B. Carole B. Svenja B.
  * \version 0.1
@@ -39,36 +39,36 @@ class Image{
         //Constructors
         /**
         * \brief Constructor from string
-        * \param FILENAME is a string representing the path to the image
+        * \param filename is a string representing the path to the image
         */
-        Image(cv::String);
+        Image(cv::String filename);
 
         /**
         * \brief Constructor from matrix
-        * \param MATRIX pixel matrix representing an image
+        * \param  pixel matrix representing an image
         */
-        Image(const cv::Mat_<float>&);
+        Image(const cv::Mat_<float>& pixel);
 
         //Operator overloading
         /**
         * \brief Getter for the pixel of index (i,j)
-        * \param I,J indices of the pixel
+        * \param i,j indices of the pixel
         * \return Pixel of index (i,j)
         */
         float& operator()(int i, int j);
-        
+
         /**
         * \brief Convolution with matrix
-        * \param FILTER is a matrix to perform the convolution with
+        * \param filter is a matrix to perform the convolution with
         * \return Convolution of this and FILTER
         */
-        Image operator*(cv::Mat_<float>);
+        Image operator*(cv::Mat_<float> filter);
         /**
         * \brief Convolution with image
-        * \param FILTER is an instance of image. The convolution is performed with the pixel matrix of this class.
+        * \param filter is an instance of image. The convolution is performed with the pixel matrix of this class.
         * \return Convolution of this and the matrix of FILTER.
         */
-        Image operator*(Image);
+        Image operator*(Image filter);
 
 
         /**
@@ -82,7 +82,7 @@ class Image{
         * \param img Image
         * \return this-img
         */
-        Image operator-(const Image &);
+        Image operator-(const Image & img);
 
         //Functions for min max
         /**
@@ -128,12 +128,30 @@ class Image{
         Image sym_xy();
 
         //Eventuellement le faire pour une ellipse quelconque
+        /**
+        * \brief Put the pixels of the image in a vector of Point
+        * \return vector of Point
+        */
         std::vector<cv::Point> matrix2vector();
-        std::vector<cv::Point> outside_ellipse(cv::Point, float, float);
 
-	    //Pressure variation
-	    //direction is used to choose if we want black of white
-	    Image pressure(cv::Point, std::vector<cv::Point>,  bool iso = false, float param = 50, float param_x = 0.00035, float param_y = 0.000175);
+        /**
+        * \brief Put the pixels that are outside an ellipse in a vector of Point
+        * \param center center of the ellipse
+        * \param a,b semi axes
+        * \return vector of Point
+        */
+        std::vector<cv::Point> outside_ellipse(cv::Point center, float a, float b);
+
+  	    //Pressure variation
+        /**
+        * \brief Change the pressure of the image
+        * \param center center of the image
+        * \param coords vector of coordinates to change
+        * \param iso boolean saying if the function used is isotropic or not
+        * \param param, param_x, param_y parameters of the functions
+        * \return Image with modified pressure
+        */
+  	    Image pressure(cv::Point center, std::vector<cv::Point> coords,  bool iso = false, float param = 50, float param_x = 0.00035, float param_y = 0.000175);
 
         //Conversion
         /**
@@ -148,77 +166,75 @@ class Image{
         * \param imageName name of the image
         */
         void display(cv::String imageName = "Display finger_print");
-        
+
         /**
         * \brief save the image in the folder img/saved
         * \param s name of the saved image
         */
         void save(std::string s = "finger_print");
-        
+
         //Scaled Rotation function
-        //Image scaled_rotation(double, double, double, double);
-        
+
         //Index shifting
         /**
          * \brief Index change integer to double
-         * 
+         *
          * This function transforms given pixel indices (i,j) in the range [0,rows-1]x[0,cols-1] to the corresponding double indices (x,y) in [-1,1]x[-a,a] where a is aspect ratio of the image
-         * \param[in] I integer index for row (=x-direction)
-         * \param[in] J integer index for column (=y-direction)
-         * \param[out] X double index for row (=x-direction)
-         * \param[out] Y double index for column (=y-direction)
-         * 
+         * \param[in] i integer index for row (=x-direction)
+         * \param[in] j integer index for column (=y-direction)
+         * \param[out] x double index for row (=x-direction)
+         * \param[out] y double index for column (=y-direction)
+         *
          * The inverse of this function is given by \ref DoubleToIntIndex.
          * */
         void IntToDoubleIndex(int i, int j, double& x, double& y);
         /**
          * \brief Index change integer to double
-         * 
+         *
          * This function transforms given indices (x,y) in the range [-1,1]x[-a,a] (a is aspect ratio of the image) to the corresponding integer indices (x,y) in [0,rows-1]x[0,cols-1]. To obtain integers, the values are rounded.
          * It is the inverse function of \ref IntToDoubleIndex.
-         * \param[in] X double index for row (=x-direction)
-         * \param[in] Y double index for column (=y-direction)
-         * \param[out] I integer index for row (=x-direction)
-         * \param[out] J integer index for column (=y-direction)
+         * \param[in] x_prime double index for row (=x-direction)
+         * \param[in] y_prime double index for column (=y-direction)
+         * \param[out] x integer index for row (=x-direction)
+         * \param[out] y integer index for column (=y-direction)
          * */
         void DoubleToIntIndex(double x_prime, double y_prime, int& x, int& y);
         /**
          * \brief Rotate indices
-         * 
+         *
          * This function rotates given indices (x,y) in the range [-1,1]x[-a,a] (a is aspect ratio of the image) by a factor theta.
-         * \param[in] X double index for row (=x-direction)
-         * \param[in] Y double index for column (=y-direction)
-         * \param[in] THETA rotation factor
-         * \param[out] X_PRIME rotated index for row (=x-direction)
-         * \param[out] Y_PRIME rotated index for column (=y-direction)
+         * \param[in] x double index for row (=x-direction)
+         * \param[in] y double index for column (=y-direction)
+         * \param[in] theta rotation factor
+         * \param[out] x_prime rotated index for row (=x-direction)
+         * \param[out] y_prime rotated index for column (=y-direction)
          * */
         void RotateIndices(double x, double y, double theta, double& x_prime, double& y_prime);
-        
+
         //Pure rotation function
         /**
          * \brief Rotate image
-         * 
-         * This function rotates an image by a factor theta. It therefore performs some index transformations and then the actual rotation. 
-         * \param[in] THETA rotation factor
+         *
+         * This function rotates an image by a factor theta. It therefore performs some index transformations and then the actual rotation.
+         * \param[in] theta rotation factor
          * */
         Image Rotation(double theta);
         //Pure interpolation
         /**
          * \brief Bi-linear interpolation
-         * 
+         *
          * This function performs bi-linear interpolation for all pixels that have the value 1. It is used to improve the result of \ref Rotation where pixels that could not be assigned to an intensity value got the default value 1.
          * */
         void BilinearInterpolation();
-        
+
         //Combined rotation and interpolation
         /**
          * \brief Improved rotation method
-         * 
+         *
          * This function combines rotation and interpolation in such a way that no rounding of indices is performed anymore (in contrast to the combination of \ref Rotation and \ref BilinearInterpolation). Another difference is that we are looping over the pixels in the rotated target image instead of the pixels in the original image. Therefore we are perforing a backward rotation of the factor 2*PI-THETA to get the intensity values for our result pixels.
-         * \param[in] THETA is the rotation factor
+         * \param[in] theta is the rotation factor
          * */
         Image InverseRotation(double theta);
-        //Image DifferenceMatrix(Image second);
 };
 
-#endif  // IMAGES_H_ 
+#endif  // IMAGES_H_
