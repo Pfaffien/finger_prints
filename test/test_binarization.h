@@ -2,6 +2,7 @@
 #define _TEST_BINARIZATION_H_
 
 #include "image.h"
+#include "gtest/gtest.h"
 
 
 TEST(binarization, naive)
@@ -30,10 +31,7 @@ TEST(binarization, naive)
     }
 
     // Test
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++)
-            EXPECT_EQ(binarized(i, j), test(i, j));
-    }
+    EXPECT_TRUE(binarized == Image(test));
 }
 
 

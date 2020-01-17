@@ -10,7 +10,7 @@
 #include "gtest/gtest.h"
 
 
-TEST(difference, overloading)
+TEST(overloading, difference)
 {
     cv::Mat_<float> mat(10, 15, 0.5);
     cv::Mat_<float> mat2(10, 15, 0.2);

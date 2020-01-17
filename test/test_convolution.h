@@ -117,7 +117,7 @@ TEST(convolution, fft)
   }
 }
 
-TEST(convolution, methods)
+TEST(overloading, convolution)
 {
     //f
     cv::Mat_<float> f(5, 5, 100);

@@ -13,6 +13,7 @@
 #include "test_distmax.h"
 #include "test_rectangles.h"
 #include "test_binarization.h"
+#include "test_equality.h"
 
 
 int main(int argc,char *argv[]) {

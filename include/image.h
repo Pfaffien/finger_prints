@@ -85,6 +85,8 @@ class Image{
         */
         Image operator-(const Image & img);
 
+        bool operator==(const Image &img);
+
         //Functions for min max
         /**
         * \brief Maximum

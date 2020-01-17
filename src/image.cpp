@@ -74,6 +74,25 @@ Image Image::operator-(const Image &img){
     return Image(abs(((*this)()-img())));
 }
 
+bool Image::operator==(const Image &img)
+{
+    bool eq = true;
+
+    if (rows != img.rows || cols != img.cols)
+        throw std::runtime_error("Sizes do not match");
+    
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (pixels(i, j) != img.pixels(i, j)) {
+                eq = false;
+                break;
+            }
+        }
+    }
+
+    return eq;
+}
+
 
 //Min max
 double Image::max(){
