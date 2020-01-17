@@ -48,7 +48,7 @@ class Image{
         * \brief Constructor from matrix
         * \param  pixel matrix representing an image
         */
-        Image(const cv::Mat_<float>& pixel);
+        Image(const cv::Mat_<float> &pixel);
 
         //Operator overloading
         /**

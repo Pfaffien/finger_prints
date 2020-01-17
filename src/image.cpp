@@ -1,6 +1,5 @@
 #include "image.h"
 
-//TODO méthodes convolutions
 
 //Constructor 
 Image::Image(cv::String filename){
@@ -21,7 +20,7 @@ Image::Image(cv::String filename){
 }
 
 //Constructor
-Image::Image(const cv::Mat_<float>& matrix){
+Image::Image(const cv::Mat_<float> &matrix){
     
     //Clone matrix
     pixels = matrix.clone();
@@ -570,7 +569,6 @@ Image Image::Binarize()
         mu2 = (sum - sumB) / q2;
 
         sigmaB2 = q1 * q2 * pow(mu1 - mu2, 2);
-        std::cout << "sigma: " << sigmaB2 << std::endl;
 
         if (sigmaB2 > var_max) {
             threshold = t;
@@ -578,8 +576,7 @@ Image Image::Binarize()
         }
     }
 
-    std::cout << "Threshold: " << threshold << std::endl;
-
+    //Classification
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             if (grayscale(i, j) > threshold)
