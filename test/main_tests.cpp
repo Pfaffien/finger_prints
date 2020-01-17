@@ -12,6 +12,7 @@
 #include "test_convolution.h"
 #include "test_distmax.h"
 #include "test_rectangles.h"
+#include "test_binarization.h"
 
 
 int main(int argc,char *argv[]) {

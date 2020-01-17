@@ -494,3 +494,81 @@ Image Image::DifferenceMatrix(Image second){
     
     return image_diff;
 }*/
+
+
+Image Image::BinarizeNaive(float threshold)
+{
+    // Conversion to grayscale
+    cv::Mat_<uchar> grayscale = this->from1to255();
+    Image res(cv::Mat_<float>(rows, cols, (int) 0));
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (grayscale(i, j) > threshold)
+                res(i, j) = 1;
+            else
+                res(i, j) = 0;
+        }
+    }
+
+    return res;
+}
+
+
+// Très proche du copier coller, encore une fois ...
+Image Image::Binarize()
+{
+    // Conversion to grayscale
+    cv::Mat_<uchar> grayscale = this->from1to255();
+
+    int N = rows * cols;
+    float threshold(0), var_max(0), sum(0), sumB(0), q1(0), q2(0), mu1(0), mu2(0);
+    int max_intensity = 255;
+    float sigmaB2;
+    std::vector<int> histogram(256, 0);
+    Image res(cv::Mat_<float>(rows, cols, (int) 0));
+    //Creation of the intensity histogram
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++)
+            histogram[grayscale(i, j)]++;
+    }
+
+    //Bidouille à la main
+    // threshold = 128;    
+
+    //Otsu's method
+    for (int i = 0; i <= max_intensity; i++)
+        sum += i * histogram[i];
+
+    for (int t = 0; t <= max_intensity; t++) {
+        q1 += histogram[t];
+        if (q1 == 0)
+            continue;
+        q2 = N - q1;
+
+        sumB += t * histogram[t];
+        mu1 = sumB / q1;
+        mu2 = (sum - sumB) / q2;
+
+        sigmaB2 = q1 * q2 * pow(mu1 - mu2, 2);
+        std::cout << "sigma: " << sigmaB2 << std::endl;
+
+        if (sigmaB2 > var_max) {
+            threshold = t;
+            var_max = sigmaB2;
+        }
+    }
+
+    std::cout << "Threshold: " << threshold << std::endl;
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (grayscale(i, j) > threshold)
+                res(i, j) = 1;
+            else
+                res(i, j) = 0;
+        }
+    }
+
+    return res;
+}

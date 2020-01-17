@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 #include <opencv2/core.hpp>
 #include <opencv2/core/types.hpp>
@@ -235,6 +236,9 @@ class Image{
          * \param[in] theta is the rotation factor
          * */
         Image InverseRotation(double theta);
+
+        Image BinarizeNaive(float threshold = 128);
+        Image Binarize();
 };
 
 #endif  // IMAGES_H_
