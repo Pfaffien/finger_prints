@@ -533,7 +533,6 @@ Image Image::BinarizeNaive(float threshold)
 }
 
 
-// Très proche du copier coller, encore une fois ...
 Image Image::Binarize()
 {
     //Conversion to grayscale
