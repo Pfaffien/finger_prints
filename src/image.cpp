@@ -516,7 +516,7 @@ Image Image::DifferenceMatrix(Image second){
 
 Image Image::BinarizeNaive(float threshold)
 {
-    // Conversion to grayscale
+    //Conversion to grayscale
     cv::Mat_<uchar> grayscale = this->from1to255();
     Image res(cv::Mat_<float>(rows, cols, (int) 0));
 
@@ -536,40 +536,44 @@ Image Image::BinarizeNaive(float threshold)
 // Très proche du copier coller, encore une fois ...
 Image Image::Binarize()
 {
-    // Conversion to grayscale
+    //Conversion to grayscale
     cv::Mat_<uchar> grayscale = this->from1to255();
 
+    //Initialization of the parameters
     int N = rows * cols;
-    float threshold(0), var_max(0), sum(0), sumB(0), q1(0), q2(0), mu1(0), mu2(0);
+    float threshold(0);
+    float muT(0), omega(0), mu(0);
+    float numerator(0), denominator(1);
+    float var_max(0), sigmaB2(0);
     int max_intensity = 255;
-    float sigmaB2;
-    std::vector<int> histogram(256, 0);
+
+    std::vector<float> histogram(max_intensity + 1, 0);
     Image res(cv::Mat_<float>(rows, cols, (int) 0));
+
     //Creation of the intensity histogram
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++)
             histogram[grayscale(i, j)]++;
     }
 
-    //Bidouille à la main
-    // threshold = 128;    
+    //Normalization of histogram and
+    //initialization of muT
+    for (int i = 0; i <= max_intensity; i++) {
+        histogram[i] /= N;
+        muT += i * histogram[i];
+    }
 
     //Otsu's method
-    for (int i = 0; i <= max_intensity; i++)
-        sum += i * histogram[i];
-
     for (int t = 0; t <= max_intensity; t++) {
-        q1 += histogram[t];
-        if (q1 == 0)
+        omega += histogram[t];
+        if (omega == 0)
             continue;
-        q2 = N - q1;
-
-        sumB += t * histogram[t];
-        mu1 = sumB / q1;
-        mu2 = (sum - sumB) / q2;
-
-        sigmaB2 = q1 * q2 * pow(mu1 - mu2, 2);
-
+        mu += t * histogram[t];
+        numerator = pow(muT * omega - mu, 2);
+        denominator = omega * (1 - omega);
+        sigmaB2 = numerator / denominator;
+    
+        //Test to chose the optimal threshold
         if (sigmaB2 > var_max) {
             threshold = t;
             var_max = sigmaB2;
