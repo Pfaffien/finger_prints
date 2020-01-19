@@ -638,13 +638,15 @@ Image Image::DilateNaive(std::vector<cv::Point> struct_elt)
 
 Image Image::Erode(cv::Mat_<float> kernel)
 {
-    Image res(cv::Mat_<float>(rows, cols, (int) 0));
+    Image res(pixels.clone());
 
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
-            res(y, x) = pixels(y, x);
             for (int j = 0; j < kernel.rows; j++) {
                 for (int i = 0; i < kernel.cols; i++) {
+                    //Boundary conditions:
+                    //We use the fact that cv::Mat_<float>(i, j) == 0 if
+                    //the indices out of range => nothing to do
                     if (pixels(y - j, x - i) == 1 && kernel(j, i) == 1) {
                         res(y, x) = 1;
                         break;
