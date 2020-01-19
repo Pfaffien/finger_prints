@@ -598,10 +598,8 @@ Image Image::Binarize()
 }
 
 
-//Résultat en sortie pas dégueu
-//Conditions aux bords non gérées pour le moment
-//Pas opti du tout du tout (approche naïve)
-Image Image::Erode(std::vector<cv::Point> struct_elt)
+//Boundary conditions not treated yet
+Image Image::ErodeNaive(std::vector<cv::Point> struct_elt)
 {
     Image swapped = -(*this);
     Image res(cv::Mat_<float>(rows, cols, 1));
@@ -617,12 +615,53 @@ Image Image::Erode(std::vector<cv::Point> struct_elt)
 
     for (int i = 1; i < rows-1; i++) {
         for (int j = 1; j < cols-1; j++) {
-            for (std::vector<cv::Point>::iterator ii = struct_elt.begin(); ii != struct_elt.end(); ii++) {
+            for (std::vector<cv::Point>::iterator ii = struct_elt.begin(); ii != struct_elt.end(); ++ii) {
                 if (std::find(high_intensity.begin(), high_intensity.end(), cv::Point(j, i) + (*ii)) == high_intensity.end())
                     res(i, j) = 0;
             }
         }
     } 
 
+    return -res;
+}
+
+
+//Boundary conditions not treated yet
+Image Image::DilateNaive(std::vector<cv::Point> struct_elt)
+{
+    Image swapped = -(*this);
+    Image res = swapped.ErodeNaive(struct_elt);
+    
+    return -res;
+}
+
+
+Image Image::Erode(cv::Mat_<float> kernel)
+{
+    Image res(cv::Mat_<float>(rows, cols, (int) 0));
+
+    for (int y = 0; y < rows; y++) {
+        for (int x = 0; x < cols; x++) {
+            res(y, x) = pixels(y, x);
+            for (int j = 0; j < kernel.rows; j++) {
+                for (int i = 0; i < kernel.cols; i++) {
+                    if (pixels(y - j, x - i) == 1 && kernel(j, i) == 1) {
+                        res(y, x) = 1;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    return res;
+}
+
+
+Image Image::Dilate(cv::Mat_<float> kernel)
+{
+    Image swapped = -(*this);
+    Image res = swapped.Erode(kernel);
+    
     return -res;
 }

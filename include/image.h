@@ -79,7 +79,7 @@ class Image{
         cv::Mat_<float> operator()() const;
 
         /**
-         * \brief Swaps high intensity and low intensity
+         * \brief Swap high intensity and low intensity
          * \return ones-img
          */
         Image operator-();
@@ -91,6 +91,10 @@ class Image{
         */
         Image operator-(const Image & img);
 
+        /**
+         * \brief Equality of images
+         * \param img Image
+         */
         bool operator==(const Image &img);
 
         //Functions for min max
@@ -245,9 +249,52 @@ class Image{
          * */
         Image InverseRotation(double theta);
 
+        /**
+         * \brief Binarization using a user defined threshold
+         * \param threshold The threshold set by the user
+         * \return Image with only 0 and 1 pixel intensities
+         */
         Image BinarizeNaive(float threshold = 128);
+
+        /**
+         * \brief Binarization using Otsu's method
+         * 
+         * This function computes the optimal theshold according to Otsu's criterion
+         * \return Image with ontly 0 and 1 pixel intensities
+         */
         Image Binarize();
-        Image Erode(std::vector<cv::Point>);
+
+        /**
+         * \brief Morphological erosion using a naive representation of the mathematical operation
+         * \param struct_elt Coordinates of the elements of the kernel
+         * \return Eroded image
+         */
+        Image ErodeNaive(std::vector<cv::Point>);
+
+        /**
+         * \brief Morphological dilatation using a naive representation
+         * 
+         * This function calls \ref ErodeNaive, as performing a dilataion on the foreground is equivalent to performing an erosion on the background
+         * \param struct_elt Coordinates of the elements of the kernel
+         * \return Dilated image
+         */
+        Image DilateNaive(std::vector<cv::Point>);
+        
+        /**
+         * \brief Morphological erosion optimized
+         * \param kernel A matrix representing the structural element
+         * \return Eroded image
+         */
+        Image Erode(cv::Mat_<float>);
+
+        /**
+         * \brief Morphological dilatation
+         * 
+         * This function calls \ref Erode, as performing a dilataion on the foreground is equivalent to performing an erosion on the background
+         * \param kernel A matrix representing the structural element
+         * \return Dilatet image
+         */        
+        Image Dilate(cv::Mat_<float>);
 };
 
 #endif  // IMAGES_H_

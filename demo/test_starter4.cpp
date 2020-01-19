@@ -13,30 +13,37 @@ int main()
     bin.display("Binarization with Otsu's method");
 
     
-    std::vector<cv::Point> struct_elt(9);
-    struct_elt[0] = cv::Point(-1, -1);
-    struct_elt[1] = cv::Point(0, -1);
-    struct_elt[2] = cv::Point(1, -1);
-    struct_elt[3] = cv::Point(-1, 0);
-    struct_elt[4] = cv::Point(0, 0);
-    struct_elt[5] = cv::Point(1, 0);
-    struct_elt[6] = cv::Point(-1, 1);
-    struct_elt[7] = cv::Point(0, 1);
-    struct_elt[8] = cv::Point(1, 1);
+    //To test the naive version
+    // std::vector<cv::Point> struct_elt(9);
+    // struct_elt[0] = cv::Point(-1, -1);
+    // struct_elt[1] = cv::Point(0, -1);
+    // struct_elt[2] = cv::Point(1, -1);
+    // struct_elt[3] = cv::Point(-1, 0);
+    // struct_elt[4] = cv::Point(0, 0);
+    // struct_elt[5] = cv::Point(1, 0);
+    // struct_elt[6] = cv::Point(-1, 1);
+    // struct_elt[7] = cv::Point(0, 1);
+    // struct_elt[8] = cv::Point(1, 1);
 
-    //Ne rien exécuter sauf si tu veux attentre 3 min par test !
+    cv::Mat_<float> kernel(3, 3, 1);
 
-    //Environ 3 min
-    // Image swapped = bin.Erode(struct_elt);
-    // swapped.display("Test erosion");
+    Image erosion = bin.Erode(kernel);
+    erosion.display("Test erosion");
 
-    //Environ 3min
-    //Utilise le fait que l'érosion de l'arrière-plan correspond à
-    //une dilatation du premier plan
-    // Image moins = -bin;
-    // Image dilatation = moins.Erode(struct_elt);
-    // Image to_show = -dilatation;
-    // to_show.display("Test dilataion");
+    Image dilatation = bin.Dilate(kernel);
+    dilatation.display("Test dilataion");
+
+    //Erosion and dilatation
+    Image erosion_dilatation = erosion.Dilate(kernel);
+    erosion_dilatation.display("Erosion and dilatation");
+
+    //Dilatation and erosion
+    Image dilatation_erosion = dilatation.Erode(kernel);
+    dilatation_erosion.display("Dilatation and erosion");
+
+    //Difference
+    Image diff = erosion_dilatation - dilatation_erosion;
+    diff.display("Difference");
 
     return 0;
 }
