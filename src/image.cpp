@@ -624,6 +624,5 @@ Image Image::Erode(std::vector<cv::Point> struct_elt)
         }
     } 
 
-    //Non
     return -res;
 }
