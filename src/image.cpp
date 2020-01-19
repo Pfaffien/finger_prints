@@ -640,7 +640,7 @@ Image Image::DilateNaive(std::vector<cv::Point> struct_elt)
 Image Image::Erode(cv::Mat_<float> kernel)
 {
     Image bin = this->Binarize();
-    Image res(pixels.clone());
+    Image res(cv::Mat_<float>(rows, cols, (int) 0));
     int ii, jj;
 
     for (int y = 0; y < rows; y++) {
