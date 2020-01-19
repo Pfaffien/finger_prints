@@ -43,12 +43,12 @@ float& Image::operator()(int row, int col){
 }
 
 Image Image::operator*(cv::Mat_<float> filter) {
-    cv::Mat_<float> conv = convolutionDFT((*this)(), filter);
+    cv::Mat_<float> conv = convolutionDFT(pixels, filter);
     return Image(conv);
 }
 
 Image Image::operator*(Image filter) {
-    cv::Mat_<float> conv = convolutionDFT((*this)(), filter());
+    cv::Mat_<float> conv = convolutionDFT(pixels, filter());
     return Image(conv);
 }
 
@@ -67,7 +67,7 @@ cv::Mat_<float> Image::operator()() const {
 Image Image::operator-()
 {
     cv::Mat_<float> ones(rows, cols, 1);
-    return Image(ones - (*this)());
+    return Image(ones - pixels);
 }
 
 Image Image::operator-(const Image &img){
@@ -75,7 +75,7 @@ Image Image::operator-(const Image &img){
     cv::Mat_<float> im2 = img();
     cv::Mat_<float> diff = im1-im2;
     return Image(abs(diff));*/
-    return Image(abs(((*this)()-img())));
+    return Image(abs(pixels-img()));
 }
 
 bool Image::operator==(const Image &img)
@@ -137,7 +137,7 @@ Image Image::sym_x(){
 
     for (int j = 0; j < cols; j++) {
         for (int i = 0; i < rows; i++)
-            new_pixels(i, j) = (*this)(rows-i-1, j);
+            new_pixels(i, j) = pixels(rows-i-1, j);
     }
 
     return new_pixels;
@@ -150,7 +150,7 @@ Image Image::sym_y(){
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++)
-            new_img(i, j) = (*this)(i, cols-j-1);
+            new_img(i, j) = pixels(i, cols-j-1);
     }
 
     return new_img;
@@ -163,7 +163,7 @@ Image Image::sym_xy(){
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++)
-            new_img(j, i) = (*this)(i, j);
+            new_img(j, i) = pixels(i, j);
     }
 
     return new_img;
@@ -174,8 +174,8 @@ std::vector<cv::Point> Image::matrix2vector()
 {
     std::vector<cv::Point> coord(rows*cols);
 
-    for (int i = 0; i < (*this)().rows; i++) {
-        for (int j = 0; j < (*this)().cols; j++)
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++)
             //coord.push_back(cv::Point(j, i));
             coord[i*cols+j] = cv::Point(j,i);
     }
@@ -228,7 +228,7 @@ Image Image::pressure(cv::Point center, std::vector<cv::Point> coords,
     std::vector<float> new_values = coeffs(center, coords, param_x,
                                            param_y, param, iso);
     cv::Mat_<float> new_pixels = pixels.clone();
-    Image ones(cv::Mat_<float>((*this)().rows, (*this)().cols, 1));
+    Image ones(cv::Mat_<float>(rows, cols, 1));
   
     Image diff = ones - new_pixels;
     
@@ -385,7 +385,7 @@ Image Image::Rotation(double theta){
             if ((j_prime < 0) || (j_prime >= cols)) continue;
             
             //Set new pixel to intensity of original pixel
-            new_img(i_prime, j_prime) = (*this)(i, j); 
+            new_img(i_prime, j_prime) = pixels(i, j); 
         }
     }
     
@@ -400,28 +400,28 @@ void Image::BilinearInterpolation(){
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             //Check if pixel is corner or boundary pixel
-            if ((*this)(i,j) == 1) {
+            if (pixels(i,j) == 1) {
                 if (i == 0) {
                     if (j == 0)
-                        (*this)(i,j) = 0.5*((*this)(i+1,j)+(*this)(i,j+1));
+                        pixels(i,j) = 0.5*(pixels(i+1,j)+pixels(i,j+1));
                     else if (j == cols-1)
-                        (*this)(i,j) = 0.5*((*this)(i+1,j)+(*this)(i,j-1));
+                        pixels(i,j) = 0.5*(pixels(i+1,j)+pixels(i,j-1));
                     else
-                        (*this)(i,j) = (1./3.)*((*this)(i+1,j)+(*this)(i,j-1)+(*this)(i,j+1));
+                        pixels(i,j) = (1./3.)*(pixels(i+1,j)+pixels(i,j-1)+pixels(i,j+1));
                 } else if (i == rows-1) {
                     if (j == cols-1)
-                        (*this)(i,j) = 0.5*((*this)(i-1,j)+(*this)(i,j-1));
+                        pixels(i,j) = 0.5*(pixels(i-1,j)+pixels(i,j-1));
                     else if (j == 0)
-                        (*this)(i,j) = 0.5*((*this)(i-1,j)+(*this)(i,j+1));
+                        pixels(i,j) = 0.5*(pixels(i-1,j)+pixels(i,j+1));
                     else
-                        (*this)(i,j) = (1./3.)*((*this)(i-1,j)+(*this)(i,j-1)+(*this)(i,j+1));
+                        pixels(i,j) = (1./3.)*(pixels(i-1,j)+pixels(i,j-1)+pixels(i,j+1));
                 } else if (j == 0) {
-                    (*this)(i,j) = (1./3.)*((*this)(i+1,j)+(*this)(i-1,j)+(*this)(i,j+1));
+                    pixels(i,j) = (1./3.)*(pixels(i+1,j)+pixels(i-1,j)+pixels(i,j+1));
                 } else if (j == cols-1) {
-                    (*this)(i,j) = (1./3.)*((*this)(i+1,j)+(*this)(i-1,j)+(*this)(i,j-1));
+                    pixels(i,j) = (1./3.)*(pixels(i+1,j)+pixels(i-1,j)+pixels(i,j-1));
                 } else {
                     //Interpolation for non-boundary pixels
-                    (*this)(i,j) = 0.25*((*this)(i-1,j)+(*this)(i+1,j)+(*this)(i,j-1)+(*this)(i,j+1));
+                    pixels(i,j) = 0.25*(pixels(i-1,j)+pixels(i+1,j)+pixels(i,j-1)+pixels(i,j+1));
                 }
             }
             
@@ -478,20 +478,20 @@ Image Image::InverseRotation(double theta){
             
             //Handle boundaries seperately
             if ((neighbour_x == rows-1)&&(neighbour_y == cols-1)) {
-                new_img(i,j) = (*this)(rows-1,cols-1);
+                new_img(i,j) = pixels(rows-1,cols-1);
             } else if (neighbour_x == rows-1) {
                 //Interpolation in y-direction
-                new_img(i, j) = (1.-dist_y)*(*this)(neighbour_x,neighbour_y) + dist_y*(*this)(neighbour_x,neighbour_y+1);
+                new_img(i, j) = (1.-dist_y)*pixels(neighbour_x,neighbour_y) + dist_y*pixels(neighbour_x,neighbour_y+1);
             } else if (neighbour_y == cols-1) {
                 //Interpolation in x-direction
-                new_img(i, j) = (1.-dist_x)*(*this)(neighbour_x,neighbour_y) + dist_x*(*this)(neighbour_x+1,neighbour_y);
+                new_img(i, j) = (1.-dist_x)*pixels(neighbour_x,neighbour_y) + dist_x*pixels(neighbour_x+1,neighbour_y);
             } else {
                 //Bilinear interpolation
                 //Interpolate value in x-direction
-                interp_x1 = (1.-dist_x)*(*this)(neighbour_x,neighbour_y)
-                            + dist_x*(*this)(neighbour_x+1,neighbour_y);
-                interp_x2 = (1.-dist_x)*(*this)(neighbour_x,neighbour_y+1)
-                            + dist_x*(*this)(neighbour_x+1,neighbour_y+1);
+                interp_x1 = (1.-dist_x)*pixels(neighbour_x,neighbour_y)
+                            + dist_x*pixels(neighbour_x+1,neighbour_y);
+                interp_x2 = (1.-dist_x)*pixels(neighbour_x,neighbour_y+1)
+                            + dist_x*pixels(neighbour_x+1,neighbour_y+1);
                 //Interpolation in y-direction
                 new_img(i, j) = (1.-dist_y)*interp_x1 + dist_y*interp_x2;
             }        
