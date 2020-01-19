@@ -247,6 +247,7 @@ class Image{
 
         Image BinarizeNaive(float threshold = 128);
         Image Binarize();
+        Image Erode(std::vector<cv::Point>);
 };
 
 #endif  // IMAGES_H_

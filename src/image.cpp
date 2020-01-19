@@ -596,3 +596,34 @@ Image Image::Binarize()
 
     return res;
 }
+
+
+//Résultat en sortie pas dégueu
+//Conditions aux bords non gérées pour le moment
+//Pas opti du tout du tout (approche naïve)
+Image Image::Erode(std::vector<cv::Point> struct_elt)
+{
+    Image swapped = -(*this);
+    Image res(cv::Mat_<float>(rows, cols, 1));
+    std::vector<cv::Point> high_intensity;
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (swapped(i, j) == 1)
+                // Point(j, i) because j represents x and i y
+                high_intensity.push_back(cv::Point(j, i));
+        }
+    }
+
+    for (int i = 1; i < rows-1; i++) {
+        for (int j = 1; j < cols-1; j++) {
+            for (std::vector<cv::Point>::iterator ii = struct_elt.begin(); ii != struct_elt.end(); ii++) {
+                if (std::find(high_intensity.begin(), high_intensity.end(), cv::Point(j, i) + (*ii)) == high_intensity.end())
+                    res(i, j) = 0;
+            }
+        }
+    } 
+
+    //Non
+    return -res;
+}
