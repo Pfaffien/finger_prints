@@ -27,10 +27,10 @@ int main()
 
     cv::Mat_<float> kernel(3, 3, 1);
 
-    Image erosion = bin.Erode(kernel);
+    Image erosion = finger.Erode(kernel);
     erosion.display("Test erosion");
 
-    Image dilatation = bin.Dilate(kernel);
+    Image dilatation = finger.Dilate(kernel);
     dilatation.display("Test dilataion");
 
     //Erosion and dilatation

@@ -269,7 +269,7 @@ class Image{
          * \param struct_elt Coordinates of the elements of the kernel
          * \return Eroded image
          */
-        Image ErodeNaive(std::vector<cv::Point>);
+        Image ErodeNaive(std::vector<cv::Point> struct_elt);
 
         /**
          * \brief Morphological dilatation using a naive representation
@@ -278,14 +278,14 @@ class Image{
          * \param struct_elt Coordinates of the elements of the kernel
          * \return Dilated image
          */
-        Image DilateNaive(std::vector<cv::Point>);
+        Image DilateNaive(std::vector<cv::Point> struct_elt);
         
         /**
          * \brief Morphological erosion optimized
          * \param kernel A matrix representing the structural element
          * \return Eroded image
          */
-        Image Erode(cv::Mat_<float>);
+        Image Erode(cv::Mat_<float> kernel);
 
         /**
          * \brief Morphological dilatation
@@ -294,7 +294,7 @@ class Image{
          * \param kernel A matrix representing the structural element
          * \return Dilatet image
          */        
-        Image Dilate(cv::Mat_<float>);
+        Image Dilate(cv::Mat_<float> kernel);
 };
 
 #endif  // IMAGES_H_

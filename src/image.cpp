@@ -601,7 +601,8 @@ Image Image::Binarize()
 //Boundary conditions not treated yet
 Image Image::ErodeNaive(std::vector<cv::Point> struct_elt)
 {
-    Image swapped = -(*this);
+    Image bin = this->Binarize();
+    Image swapped = -bin;
     Image res(cv::Mat_<float>(rows, cols, 1));
     std::vector<cv::Point> high_intensity;
 
@@ -638,16 +639,20 @@ Image Image::DilateNaive(std::vector<cv::Point> struct_elt)
 
 Image Image::Erode(cv::Mat_<float> kernel)
 {
+    Image bin = this->Binarize();
     Image res(pixels.clone());
+    int ii, jj;
 
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
             for (int j = 0; j < kernel.rows; j++) {
                 for (int i = 0; i < kernel.cols; i++) {
-                    //Boundary conditions:
-                    //We use the fact that cv::Mat_<float>(i, j) == 0 if
-                    //the indices out of range => nothing to do
-                    if (pixels(y - j, x - i) == 1 && kernel(j, i) == 1) {
+                    //Tests for boundary conditions
+                    ii = x - i;
+                    jj = y - j;
+                    if (ii < 0) ii = 0;
+                    if (jj < 0) jj = 0;
+                    if (bin(jj, ii) == 1 && kernel(j, i) == 1) {
                         res(y, x) = 1;
                         break;
                     }
