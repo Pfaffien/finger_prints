@@ -64,6 +64,11 @@ cv::Mat_<float> Image::operator()() const {
 /*     return pixels(rows,cols); */
 /* } */
 
+Image Image::operator-()
+{
+    cv::Mat_<float> ones(rows, cols, 1);
+    return Image(ones - (*this)());
+}
 
 Image Image::operator-(const Image &img){
     /*cv::Mat_<float> im1 = (*this)().clone();

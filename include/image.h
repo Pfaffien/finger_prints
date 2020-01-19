@@ -79,6 +79,12 @@ class Image{
         cv::Mat_<float> operator()() const;
 
         /**
+         * \brief Swaps high intensity and low intensity
+         * \return ones-img
+         */
+        Image operator-();
+
+        /**
         * \brief Subtraction of images
         * \param img Image
         * \return this-img
