@@ -10,12 +10,10 @@ int main()
 
     Image naive = finger.BinarizeNaive(100);
     // naive.display("Naive binarization (t = 100)");
-    
+
     Image bin = finger.Binarize();
     bin.display("Binarization with Otsu's method");
 
-    
-    
     //To test the naive version
     // std::vector<cv::Point> struct_elt(9);
     // struct_elt[0] = cv::Point(-1, -1);
@@ -35,10 +33,10 @@ int main()
     test2.display("bbb");
 
     Image erosion = finger.ErodeBin(kernel);
-    // erosion.display("Test erosion");
+    erosion.display("Test erosion");
 
     Image dilatation = finger.DilateBin(kernel);
-    // dilatation.display("Test dilataion");
+    dilatation.display("Test dilataion");
 
 
     //Try to approximate moist and dry
