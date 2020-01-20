@@ -12,7 +12,7 @@ int main()
     // naive.display("Naive binarization (t = 100)");
     
     Image bin = finger.Binarize();
-    // bin.display("Binarization with Otsu's method");
+    bin.display("Binarization with Otsu's method");
 
     
     
@@ -29,11 +29,15 @@ int main()
     // struct_elt[8] = cv::Point(1, 1);
 
     cv::Mat_<float> kernel(3, 3, 1);
+    Image test = finger.ErodeGray(kernel);
+    test.display("aaa");
+    Image test2 = finger.DilateGray(kernel);
+    test2.display("bbb");
 
-    Image erosion = finger.Erode(kernel);
+    Image erosion = finger.ErodeBin(kernel);
     // erosion.display("Test erosion");
 
-    Image dilatation = finger.Dilate(kernel);
+    Image dilatation = finger.DilateBin(kernel);
     // dilatation.display("Test dilataion");
 
 
@@ -53,7 +57,7 @@ int main()
     diamond(size-1, size-2) = 0;
     diamond(size-2, size-1) = 0;
 
-    std::cout << diamond << std::endl;
+    // std::cout << diamond << std::endl;
 
     Image moist_bin = moist.Binarize();
     Image dry_bin = dry.Binarize();
@@ -61,17 +65,17 @@ int main()
     moist_bin.display("Moist finger binarized");
     dry_bin.display("Dry finger binarized");
 
-    Image erosion_dry = finger.Erode(diamond);
+    Image erosion_dry = finger.ErodeBin(diamond);
     erosion_dry.display("Approximation of dry");
 
 
     //Commutation of the operators
     //Erosion and dilatation
-    Image erosion_dilatation = erosion.Dilate(kernel);
+    Image erosion_dilatation = erosion.DilateBin(kernel);
     erosion_dilatation.display("Erosion and dilatation");
 
     //Dilatation and erosion
-    Image dilatation_erosion = dilatation.Erode(kernel);
+    Image dilatation_erosion = dilatation.ErodeBin(kernel);
     dilatation_erosion.display("Dilatation and erosion");
 
     //Difference

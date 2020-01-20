@@ -639,7 +639,7 @@ Image Image::DilateNaive(std::vector<cv::Point> struct_elt)
 
 //Pour améliorer, utiliser les histogrammes ! Et en niveau de gris
 //Binariser les images déjà modifiées
-Image Image::Erode(cv::Mat_<float> kernel)
+Image Image::ErodeBin(cv::Mat_<float> kernel)
 {
     Image bin = this->Binarize();
     Image res(cv::Mat_<float>(rows, cols, (int) 0));
@@ -667,10 +667,51 @@ Image Image::Erode(cv::Mat_<float> kernel)
 }
 
 
-Image Image::Dilate(cv::Mat_<float> kernel)
+Image Image::DilateBin(cv::Mat_<float> kernel)
 {
     Image swapped = -(*this);
-    Image res = swapped.Erode(kernel);
+    Image res = swapped.ErodeBin(kernel);
+    
+    return -res;
+}
+
+
+Image Image::ErodeGray(cv::Mat_<float> kernel)
+{
+    double min, max;
+    cv::Mat_<uchar> grayscale = (-(*this)).from1to255();
+    cv::Mat_<uchar> tmp(kernel.rows, kernel.cols, (int) 0);
+    cv::Mat_<float> res(rows, cols, 255);
+    int ii, jj;
+
+    for (int y = 0; y < rows; y++) {
+        for (int x = 0; x < cols; x++) {
+            for (int j = 0; j < kernel.rows; j++) {
+                for (int i = 0; i < kernel.cols; i++) {
+                    //Tests for boundary conditions
+                    ii = x - i;
+                    jj = y - j;
+                    if (ii < 0) ii = 0;
+                    if (jj < 0) jj = 0;
+                    tmp(j, i) = abs(grayscale(jj, ii) - kernel(j, i));
+                    minMaxLoc(tmp, &min, &max);
+                    res(y, x) = min;
+                }
+            }
+        }
+    }
+
+    cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
+
+    return -Image(res);
+
+}
+
+
+Image Image::DilateGray(cv::Mat_<float> kernel)
+{
+    Image swapped = -(*this);
+    Image res = swapped.ErodeGray(kernel);
     
     return -res;
 }

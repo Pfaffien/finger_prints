@@ -285,7 +285,7 @@ class Image{
          * \param kernel A matrix representing the structural element
          * \return Eroded image
          */
-        Image Erode(cv::Mat_<float> kernel);
+        Image ErodeBin(cv::Mat_<float> kernel);
 
         /**
          * \brief Morphological dilatation
@@ -294,7 +294,12 @@ class Image{
          * \param kernel A matrix representing the structural element
          * \return Dilatet image
          */        
-        Image Dilate(cv::Mat_<float> kernel);
+        Image DilateBin(cv::Mat_<float> kernel);
+
+        Image ErodeGray(cv::Mat_<float> kernel);
+        Image DilateGray(cv::Mat_<float> kernel);
+
+
 };
 
 #endif  // IMAGES_H_
