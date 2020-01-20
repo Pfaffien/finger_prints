@@ -11,6 +11,7 @@
 #include "test_minmax.h"
 #include "test_convolution.h"
 #include "test_distmax.h"
+#include "test_rectangles.h"
 
 
 int main(int argc,char *argv[]) {
