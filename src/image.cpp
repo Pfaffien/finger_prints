@@ -637,6 +637,8 @@ Image Image::DilateNaive(std::vector<cv::Point> struct_elt)
 }
 
 
+//Pour améliorer, utiliser les histogrammes ! Et en niveau de gris
+//Binariser les images déjà modifiées
 Image Image::Erode(cv::Mat_<float> kernel)
 {
     Image bin = this->Binarize();
