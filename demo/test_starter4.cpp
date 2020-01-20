@@ -4,14 +4,17 @@
 int main()
 {
     Image finger("../img/clean_finger.png");
-    finger.display("Original");
+    Image moist("../img/moist_finger.png");
+    Image dry("../img/dry_finger.png");
+    // finger.display("Original");
 
     Image naive = finger.BinarizeNaive(100);
-    naive.display("Naive binarization (t = 100)");
+    // naive.display("Naive binarization (t = 100)");
     
     Image bin = finger.Binarize();
-    bin.display("Binarization with Otsu's method");
+    // bin.display("Binarization with Otsu's method");
 
+    
     
     //To test the naive version
     // std::vector<cv::Point> struct_elt(9);
@@ -28,11 +31,41 @@ int main()
     cv::Mat_<float> kernel(3, 3, 1);
 
     Image erosion = finger.Erode(kernel);
-    erosion.display("Test erosion");
+    // erosion.display("Test erosion");
 
     Image dilatation = finger.Dilate(kernel);
-    dilatation.display("Test dilataion");
+    // dilatation.display("Test dilataion");
 
+
+    //Try to approximate moist and dry
+    int size = 5;
+    cv::Mat_<float> diamond(size, size, 1);
+    diamond(0, 0) = 0;
+    diamond(1, 0) = 0;
+    diamond(0, 1) = 0;
+    diamond(0, size-1) = 0;
+    diamond(0, size-2) = 0;
+    diamond(1, size-1) = 0;
+    diamond(size-1, 0) = 0;
+    diamond(size-2, 0) = 0;
+    diamond(size-1, 1) = 0;
+    diamond(size-1, size-1) = 0;
+    diamond(size-1, size-2) = 0;
+    diamond(size-2, size-1) = 0;
+
+    std::cout << diamond << std::endl;
+
+    Image moist_bin = moist.Binarize();
+    Image dry_bin = dry.Binarize();
+
+    moist_bin.display("Moist finger binarized");
+    dry_bin.display("Dry finger binarized");
+
+    Image erosion_dry = finger.Erode(diamond);
+    erosion_dry.display("Approximation of dry");
+
+
+    //Commutation of the operators
     //Erosion and dilatation
     Image erosion_dilatation = erosion.Dilate(kernel);
     erosion_dilatation.display("Erosion and dilatation");
