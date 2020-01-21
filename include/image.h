@@ -295,7 +295,7 @@ class Image{
         
         /**
          * \brief Morphological erosion optimized
-         * \param kernel A matrix representing the structural element
+         * \param kernel A matrix representing the structural element (0 or 1)
          * \return Eroded image
          */
         Image ErodeBin(cv::Mat_<float> kernel);
@@ -303,14 +303,26 @@ class Image{
         /**
          * \brief Morphological dilatation
          * 
-         * This function calls \ref Erode, as performing a dilataion on the foreground is equivalent to performing an erosion on the background
-         * \param kernel A matrix representing the structural element
-         * \return Dilatet image
+         * This function calls \ref ErodeBin, as performing a dilatation on the foreground is equivalent to performing an erosion on the background
+         * \param kernel A matrix representing the structural element (0 or 1)
+         * \return Dilated image
          */        
         Image DilateBin(cv::Mat_<float> kernel);
 
+        /**
+         * \brief Morphological erosion on grayscale images
+         * \param kernel A matrix representing the structural element (between 0 and 255)
+         * \return Eroded image
+         */
         Image ErodeGray(cv::Mat_<float> kernel);
         
+        /**
+         * \brief Morphological dilation
+         * 
+         * This function calls \ref ErodeGray, as performing a dilatation on the foreground is equivalent to performing an erosion on the background
+         * \param kernel A matrix representing the structural element (between 0 and 255)
+         * \return Dilated image
+         */
         Image DilateGray(cv::Mat_<float> kernel);
 
 
