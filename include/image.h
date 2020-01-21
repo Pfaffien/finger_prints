@@ -115,7 +115,7 @@ class Image{
 	    * \param img image to compare this with
 	    * \param level tolerance between the two images
 	    * \return Error between the images in pourcentage
-	     */
+	    */
 	    float error(Image img, float level);
         
     	//Rectangles

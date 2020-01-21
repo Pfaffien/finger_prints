@@ -629,6 +629,7 @@ Image Image::ErodeNaive(std::vector<cv::Point> struct_elt)
     for (int i = 1; i < rows-1; i++) {
         for (int j = 1; j < cols-1; j++) {
             for (std::vector<cv::Point>::iterator ii = struct_elt.begin(); ii != struct_elt.end(); ++ii) {
+            //for (auto ii: struct_elt) {
                 if (std::find(high_intensity.begin(), high_intensity.end(), cv::Point(j, i) + (*ii)) == high_intensity.end())
                     res(i, j) = 0;
             }
