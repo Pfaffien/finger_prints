@@ -6,7 +6,7 @@
 #include <opencv2/core/types.hpp>
 
 #include "gtest/gtest.h"
-#include "starter3.h"
+#include "linear_filtering.h"
 #include "image.h"
 
 

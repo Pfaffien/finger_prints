@@ -6,7 +6,7 @@
  * \date 01/12/20
  */
 
-#include "starter3.h"
+#include "linear_filtering.h"
 #include "image.h"
 
 using namespace std;

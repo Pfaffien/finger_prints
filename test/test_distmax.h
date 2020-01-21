@@ -5,7 +5,7 @@
 #include <cmath>
 #include <opencv2/core/types.hpp>
 
-#include "starter3.h"
+#include "linear_filtering.h"
 #include "gtest/gtest.h"
 
 

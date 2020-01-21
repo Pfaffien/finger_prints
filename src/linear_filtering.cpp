@@ -7,7 +7,7 @@
  */
 
 
-#include "starter3.h"
+#include "linear_filtering.h"
 #include "image.h"
 
 
