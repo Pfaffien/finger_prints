@@ -112,6 +112,19 @@ double Image::min(){
     return min;
 }
 
+float Image::error(Image img, float level){
+    Image diff = *this - img;
+    float res = 0;
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
+	    if (diff(i,j) > level) 
+	        res += 1;
+	}
+    }
+    return 100*res/(rows*cols);
+}
+
+
 //Rectangle
 Image Image::rectangle(int x_begin, int y_begin,
                         unsigned int length, unsigned int width,

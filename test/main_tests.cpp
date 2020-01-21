@@ -14,6 +14,7 @@
 #include "test_rectangles.h"
 #include "test_binarization.h"
 #include "test_equality.h"
+#include "test_error.h"
 
 
 int main(int argc,char *argv[]) {
