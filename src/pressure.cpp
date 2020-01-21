@@ -12,13 +12,10 @@ float c_isotropic(float r, float param, int func)
     switch (func) {
         case 0:
             return 1 - exp(- 1 / (param * pow(r, 2)));
-            break;
         case 1:
             return exp(- param * r);
-            break;
         case 2:
             return 1 / (1 + param * r);
-            break;
         default:
             return 1 - exp(- 1 / (param* pow(r, 2)));;
     }
@@ -67,9 +64,6 @@ std::vector<float> linspace(float begin, float end, int N, bool endpoint)
 }
 
 
-/* Renvoie la liste des points formant l'ellipse */
-/* Utile uniquement pour tracer une ellipse, pas les points en dehors */
-/* donc pour du debuggage éventuellement */
 std::vector<cv::Point> points_ellipse(cv::Point center, float a, float b)
 {
     std::vector<cv::Point> res;

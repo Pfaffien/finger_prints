@@ -1,6 +1,11 @@
 #ifndef _TEST_BINARIZATION_H_
 #define _TEST_BINARIZATION_H_
 
+/**
+ * \file test_binarization.h
+ * \brief Unit test for binarization
+ */
+
 #include "image.h"
 #include "gtest/gtest.h"
 

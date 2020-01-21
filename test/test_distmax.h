@@ -1,9 +1,11 @@
 #ifndef _TEST_DISTMAX_H_
 #define _TEST_DISTMAX_H_
 
-#include <iostream>
-#include <cmath>
-#include <opencv2/core/types.hpp>
+/**
+ * \file test_distmax.h
+ * \brief Unit test for distmax
+ */
+
 
 #include "linear_filtering.h"
 #include "gtest/gtest.h"

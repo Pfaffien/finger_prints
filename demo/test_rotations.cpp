@@ -1,25 +1,19 @@
-/*! \file test_starter2.cpp
- * \brief Main function for Starter 2
- * 
- * In this file, the functions that where implemented for Starter 2 are tested and the resulting images are displayed. The functions used can be found in \ref image.h.
+/**
+ * \file test_rotations.cpp
+ * \brief Test for the rotations
+ * \author Carole.B, Svenja.B
+ * \version 0.1
+ * \date 01/18/20
  */
 
-#include <opencv2/core.hpp>
-#include <opencv2/core/types.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/highgui.hpp>
-#include <iostream>
+
 #include "image.h"
 
-/*! \mainpage
- * This is the fingerprint programming project of Thomas Bauer,
- * Clara Bourgoin, Carole Bellet and Svenja Bünder.
- * The project consists of several files and classes and this
- * documentation should help to navigate through the code.
- * The most important class is \ref image.h which represents the
- * images we are working on.
+/**
+ * \fn int main()
+ * \brief Test of the rotation functions functions
+ * TODO
  */
-
 int main()
 {
     //Create instance of image

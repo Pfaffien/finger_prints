@@ -1,6 +1,12 @@
 #ifndef _TEST_ERROR_H
 #define _TEST_ERROR_H
 
+/**
+ * \file test_error.h
+ * \brief Unit test for the error
+ */
+
+
 #include "gtest/gtest.h"
 #include "image.h"
 

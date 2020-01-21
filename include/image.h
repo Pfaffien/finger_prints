@@ -1,25 +1,25 @@
 #ifndef _IMAGE_H_
 #define _IMAGE_H_
 
+
 /**
  * \file image.h
- * \brief Definition of the basis of the image
+ * \brief Definition of the class image and the methods 
  * \author Thomas B. Clara B. Carole B. Svenja B.
  * \version 0.1
  * \date 01/12/20
  */
 
+
 #include <iostream>
 #include <vector>
 #include <cmath>
-
 #include <opencv2/core.hpp>
 #include <opencv2/core/types.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-
 
 #include "pressure.h"
 #include "linear_filtering.h"
