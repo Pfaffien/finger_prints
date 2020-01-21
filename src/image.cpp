@@ -70,11 +70,10 @@ Image Image::operator-()
     return Image(ones - pixels);
 }
 
-Image Image::operator-(const Image &img){
-    /*cv::Mat_<float> im1 = (*this)().clone();
-    cv::Mat_<float> im2 = img();
-    cv::Mat_<float> diff = im1-im2;
-    return Image(abs(diff));*/
+Image Image::operator-(const Image &img)
+{
+    if (rows != img.rows || cols != img.cols)
+        throw std::runtime_error("Images should have the same size");
     return Image(abs(pixels-img()));
 }
 
