@@ -1,10 +1,11 @@
 #ifndef _TEST_DIFFERENCE_
 #define _TEST_DIFFERENCE_
 
-#include <opencv2/core.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/highgui.hpp>
-#include <iostream>
+/**
+ * \file test_difference.h
+ * \brief Unit test for difference
+ */
+
 
 #include "image.h"
 #include "gtest/gtest.h"

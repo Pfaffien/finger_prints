@@ -1,12 +1,14 @@
 #ifndef _TEST_CONVOLUTION_H_
 #define _TEST_CONVOLUTION_H_
 
-#include <iostream>
-#include <cmath>
-#include <opencv2/core/types.hpp>
+/**
+ * \file test_convolution.h
+ * \brief Unit test for convolution
+ */
+
+
 
 #include "gtest/gtest.h"
-#include "linear_filtering.h"
 #include "image.h"
 
 

@@ -1,6 +1,6 @@
 /**
- * \file test_starter3.cpp
- * \brief Test for sections starter1 : rectangle
+ * \file test_rectangles.cpp
+ * \brief Test for the pixel color transformation : rectangle
  * \author Clara.B
  * \version 0.1
  * \date 01/12/20
@@ -9,7 +9,10 @@
 
 #include "image.h"
 
-
+/**
+ * \fn int main()
+ * \brief Test of the rectangle function
+ */
 int main()
 {
     cv::String s1( "../img/clean_finger.png" );

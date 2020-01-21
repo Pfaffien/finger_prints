@@ -21,17 +21,21 @@
 
 
 /**
- * \fn float c_isotropic (float r, float param = 1)
+ * \fn float c_isotropic (float r, float param = 1, int func = 0)
  * \brief Definition of an isotropic function
+ * The function contains 3 functions (selected function, exponential and inverse)
  * \param r distance to the center
  * \param param parameter of the isotropic function
+ * \param func parameter which decide which function to use (0 = selected function, 1 = exponential function, 2 = inverse function)
  * \return Result of the isotropic function
  */
 float c_isotropic(float, float param = 1, int func = 0);
 
+
 /**
  * \fn float c_anisotropic (int x, int y, cv::Point center, float param_x = 0.00035, float param_y = 0.000175, float param = 50)
  * \brief Definition of an anisotropic function
+ * The anisotropic function corresponds to the isotropic selected function adapted to ba anisotropic
  * \param x, y coordinates of the point
  * \param center center of the image
  * \param param_x, param_y weigths of x and y
@@ -39,6 +43,7 @@ float c_isotropic(float, float param = 1, int func = 0);
  * \return Result of the anisotropic function
  */
 float c_anisotropic(int, int, cv::Point, float param_x = 0.00035, float param_y = 0.000175, float param = 50);
+
 
 /**
  * \fn std::vector<float> coeffs(cv::Point center, std::vector<cv::Point> coords, float param_x = 0.00035, float param_y = 0.000175, float param = 50, bool iso = false)
@@ -52,6 +57,7 @@ float c_anisotropic(int, int, cv::Point, float param_x = 0.00035, float param_y 
  */
 std::vector<float> coeffs(cv::Point center, std::vector<cv::Point> coords, float param_x = 0.00035, float param_y = 0.000175, float param = 50, bool iso = false);
 
+
 /**
  * \fn std::vector<float> linspace(float a, float b, int size, bool endpoint = false)
  * \brief Creates a vector of floats between a and b
@@ -62,6 +68,7 @@ std::vector<float> coeffs(cv::Point center, std::vector<cv::Point> coords, float
  * \return Returns the vector of points
 */
 std::vector<float> linspace(float, float, int, bool endpoint = false);
+
 
 /**
  * \fn std::vector<cv::Point> points_ellipse(cv::Point center, float a, float b)

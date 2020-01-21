@@ -1,10 +1,10 @@
 #ifndef _TEST_RECTANGLES_
 #define _TEST_RECTANGLES_
 
-#include <opencv2/core.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/highgui.hpp>
-#include <iostream>
+/**
+ * \file test_rectangles.h
+ * \brief Unit test for rectangle
+ */
 
 #include "image.h"
 #include "gtest/gtest.h"

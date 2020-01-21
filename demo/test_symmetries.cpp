@@ -1,6 +1,6 @@
 /**
- * \file test_starter3.cpp
- * \brief Test for sections starter1 : symmetries
+ * \file test_symmetries.cpp
+ * \brief Test of the symmetries
  * \author Thomas.B Carole.B
  * \version 0.1
  * \date 01/12/20
@@ -10,6 +10,11 @@
 #include "image.h"
 
 
+/**
+ * \fn int main()
+ * \brief Test of the symmetries functions
+ * The function tests the 3 different symmetries
+ */
 int main()
 {
     cv::String s1( "../img/clean_finger.png" );

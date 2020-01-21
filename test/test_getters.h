@@ -1,10 +1,11 @@
 #ifndef _TEST_GETTERS_
 #define _TEST_GETTERS_
 
-#include <opencv2/core.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/highgui.hpp>
-#include <iostream>
+/**
+ * \file test_getters.h
+ * \brief Unit test for getters
+ */
+
 
 #include "image.h"
 #include "gtest/gtest.h"

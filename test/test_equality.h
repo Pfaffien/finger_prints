@@ -1,6 +1,12 @@
 #ifndef _TEST_EQUALITY_H_
 #define _TEST_EQUALITY_H_
 
+/**
+ * \file test_equality.h
+ * \brief Unit test for equality
+ */
+
+
 #include "image.h"
 #include "gtest/gtest.h"
 
