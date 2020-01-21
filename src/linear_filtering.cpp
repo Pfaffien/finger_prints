@@ -106,7 +106,7 @@ float distance_max(cv::Mat_<float> mat, int x_c, int y_c)
     double min, max;
     minMaxLoc(dist, &min, &max);
 
-    return (float)max;
+    return (float) max;
 }
 
 
