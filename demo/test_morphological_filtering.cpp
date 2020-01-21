@@ -7,7 +7,7 @@
  */
 
 #include "image.h"
-using std::cout, std::endl;
+using namespace std;
 
 /**
  * \fn int main()
