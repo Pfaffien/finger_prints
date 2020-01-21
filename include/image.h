@@ -260,6 +260,8 @@ class Image{
          * */
         Image InverseRotation(double theta);
 
+        
+        //Starter4 and main course 4
         /**
          * \brief Binarization using a user defined threshold
          * \param threshold The threshold set by the user
