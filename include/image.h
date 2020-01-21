@@ -64,13 +64,13 @@ class Image{
         * \return Convolution of this and FILTER
         */
         Image operator*(cv::Mat_<float> filter);
+       
         /**
         * \brief Convolution with image
         * \param filter is an instance of image. The convolution is performed with the pixel matrix of this class.
         * \return Convolution of this and the matrix of FILTER.
         */
         Image operator*(Image filter);
-
 
         /**
         * \brief Getter of the matrix of pixels
@@ -110,15 +110,15 @@ class Image{
         */
         double min();
 
-	/**
-	 * \brief Computes the error between two images
-	 * \param img image to compare this with
-	 * \param level tolerance between the two images
-	 * \return Error between the images in pourcentage
-	 */
-	float error(Image img, float level);
+	    /**
+	    * \brief Computes the error between two images
+	    * \param img image to compare this with
+	    * \param level tolerance between the two images
+	    * \return Error between the images in pourcentage
+	     */
+	    float error(Image img, float level);
         
-	//Rectangles
+    	//Rectangles
         /**
         * \brief Change the value of the pixels in a rectangle
         * \param x, y coordinates of the upper left point of the rectangle
@@ -209,6 +209,7 @@ class Image{
          * The inverse of this function is given by \ref DoubleToIntIndex.
          * */
         void IntToDoubleIndex(int i, int j, double& x, double& y);
+        
         /**
          * \brief Index change integer to double
          *
@@ -219,6 +220,7 @@ class Image{
          * \param[out] x integer index for row (=x-direction)
          * \param[out] y integer index for column (=y-direction)
          * */
+        
         void DoubleToIntIndex(double x_prime, double y_prime, int& x, int& y);
         /**
          * \brief Rotate indices
@@ -240,6 +242,7 @@ class Image{
          * \param[in] theta rotation factor
          * */
         Image Rotation(double theta);
+        
         //Pure interpolation
         /**
          * \brief Bi-linear interpolation
@@ -305,6 +308,7 @@ class Image{
         Image DilateBin(cv::Mat_<float> kernel);
 
         Image ErodeGray(cv::Mat_<float> kernel);
+        
         Image DilateGray(cv::Mat_<float> kernel);
 
 
