@@ -37,7 +37,8 @@ class Image{
         int cols;               //!< Number of columns of the pixel matrix
 
     public:
-        //Constructors
+        //CONSTRUCTORS
+        
         /**
         * \brief Constructor from string
         * \param filename is a string representing the path to the image
@@ -50,7 +51,11 @@ class Image{
         */
         Image(const cv::Mat_<float> &pixel);
 
-        //Operator overloading
+
+
+
+        //OPERATOR OVERLOADING
+        
         /**
         * \brief Getter for the pixel of index (i,j)
         * \param i,j indices of the pixel
@@ -97,7 +102,28 @@ class Image{
          */
         bool operator==(const Image &img);
 
-        //Functions for min max
+        
+        
+        //BASICS
+
+        /**
+        * \brief Conversion of matrix in [0,1] to matrix of [0,255]
+        * \return Converted matrix
+        */
+        cv::Mat_<uchar> from1to255();
+
+        /**
+        * \brief Display the image
+        * \param imageName name of the image
+        */
+        void display(cv::String imageName = "Display finger_print");
+
+        /**
+        * \brief save the image in the folder img/saved
+        * \param s name of the saved image
+        */
+        void save(std::string s = "finger_print");
+        
         /**
         * \brief Maximum
         * \return Maximal intensity value of the image
@@ -118,7 +144,6 @@ class Image{
 	    */
 	    float error(Image img, float level);
         
-    	//Rectangles
         /**
         * \brief Change the value of the pixels in a rectangle
         * \param x, y coordinates of the upper left point of the rectangle
@@ -129,7 +154,6 @@ class Image{
         */
         Image rectangle(int x, int y, unsigned int length, unsigned int width, float color);
 
-        //Symetries
         /**
         * \brief Symmetry along axis x
         * \return Symmetrized image
@@ -148,6 +172,10 @@ class Image{
         */
         Image sym_xy();
 
+
+
+        //PRESSURE 
+
         //Eventuellement le faire pour une ellipse quelconque
         /**
         * \brief Put the pixels of the image in a vector of Point
@@ -163,7 +191,6 @@ class Image{
         */
         std::vector<cv::Point> outside_ellipse(cv::Point center, float a, float b);
 
-  	    //Pressure variation
         /**
         * \brief Change the pressure of the image
         * \param center center of the image
@@ -174,29 +201,10 @@ class Image{
         */
   	    Image pressure(cv::Point center, std::vector<cv::Point> coords,  bool iso = false, float param = 50, float param_x = 0.00035, float param_y = 0.000175);
 
-        //Conversion
-        /**
-        * \brief Conversion of matrix in [0,1] to matrix of [0,255]
-        * \return Converted matrix
-        */
-        cv::Mat_<uchar> from1to255();
 
-        //Plotting and saving
-        /**
-        * \brief Display the image
-        * \param imageName name of the image
-        */
-        void display(cv::String imageName = "Display finger_print");
 
-        /**
-        * \brief save the image in the folder img/saved
-        * \param s name of the saved image
-        */
-        void save(std::string s = "finger_print");
-
-        //Scaled Rotation function
-
-        //Index shifting
+        //WARPS
+        
         /**
          * \brief Index change integer to double
          *
@@ -234,7 +242,6 @@ class Image{
          * */
         void RotateIndices(double x, double y, double theta, double& x_prime, double& y_prime);
 
-        //Pure rotation function
         /**
          * \brief Rotate image
          *
@@ -243,7 +250,6 @@ class Image{
          * */
         Image Rotation(double theta);
         
-        //Pure interpolation
         /**
          * \brief Bi-linear interpolation
          *
@@ -251,7 +257,6 @@ class Image{
          * */
         void BilinearInterpolation();
 
-        //Combined rotation and interpolation
         /**
          * \brief Improved rotation method
          *
@@ -261,7 +266,9 @@ class Image{
         Image InverseRotation(double theta);
 
         
-        //Starter4 and main course 4
+
+        //MORPHOLOGICAL FILTER
+        
         /**
          * \brief Binarization using a user defined threshold
          * \param threshold The threshold set by the user

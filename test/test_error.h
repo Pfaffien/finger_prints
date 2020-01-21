@@ -20,13 +20,13 @@ TEST(error, easy)
 	EXPECT_FLOAT_EQ(res1, 0);
 
 	float res2 = im1.error(im2, 0.01);
-	EXPECT_FLOAT_EQ(res2, 100);
+	EXPECT_FLOAT_EQ(res2, 1);
 
 	float res3 = im1.error(im2,1);
 	EXPECT_FLOAT_EQ(res3, 0); 
 	
 	float res4 = im1.error(im3, 0.1);
-	EXPECT_FLOAT_EQ(res4, 100*1/(5*5));
+	EXPECT_FLOAT_EQ(res4, 1./(5*5));
 }
 
 
