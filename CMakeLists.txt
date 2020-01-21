@@ -12,6 +12,7 @@ include_directories(include)
 add_subdirectory(src)
 add_subdirectory(doc)
 add_subdirectory(demo)
+add_subdirectory(test)
 
 # Download googletest while doing the configuration
 configure_file(CMakeLists.txt.in
@@ -27,7 +28,5 @@ add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
                  ${CMAKE_BINARY_DIR}/googletest-build)
 
 include_directories(${gtest_SOURCE_DIR}/include)
-
-add_subdirectory(test)
 
 enable_testing ()

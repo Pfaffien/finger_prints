@@ -1,5 +1,5 @@
-#ifndef IMAGE_H_
-#define IMAGE_H_
+#ifndef _IMAGE_H_
+#define _IMAGE_H_
 
 /**
  * \file image.h
@@ -324,8 +324,7 @@ class Image{
          * \return Dilated image
          */
         Image DilateGray(cv::Mat_<float> kernel);
-
-
 };
 
-#endif  // IMAGES_H_
+
+#endif  /* _IMAGE_H_ */

@@ -1,8 +1,8 @@
-#ifndef _MAIN1_H_
-#define _MAIN1_H_
+#ifndef _PRESSURE_H_
+#define _PRESSURE_H_
 
 /**
- * \file main1.h
+ * \file pressure.h
  * \brief Useful functions to answer the part main 1
  * \author Thomas.B Clara.B
  * \version 0.1
@@ -18,6 +18,7 @@
 #include <cmath>
 
 #define PI 3.14159265359
+
 
 /**
  * \fn float c_isotropic (float r, float param = 1)
@@ -72,4 +73,4 @@ std::vector<float> linspace(float, float, int, bool endpoint = false);
 std::vector<cv::Point> points_ellipse(cv::Point, float, float);
 
 
-#endif	/* _MAIN1_H_ */
+#endif	/* _PRESSURE_H_ */

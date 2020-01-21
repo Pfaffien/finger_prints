@@ -1,8 +1,8 @@
-#ifndef _STARTER3_H
-#define _STARTER3_H
+#ifndef _LINEAR_FILTERING_H_
+#define _LINEAR_FILTERING_H_
 
 /**
- * \file starter3.h
+ * \file linear_filtering.h
  * \brief Useful functions to answer the part starter 3 and main 3
  * \author Thomas.B Clara.B
  * \version 0.1
@@ -10,6 +10,7 @@
  */
 
 #include "image.h"
+
 
 /**
  * \fn cv::Mat_<float> convolution(cv::Mat_<float> A, cv::Mat_<float> B)
@@ -96,4 +97,5 @@ cv::Mat_<float> normalization(cv::Mat_<float>);
 cv::Mat_<float> kernel_test(int, float, float);
 //pourquoi pas essayer le flou de gauss
 
-#endif
+
+#endif   /* _LINEAR_FILTERING_H_ */
