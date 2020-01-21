@@ -110,15 +110,15 @@ class Image{
         */
         double min();
 
-	/**
-	 * \brief Computes the error between two images
-	 * \param img image to compare this with
-	 * \param level tolerance between the two images
-	 * \return Error between the images in pourcentage
-	 */
-	float error(Image img, float level);
+	    /**
+	    * \brief Computes the error between two images
+	    * \param img image to compare this with
+	    * \param level tolerance between the two images
+	    * \return Error between the images in pourcentage
+	    */
+	    float error(Image img, float level);
         
-	//Rectangles
+	    //Rectangles
         /**
         * \brief Change the value of the pixels in a rectangle
         * \param x, y coordinates of the upper left point of the rectangle
