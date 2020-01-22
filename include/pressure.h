@@ -20,6 +20,9 @@
 #define PI 3.14159265359
 
 
+void cartesian_to_polar(cv::Point, cv::Point, float &, float &);
+
+
 /**
  * \fn float c_isotropic (float r, float param = 1, int func = 0)
  * \brief Definition of an isotropic function
@@ -43,6 +46,9 @@ float c_isotropic(float, float param = 1, int func = 0);
  * \return Result of the anisotropic function
  */
 float c_anisotropic(int, int, cv::Point, float param_x = 0.00035, float param_y = 0.000175, float param = 50);
+
+
+float c_anisotropic_polar(float, float, cv::Point, float param_x = 0.00035, float param_y = 0.000175, float param = 50);
 
 
 /**

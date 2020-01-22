@@ -303,15 +303,13 @@ Image Image::pressure(cv::Point center, std::vector<cv::Point> coords,
 {
     std::vector<float> new_values = coeffs(center, coords, param_x,
                                            param_y, param, iso);
-    cv::Mat_<float> new_pixels = pixels.clone();
-    Image ones(cv::Mat_<float>(rows, cols, 1));
   
-    Image diff = ones - new_pixels;
+    Image diff = -(*this);
     
     for (int i = 0; i < new_values.size(); i++)
         diff(coords[i].y, coords[i].x) *= new_values[i];
 
-    diff = ones - diff;
+    diff = -diff;
 
     return diff;
 }
