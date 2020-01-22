@@ -306,6 +306,27 @@ Image Image::pressure(cv::Point center, std::vector<cv::Point> coords,
 
 //WARPS
 
+cv::Point Image::center()
+{
+    Image cpy = -(*this);
+    cv::Point tmp(0,0);
+    cv::Point sum(0,0);
+    float sum_val = 0;
+
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
+            tmp.x = j;
+            tmp.y = i;
+
+            sum += cpy(i,j)*tmp;
+            sum_val += cpy(i,j);
+        }
+    }
+    sum /= sum_val;
+    
+    return cv::Point((int)sum.x, (int)sum.y);
+}
+
 Image Image::TranslationV(int length)
 {
     cv::Mat_<float> res(rows, cols, int(0));
