@@ -65,13 +65,13 @@ void argmin_txy(Image f, Image g, int &px, int &py, int number){
 
     for (int i = 0; i < number; i++){
         val = argmin_tx(f, tmp);
-        std::cout << val << std::endl;
+        // std::cout << val << std::endl;
         if (val != 0) px += val;
         else arret = true;
         tmp = tmp.Translation(val, 0);
 
         val = argmin_ty(f, tmp);
-        std::cout << val << std::endl << std::endl;
+        // std::cout << val << std::endl << std::endl;
         if (val != 0) py += val;
         else if (arret) return;
         tmp = tmp.Translation(0, val);

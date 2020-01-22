@@ -25,8 +25,7 @@ int main()
     int px, py;
     argmin_txy(finger_txy, finger, px, py);
     
-    cout << px << endl;
-    cout << py << endl;
+    cout << "(p_x, p_y) = (" << px  << ", " << py << ")" << endl;
 
     Image res2 = finger.Translation(px, py);
     res2.display("res2");
