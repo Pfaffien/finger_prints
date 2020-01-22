@@ -22,7 +22,7 @@ int main()
 
     
     int px(0), py(0);
-    argmin_txy(finger_txy, finger, px, py);
+    argmin_txyn(finger_txy, finger, px, py);
     
     cout << px << endl;
     cout << py << endl;

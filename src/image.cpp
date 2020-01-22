@@ -251,6 +251,40 @@ Image Image::sym_xy()
 }
 
 
+cv::Point Image::center()
+{
+    Image cpy = -(*this);
+    cv::Point tmp(0,0);
+    cv::Point sum(0,0);
+    float sum_val = 0;
+
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
+            tmp.x = j;
+            tmp.y = i;
+
+            sum += cpy(i,j)*tmp;
+            sum_val += cpy(i,j);
+        }
+    }
+    sum /= sum_val;
+    
+    return cv::Point((int)sum.x, (int)sum.y);
+}
+
+
+float Image::mean()
+{
+    float sum = 0;
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++)
+            sum += pixels(i,j);
+    }
+
+    return sum/(rows*cols);
+}
+
+
 
 
 //PRESSURE
@@ -336,28 +370,6 @@ Image Image::pressure(cv::Point center, std::vector<cv::Point> coords,
 
 
 //WARPS
-
-cv::Point Image::center()
-{
-    Image cpy = -(*this);
-    cv::Point tmp(0,0);
-    cv::Point sum(0,0);
-    float sum_val = 0;
-
-    for (int i = 0; i < rows; i++){
-        for (int j = 0; j < cols; j++){
-            tmp.x = j;
-            tmp.y = i;
-
-            sum += cpy(i,j)*tmp;
-            sum_val += cpy(i,j);
-        }
-    }
-    sum /= sum_val;
-    
-    return cv::Point((int)sum.x, (int)sum.y);
-}
-
 
 Image Image::TranslationV(int length)
 {

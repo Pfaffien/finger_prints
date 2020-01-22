@@ -178,6 +178,12 @@ class Image{
          */
         cv::Point center();
 
+        /**
+         * \brief Computes the mean of the image
+         * \return The mean of the image
+         */
+        float mean();
+
 
 
         //PRESSURE 
