@@ -25,7 +25,7 @@ int argmin_tx(Image f, Image g){
 }
 
 
-double l_txy(Image f, Image g, int px, int py)
+float l_txy(Image f, Image g, int px, int py)
 {
     Image h = g.TranslationH(px);
     h = h.TranslationV(py);
@@ -35,10 +35,10 @@ double l_txy(Image f, Image g, int px, int py)
 
 void argmin_txy(Image f, Image g, int &px, int &py){
     //initialization of the minimum
-    double val_min = l_txy(f, g, 0, 0);
+    float val_min = l_txy(f, g, 0, 0);
     px = 0;
     py = 0;
-    double val;
+    float val;
 
     for (int ppx = -f().cols/4; ppx < f().cols/4; ppx++){
         for (int ppy = -f().rows/4; ppy < f().rows/4; ppy++){
