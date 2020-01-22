@@ -38,21 +38,21 @@ int main()
 
 
     //Dilatation and erosion binarized image
-    cv::Mat_<float> kernel(3, 3, 1);
-    Image erosion = finger.ErodeBin(kernel);
+    Image kernel("../img/filters/ones_3x3.png");
+    Image erosion = finger.ErodeBin(kernel());
     erosion.display("Test erosion binarized");
 
-    Image dilatation = finger.DilateBin(kernel);
+    Image dilatation = finger.DilateBin(kernel());
     dilatation.display("Test dilataion binarized");
 
     //Clear the windows
     cv::destroyAllWindows();
 
     //Dilatation and erosion grayscaled image
-    Image test = finger.ErodeGray(kernel);
+    Image test = finger.ErodeGray(kernel());
     test.display("Test erosion grayscale");
 
-    Image test2 = finger.DilateGray(kernel);
+    Image test2 = finger.DilateGray(kernel());
     test2.display("Test dilation grayscale");
 
     //Clear the windows
@@ -61,11 +61,11 @@ int main()
 
     //Commutation of the operators
     //erosion and dilatation
-    Image erosion_dilatation = erosion.DilateBin(kernel);
+    Image erosion_dilatation = erosion.DilateBin(kernel());
     erosion_dilatation.display("Erosion and dilatation");
 
     //dilatation and erosion
-    Image dilatation_erosion = dilatation.ErodeBin(kernel);
+    Image dilatation_erosion = dilatation.ErodeBin(kernel());
     dilatation_erosion.display("Dilatation and erosion");
 
     //difference
@@ -79,28 +79,14 @@ int main()
 
     //Improvements
     //Try to approximate moist and dry
-    int size = 5;
-    cv::Mat_<float> diamond(size, size, 1);
-    diamond(0, 0) = 0;
-    diamond(1, 0) = 0;
-    diamond(0, 1) = 0;
-    diamond(0, size-1) = 0;
-    diamond(0, size-2) = 0;
-    diamond(1, size-1) = 0;
-    diamond(size-1, 0) = 0;
-    diamond(size-2, 0) = 0;
-    diamond(size-1, 1) = 0;
-    diamond(size-1, size-1) = 0;
-    diamond(size-1, size-2) = 0;
-    diamond(size-2, size-1) = 0;
-
+    Image diamond("../img/filters/diamond_5x5.png");
     Image moist_bin = moist.Binarize();
     Image dry_bin = dry.Binarize();
 
     moist_bin.display("Moist finger binarized");
     dry_bin.display("Dry finger binarized");
 
-    Image erosion_dry = finger.ErodeBin(diamond);
+    Image erosion_dry = finger.ErodeBin(diamond());
     erosion_dry.display("Approximation of dry");
 
     return 0;
