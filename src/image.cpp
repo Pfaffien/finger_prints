@@ -371,48 +371,6 @@ Image Image::pressure(cv::Point center, std::vector<cv::Point> coords,
 
 //WARPS
 
-Image Image::TranslationV(int length)
-{
-    cv::Mat_<float> res(rows, cols, 1);
-
-    if (length > 0){
-        for (int i = 0; i < rows-length; i++)
-        {
-            for (int j = 0; j < cols; j++)
-                res(i+length, j) = pixels(i, j);
-        }
-    } else {
-        for (int i = -length; i < rows; i++){
-            for (int j = 0; j < cols; j++)
-                res(i+length,j) = pixels(i,j);
-        }
-    }
-   
-    return Image(res);
-}
-
-
-Image Image::TranslationH(int length)
-{
-    cv::Mat_<float> res(rows, cols, 1);
-
-    if (length > 0){
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < cols-length; j++)
-                res(i, j+length) = pixels(i, j);
-        }
-    } else {
-        for (int i = 0; i < rows; i++){
-            for (int j = -length; j < cols; j++)
-                res(i,j+length) = pixels(i,j);
-        }
-    }
-   
-    return Image(res);
-}
-
-
 void Image::IntToDoubleIndex(int i, int j, double &x, double &y)
 {
     //Get maximum of rows and cols
@@ -481,6 +439,32 @@ Image Image::Rotation(double theta)
     return new_img;
 }
 
+
+Image Image::Translation(double px, double py)
+{
+    cv::Mat_<float> res(rows, cols, 1);
+
+    double x, y;
+    int i_prime, j_prime;
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            
+             //Transform indices to double
+            IntToDoubleIndex(i + py, j + px, x, y);
+
+            //Transform rotated pixel indices back to integer indices
+            DoubleToIntIndex(x, y, i_prime, j_prime);
+
+            if (i_prime < 0 || i_prime >= rows || j_prime < 0 || j_prime >= cols)
+                continue;
+            
+            res(i_prime,j_prime) = pixels(i,j); 
+        }
+    } 
+
+    return Image(res);
+}
 
 void Image::BilinearInterpolation()
 {

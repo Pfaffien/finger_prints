@@ -216,20 +216,6 @@ class Image{
 
 
         //WARPS
-        
-        /**
-         * \brief Vertical translation of the image
-         * \param length lenght of the translation
-         * \return Translated image
-         * */
-        Image TranslationV(int length); 
-        
-        /**
-         * \brief Horizontal translation of the image
-         * \param length lenght of the translation
-         * \return Translated image
-         * */
-        Image TranslationH(int length); 
 
         /**
          * \brief Index change integer to double
@@ -275,6 +261,8 @@ class Image{
          * \param[in] theta rotation factor
          * */
         Image Rotation(double theta);
+
+        Image Translation(double px, double py);
         
         /**
          * \brief Bi-linear interpolation
