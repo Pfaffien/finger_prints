@@ -12,23 +12,23 @@ int main()
     Image finger_txy("../img/txy_finger.png");
     finger_txy.display("Finger txy");
 
-
+    /*
     //Computation of the argmin for tx
     int p = argmin_tx(finger_tx, finger);
     cout << "argmin : " << p << endl;
 
-    Image res = finger.TranslationH(p);
+    Image res = finger.Translation(p, 0);
     res.display("res");
+    */
 
     
-    int px(0), py(0);
+    int px, py;
     argmin_txy(finger_txy, finger, px, py);
     
     cout << px << endl;
     cout << py << endl;
 
-    Image res2 = finger.TranslationH(px);
-    res2 = res2.TranslationV(py);
+    Image res2 = finger.Translation(px, py);
     res2.display("res2");
 
 
