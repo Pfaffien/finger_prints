@@ -26,7 +26,7 @@ def main():
     plt.figure()
     plt.plot(p, new_values)
     plt.xlabel("p")
-    plt.ylabel("l(p)**2")
+    plt.ylabel("l(p)")
     plt.title("Loss function for a translation along x")
     plt.savefig("../img/saved/loss_function.png")
     plt.show()
