@@ -16,7 +16,8 @@ using namespace std;
 /**
  * \fn int main()
  * \brief Test of the convolution functions
- * The function tests and compares the naive and DFT convolution, the energy decreasing convolution and the blurring decreasing function
+ * The function tests and compares the naive and DFT convolution, 
+ * the energy decreasing convolution and the blurring decreasing function
  */
 
 int main(){
@@ -90,8 +91,8 @@ int main(){
     finger.display("initial");
     size = 10;
 
-    cv::Mat_<float> dec = convolution_complex(finger(), size, finger().cols/2,
-                                              finger().rows/2);
+    cv::Point center = finger.center();
+    cv::Mat_<float> dec = convolution_complex(finger(), size, center.x, center.y);
     Image dec_img(dec);
     dec_img.display("energy decreasing");
     dec_img.save("Energy_decreasing");
@@ -100,15 +101,14 @@ int main(){
     //Blurring decreasing
     size = 21;
     cv::Mat_<float> convblur = convolution_complex(finger(), size,
-                                                   finger().cols/2,
-                                                   finger().rows/2, false);
+                                                   center.x,
+                                                   center.y, false);
     Image blur_img(convblur);
     blur_img.display("blurring");
     blur_img.save("Blurring");
 
 
     //Improvements
-    cv::Point center(blur_img().cols/2, blur_img().rows/2);
     std::vector<cv::Point> pts = blur_img.matrix2vector();
     Image best = blur_img.pressure(center, pts, false, 30, 0.0002, 0.0001);
     best.display("Best");

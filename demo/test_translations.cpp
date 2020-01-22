@@ -27,5 +27,7 @@ int main()
     transh.display("Horizontal translation (50)");
     Image transh2 = finger.TranslationH(-50);
     transh2.display("Horizontal translation (-50");
+
+    
     return 0;
 }

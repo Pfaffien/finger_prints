@@ -172,6 +172,8 @@ class Image{
         */
         Image sym_xy();
 
+        cv::Point center();
+
 
 
         //PRESSURE 

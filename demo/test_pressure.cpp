@@ -48,7 +48,7 @@ int main()
 
     // Test of the selected class of function
     vector<cv::Point> points = finger.matrix2vector(); //we apply the function to all pixels
-    cv::Point center(7*finger().cols/16, 9*finger().rows/16); //definition of the center 
+    cv::Point center = finger.center();
 
     //isotropic function
     Image iso = finger.pressure(center, points, false, 50, 0.00035, 0.00035);
