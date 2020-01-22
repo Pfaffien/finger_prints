@@ -314,6 +314,7 @@ std::vector<cv::Point> Image::outside_ellipse(cv::Point center, float a, float b
     return coords;
 }
 
+
 Image Image::pressure(cv::Point center, std::vector<cv::Point> coords,
                       bool iso, float param, float param_x, float param_y)
 {
@@ -329,6 +330,10 @@ Image Image::pressure(cv::Point center, std::vector<cv::Point> coords,
 
     return diff;
 }
+
+
+
+
 
 //WARPS
 
@@ -353,6 +358,7 @@ cv::Point Image::center()
     return cv::Point((int)sum.x, (int)sum.y);
 }
 
+
 Image Image::TranslationV(int length)
 {
     cv::Mat_<float> res(rows, cols, int(0));
@@ -373,6 +379,7 @@ Image Image::TranslationV(int length)
     return Image(res);
 }
 
+
 Image Image::TranslationH(int length)
 {
     cv::Mat_<float> res(rows, cols, int(0));
@@ -392,6 +399,8 @@ Image Image::TranslationH(int length)
    
     return Image(res);
 }
+
+
 void Image::IntToDoubleIndex(int i, int j, double &x, double &y)
 {
     //Get maximum of rows and cols
@@ -401,6 +410,7 @@ void Image::IntToDoubleIndex(int i, int j, double &x, double &y)
     x = (2 * i - rows) / (double)max;
     y = (2 * j - cols) / (double)max;
 }
+
 
 void Image::DoubleToIntIndex(double x, double y, int &i, int &j)
 {
@@ -412,11 +422,13 @@ void Image::DoubleToIntIndex(double x, double y, int &i, int &j)
     j = round((y * max + cols) / 2.);
 }
 
+
 void Image::RotateIndices(double x, double y, double theta, double &x_prime, double &y_prime)
 {
     x_prime = std::cos(theta) * x - std::sin(theta) * y;
     y_prime = std::sin(theta) * x + std::cos(theta) * y;
 }
+
 
 Image Image::Rotation(double theta)
 {
@@ -456,6 +468,7 @@ Image Image::Rotation(double theta)
 
     return new_img;
 }
+
 
 void Image::BilinearInterpolation()
 {
@@ -508,6 +521,7 @@ void Image::BilinearInterpolation()
         }
     }
 }
+
 
 Image Image::InverseRotation(double theta)
 {
@@ -592,7 +606,11 @@ Image Image::InverseRotation(double theta)
     return new_img;
 }
 
+
+
+
 //MORPHOLOGICAL FILTER
+
 Image Image::BinarizeNaive(float threshold)
 {
     //Conversion to grayscale
@@ -612,6 +630,7 @@ Image Image::BinarizeNaive(float threshold)
 
     return res;
 }
+
 
 Image Image::Binarize()
 {
@@ -680,6 +699,7 @@ Image Image::Binarize()
     return res;
 }
 
+
 //Boundary conditions not treated yet
 Image Image::ErodeNaive(std::vector<cv::Point> struct_elt)
 {
@@ -714,6 +734,7 @@ Image Image::ErodeNaive(std::vector<cv::Point> struct_elt)
     return -res;
 }
 
+
 //Boundary conditions not treated yet
 Image Image::DilateNaive(std::vector<cv::Point> struct_elt)
 {
@@ -722,6 +743,7 @@ Image Image::DilateNaive(std::vector<cv::Point> struct_elt)
 
     return -res;
 }
+
 
 //Pour améliorer, utiliser les histogrammes ! Et en niveau de gris
 //Binariser les images déjà modifiées
@@ -761,6 +783,7 @@ Image Image::ErodeBin(cv::Mat_<float> kernel)
     return res;
 }
 
+
 Image Image::DilateBin(cv::Mat_<float> kernel)
 {
     Image swapped = -(*this);
@@ -768,6 +791,7 @@ Image Image::DilateBin(cv::Mat_<float> kernel)
 
     return -res;
 }
+
 
 Image Image::ErodeGray(cv::Mat_<float> kernel)
 {
@@ -805,6 +829,7 @@ Image Image::ErodeGray(cv::Mat_<float> kernel)
 
     return -Image(res);
 }
+
 
 Image Image::DilateGray(cv::Mat_<float> kernel)
 {
