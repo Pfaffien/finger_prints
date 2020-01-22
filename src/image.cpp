@@ -319,17 +319,9 @@ Image Image::pressure(cv::Point center, std::vector<cv::Point> coords,
 {
     std::vector<float> new_values = coeffs(center, coords, param_x,
                                            param_y, param, iso);
-<<<<<<< HEAD
   
     Image diff = -(*this);
     
-=======
-    cv::Mat_<float> new_pixels = pixels.clone();
-    Image ones(cv::Mat_<float>(rows, cols, 1));
-
-    Image diff = ones - new_pixels;
-
->>>>>>> abcb04b674d969d44b40bc7c70f0dd3ff9a719c4
     for (int i = 0; i < new_values.size(); i++)
         diff(coords[i].y, coords[i].x) *= new_values[i];
 
