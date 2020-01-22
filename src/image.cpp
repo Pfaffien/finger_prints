@@ -1,5 +1,8 @@
 #include "image.h"
 
+
+
+
 //CONSTRUCTORS
 
 Image::Image(cv::String filename)
@@ -19,6 +22,7 @@ Image::Image(cv::String filename)
     cols = pixels.cols;
 }
 
+
 Image::Image(const cv::Mat_<float> &matrix)
 {
     //Clone matrix
@@ -28,6 +32,9 @@ Image::Image(const cv::Mat_<float> &matrix)
     rows = pixels.rows;
     cols = pixels.cols;
 }
+
+
+
 
 //OPERATORS OVERLOADING
 
@@ -40,12 +47,14 @@ float &Image::operator()(int row, int col)
         return pixels(row, col);
 }
 
+
 Image Image::operator*(cv::Mat_<float> filter)
 {
     cv::Mat_<float> conv = convolutionDFT(pixels, filter);
 
     return Image(conv);
 }
+
 
 Image Image::operator*(Image filter)
 {
@@ -54,10 +63,12 @@ Image Image::operator*(Image filter)
     return Image(conv);
 }
 
+
 cv::Mat_<float> Image::operator()() const
 {
     return pixels;
 }
+
 
 Image Image::operator-()
 {
@@ -66,6 +77,7 @@ Image Image::operator-()
     return Image(ones - pixels);
 }
 
+
 Image Image::operator-(const Image &img)
 {
     if (rows != img.rows || cols != img.cols)
@@ -73,6 +85,7 @@ Image Image::operator-(const Image &img)
 
     return Image(abs(pixels - img()));
 }
+
 
 bool Image::operator==(const Image &img)
 {
@@ -96,6 +109,7 @@ bool Image::operator==(const Image &img)
     return eq;
 }
 
+
 double Image::max()
 {
     double min, max;
@@ -104,6 +118,7 @@ double Image::max()
     return max;
 }
 
+
 double Image::min()
 {
     double min, max;
@@ -111,6 +126,7 @@ double Image::min()
 
     return min;
 }
+
 
 float Image::error(Image img, float level)
 {
@@ -129,6 +145,9 @@ float Image::error(Image img, float level)
     return res / (rows * cols);
 }
 
+
+
+
 //BASICS
 
 cv::Mat_<uchar> Image::from1to255()
@@ -137,6 +156,7 @@ cv::Mat_<uchar> Image::from1to255()
 
     return res;
 }
+
 
 void Image::display(cv::String imageName)
 {
@@ -155,6 +175,7 @@ void Image::display(cv::String imageName)
     cv::waitKey(0);
 }
 
+
 void Image::save(std::string filename)
 {
     //Convert intensity values back to [0,255]
@@ -166,6 +187,7 @@ void Image::save(std::string filename)
     filename = "../img/saved/" + filename + ".png";
     cv::imwrite(filename, disp);
 }
+
 
 Image Image::rectangle(int x_begin, int y_begin,
                        unsigned int length, unsigned int width,
@@ -183,6 +205,7 @@ Image Image::rectangle(int x_begin, int y_begin,
     return new_pixels;
 }
 
+
 Image Image::sym_x()
 {
     cv::Mat new_mat = pixels.clone();
@@ -196,6 +219,7 @@ Image Image::sym_x()
 
     return new_pixels;
 }
+
 
 Image Image::sym_y()
 {
@@ -211,6 +235,7 @@ Image Image::sym_y()
     return new_img;
 }
 
+
 Image Image::sym_xy()
 {
     cv::Mat_<float> new_mat(cols, rows);
@@ -224,6 +249,9 @@ Image Image::sym_xy()
 
     return new_img;
 }
+
+
+
 
 //PRESSURE
 
@@ -240,6 +268,7 @@ std::vector<cv::Point> Image::matrix2vector()
     return coord;
 }
 
+
 std::vector<cv::Point> Image::outside_ellipse(cv::Point center, float a, float b)
 {
     std::vector<cv::Point> coords;
@@ -253,8 +282,7 @@ std::vector<cv::Point> Image::outside_ellipse(cv::Point center, float a, float b
 
         focus1 = center;
         focus2 = center;
-    }
-    else if (a > b)
+    } else if (a > b)
     {
 
         dist = sqrt(a * a - b * b);
@@ -291,9 +319,17 @@ Image Image::pressure(cv::Point center, std::vector<cv::Point> coords,
 {
     std::vector<float> new_values = coeffs(center, coords, param_x,
                                            param_y, param, iso);
+<<<<<<< HEAD
   
     Image diff = -(*this);
     
+=======
+    cv::Mat_<float> new_pixels = pixels.clone();
+    Image ones(cv::Mat_<float>(rows, cols, 1));
+
+    Image diff = ones - new_pixels;
+
+>>>>>>> abcb04b674d969d44b40bc7c70f0dd3ff9a719c4
     for (int i = 0; i < new_values.size(); i++)
         diff(coords[i].y, coords[i].x) *= new_values[i];
 
