@@ -213,7 +213,7 @@ class Image{
         Image TranslationV(int length); 
         
         /**
-         * \brief Vertical translation of the image
+         * \brief Horizontal translation of the image
          * \param length lenght of the translation
          * \return Translated image
          * */
