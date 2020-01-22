@@ -6,7 +6,7 @@
 float l_tx(Image, Image, int);
 int argmin_tx(Image, Image);
 
-double l_txy(Image, Image, int, int);
+float l_txy(Image, Image, int, int);
 void argmin_txy(Image, Image, int &, int &);
 
 
