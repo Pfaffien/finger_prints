@@ -172,6 +172,10 @@ class Image{
         */
         Image sym_xy();
 
+        /**
+         * \brief Finds the center of the image
+         * \return Points of the center 
+         */
         cv::Point center();
 
 
