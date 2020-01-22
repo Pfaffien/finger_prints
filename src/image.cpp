@@ -440,6 +440,7 @@ Image Image::Rotation(double theta)
 }
 
 
+//voir comment adapter pour pouvoir prendre px et py non entier (il faudra utiliser l'interpolation)
 Image Image::Translation(double px, double py)
 {
     cv::Mat_<float> res(rows, cols, 1);

@@ -3,18 +3,12 @@
 
 #include "image.h"
 
-float l_tx(Image, Image, int);
-int argmin_tx(Image, Image);
-float l_ty(Image, Image, int);
-int argmin_ty(Image, Image);
-
-float l_txy(Image, Image, int, int);
+float l(Image, Image, int px = 0, int py = 0);
+int argmin(Image, Image, int arg);
 void argmin_txy(Image, Image, int &, int &, int number = 5);
 
-float l_txn(Image, Image, int);
-float l_tyn(Image, Image, int);
-int argmin_txn(Image, Image);
-int argmin_tyn(Image, Image);
-void argmin_txyn(Image, Image, int &, int &, int number = 3);
+float l_n(Image, Image, int px = 0, int py = 0);
+int argmin_n(Image, Image, int arg);
+void argmin_txy_n(Image, Image, int&, int&, int number = 5);
 
 #endif

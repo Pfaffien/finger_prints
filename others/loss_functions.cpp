@@ -18,7 +18,7 @@ int main()
         int size = finger().cols;
         file << 2 * size - 1 << std::endl;
         for (int p = -size+1; p < size; p++)
-            file << l_tx(finger_tx, finger, p) << std::endl;
+            file << l(finger_tx, finger, p) << std::endl;
     } else {
         std::cerr << "Error: could not open file" << std::endl;
     }
