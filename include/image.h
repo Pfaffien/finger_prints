@@ -198,7 +198,7 @@ class Image{
         std::vector<cv::Point> outside_ellipse(cv::Point center, float a, float b);
 
         /**
-        * \brief Change the pressure of the image
+        * \brief Change the pressure of the image using cartesian coordinates
         * \param center center of the image
         * \param coords vector of coordinates to change
         * \param iso boolean saying if the function used is isotropic or not
@@ -206,6 +206,16 @@ class Image{
         * \return Image with modified pressure
         */
   	    Image pressure(cv::Point center, std::vector<cv::Point> coords,  bool iso = false, float param = 50, float param_x = 0.00035, float param_y = 0.000175);
+        
+        /**
+        * \brief Change the pressure of the image using polar coordinates
+        * \param center center of the image
+        * \param coords vector of coordinates to change
+        * \param iso boolean saying if the function used is isotropic or not
+        * \param param, param_x, param_y parameters of the functions
+        * \return Image with modified pressure
+        */
+  	    Image PressurePolar(cv::Point center, std::vector<cv::Point> coords,  bool iso = false, float param = 50, float param_x = 0.00035, float param_y = 0.000175);
 
 
 

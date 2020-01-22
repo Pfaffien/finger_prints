@@ -54,11 +54,15 @@ int main()
     Image iso = finger.pressure(center, points, false, 50, 0.00035, 0.00035);
     //anisotropic function
     Image aniso = finger.pressure(center, points);
+    //anisotropic polar function
+    Image aniso_polar = finger.PressurePolar(center, points);
 
     iso.display("Isotropic");
     iso.save("isotropic");
     aniso.display("Anisotropic");
     aniso.save("anisotropic");
+    aniso_polar.display("Anisotropic polar");
+    aniso_polar.save("anisotropic_polar");
 
     return 0;
 }

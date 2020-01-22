@@ -3,18 +3,10 @@
 
 void cartesian_to_polar(cv::Point origin, cv::Point pt, float &r, float &theta)
 {
-    r = sqrt(pow(pt.x, 2) + pow(pt.y, 2));
     cv::Point diff = pt - origin;
-
-    if (diff.x > 0) {
-        if (diff.y >= 0) theta = atan((float) pt.y / pt.x);
-        else theta = atan((float) pt.y / pt.x) + 2 * PI;
-    } else if (diff.x == 0) {
-        if (diff.y > 0) theta = PI / 2;
-        else theta = 3 * PI / 2;
-    } else {
-        theta = atan((float) pt.y / pt.x) + PI;
-    }
+    r = cv::norm(diff);
+    //cf. function atan2
+    theta = atan2(diff.y, diff.x);
 }
 
  
@@ -66,11 +58,31 @@ std::vector<float> coeffs(cv::Point center, std::vector<cv::Point> coords,
 	        res.push_back(c_isotropic(dist, param));
         }
     } else {
-        // float r, theta;
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++)
             res.push_back(c_anisotropic(coords[i].x, coords[i].y, center, param_x, param_y, param));
-            // cartesian_to_polar(center, coords[i], r, theta);
-            // res.push_back(c_anisotropic_polar(r, theta, center, param_x, param_y, param));
+    }
+
+    return res;
+}
+
+
+std::vector<float> coeffs_polar(cv::Point center, std::vector<cv::Point> coords,
+                          float param_x, float param_y, float param, bool iso)
+{
+    std::vector<float> res;
+    int size = coords.size();
+    float dist;
+
+    if (iso) {
+        for (int i = 0; i < size; i++) {
+            dist = cv::norm(center - coords[i]);
+	        res.push_back(c_isotropic(dist, param));
+        }
+    } else {
+        float r, theta;
+        for (int i = 0; i < size; i++) {
+            cartesian_to_polar(center, coords[i], r, theta);
+            res.push_back(c_anisotropic_polar(r, theta, center, param_x, param_y, param));
         }
     }
 

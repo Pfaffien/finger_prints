@@ -17,7 +17,7 @@
 #include <opencv2/highgui.hpp>
 #include <cmath>
 
-#define PI 3.14159265359
+#define PI 3.1415926535897932384626433832795
 
 
 void cartesian_to_polar(cv::Point, cv::Point, float &, float &);
@@ -62,6 +62,9 @@ float c_anisotropic_polar(float, float, cv::Point, float param_x = 0.00035, floa
  * \return Returns the list of modified coefficients
  */
 std::vector<float> coeffs(cv::Point center, std::vector<cv::Point> coords, float param_x = 0.00035, float param_y = 0.000175, float param = 50, bool iso = false);
+
+
+std::vector<float> coeffs_polar(cv::Point center, std::vector<cv::Point> coords, float param_x = 0.00035, float param_y = 0.000175, float param = 50, bool iso = false);
 
 
 /**
