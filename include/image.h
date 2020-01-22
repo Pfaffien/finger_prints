@@ -206,6 +206,20 @@ class Image{
         //WARPS
         
         /**
+         * \brief Vertical translation of the image
+         * \param length lenght of the translation
+         * \return Translated image
+         * */
+        Image TranslationV(int length); 
+        
+        /**
+         * \brief Vertical translation of the image
+         * \param length lenght of the translation
+         * \return Translated image
+         * */
+        Image TranslationH(int length); 
+
+        /**
          * \brief Index change integer to double
          *
          * This function transforms given pixel indices (i,j) in the range [0,rows-1]x[0,cols-1] to the corresponding double indices (x,y) in [-1,1]x[-a,a] where a is aspect ratio of the image
@@ -228,8 +242,8 @@ class Image{
          * \param[out] x integer index for row (=x-direction)
          * \param[out] y integer index for column (=y-direction)
          * */
-        
         void DoubleToIntIndex(double x_prime, double y_prime, int& x, int& y);
+
         /**
          * \brief Rotate indices
          *

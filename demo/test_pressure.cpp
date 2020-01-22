@@ -13,11 +13,7 @@ using namespace std;
 
 int main()
 {
-    Image finger("../img/clean_finger.png");
-    finger.display("Finger");
-    cv::Point center(7*finger().cols/16, 9*finger().rows/16);
-
-    // Test of radial functions
+    // Test of radial functions on a white image
     int size = 300;
     cv::Point center_test(size/2, size/2);
     cv::Mat_<float> ones(size, size, 1);
@@ -42,12 +38,21 @@ int main()
     vect[1].save("exponential_solution");
     vect[2].display("Inverse");
     vect[2].save("inverse_solution");
-
+    
+    //Clear the windows
+    cv::destroyAllWindows();
+   
+    //Image used for the test
+    Image finger("../img/clean_finger.png");
+    finger.display("Finger");
 
     // Test of the selected class of function
-    vector<cv::Point> points = finger.matrix2vector();
+    vector<cv::Point> points = finger.matrix2vector(); //we apply the function to all pixels
+    cv::Point center(7*finger().cols/16, 9*finger().rows/16); //definition of the center 
 
+    //isotropic function
     Image iso = finger.pressure(center, points, false, 50, 0.00035, 0.00035);
+    //anisotropic function
     Image aniso = finger.pressure(center, points);
 
     iso.display("Isotropic");
