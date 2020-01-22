@@ -3,14 +3,7 @@
 float l_tx(Image f, Image g, int p)
 {
     Image h = g.TranslationH(p);
-    float res(0);
-    for (int i = 0; i < f().rows; i++){
-        for (int j = 0; j < f().cols; j++){
-            res += pow(f(i,j)-h(i,j), 2);
-        }
-    }
-
-    return res;
+    return cv::norm(f(), h(), cv::NORM_L2);
 }
 
 
@@ -32,31 +25,23 @@ int argmin_tx(Image f, Image g){
 }
 
 
-float l_txy(Image f, Image g, int px, int py)
+double l_txy(Image f, Image g, int px, int py)
 {
     Image h = g.TranslationH(px);
     h = h.TranslationV(py);
-
-    float res(0);
-    for (int i = 0; i < f().rows; i++){
-        for (int j = 0; j < f().cols; j++){
-            res += pow(f(i,j)-h(i,j), 2);
-        }
-    }
-
-    return res;   
+    return cv::norm(f(), h(), cv::NORM_L2);   
 }
 
 
-void argmin_txy(Image f, Image g, int & px, int & py){
+void argmin_txy(Image f, Image g, int &px, int &py){
     //initialization of the minimum
-    float val_min = l_txy(f, g, 0, 0);
+    double val_min = l_txy(f, g, 0, 0);
     px = 0;
     py = 0;
-    float val;
+    double val;
 
-    for (int ppx = -f().cols; ppx < f().cols; ppx++){
-        for (int ppy = -f().rows; ppy < f().rows; ppy++){
+    for (int ppx = -f().cols/4; ppx < f().cols/4; ppx++){
+        for (int ppy = -f().rows/4; ppy < f().rows/4; ppy++){
             val = l_txy(f, g, ppx, ppy);
             if (val < val_min){
                 val_min = val;
