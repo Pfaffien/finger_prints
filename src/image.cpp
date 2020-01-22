@@ -361,7 +361,7 @@ cv::Point Image::center()
 
 Image Image::TranslationV(int length)
 {
-    cv::Mat_<float> res(rows, cols, int(0));
+    cv::Mat_<float> res(rows, cols, 1);
 
     if (length > 0){
         for (int i = 0; i < rows-length; i++)
@@ -382,7 +382,7 @@ Image Image::TranslationV(int length)
 
 Image Image::TranslationH(int length)
 {
-    cv::Mat_<float> res(rows, cols, int(0));
+    cv::Mat_<float> res(rows, cols, 1);
 
     if (length > 0){
         for (int i = 0; i < rows; i++)
