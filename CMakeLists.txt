@@ -13,6 +13,7 @@ add_subdirectory(src)
 add_subdirectory(doc)
 add_subdirectory(demo)
 add_subdirectory(test)
+add_subdirectory(others)
 
 # Download googletest while doing the configuration
 configure_file(CMakeLists.txt.in
