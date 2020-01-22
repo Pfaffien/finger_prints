@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from math import *
 
 """
-C++ project
+C++ project: pressure
 """
 
 
@@ -16,7 +16,7 @@ def main(x, f, name):
     plt.figure()
     plt.plot(x, f(x), color = "black")
     plt.title("alpha = 1")
-    plt.savefig("img/saved/graph_function_{}.png".format(name))
+    plt.savefig("../img/saved/graph_function_{}.png".format(name))
     plt.show()
 
 
