@@ -9,13 +9,21 @@ int main()
     finger.display("Finger");
     Image finger_tx("../img/tx_finger.png");
     finger_tx.display("Finger tx");
-       
+    
+
+    Image trans = finger.Translation(50.5, 0);
+    trans.display("Translation");
+    trans.BilinearInterpolation();
+    trans.display("interpolation");
+
     //Computation of the argmin for tx
-    int p = argmin(finger_tx, finger, 0);
+    int p = argmin_n(finger_tx, finger, 0);
     cout << "argmin : " << p << endl;
 
     Image res = finger.Translation(p, 0);
     res.display("res");
+    res.BilinearInterpolation();
+    res.display("interpolation");
     
     Image finger_txy("../img/txy_finger.png");
     finger_txy.display("Finger txy");
@@ -26,6 +34,6 @@ int main()
 
     Image res2 = finger.Translation(px, py);
     res2.display("res2");
-
+    
     return 0;
 }

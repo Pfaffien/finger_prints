@@ -67,10 +67,10 @@ void argmin_txy(Image f, Image g, int &px, int &py, int number){
 //il y a surement un problème avec cette fonction
 float l_n(Image f, Image g, int px, int py)
 {
-    Image h = g.Translation(px, py);
+    Image gw = g.Translation(px, py);
 
     float mean_f = f.mean();
-    float mean_gw = h.mean();
+    float mean_gw = gw.mean();
 
     float num = 0;
     float denom1 = 0;
@@ -78,9 +78,9 @@ float l_n(Image f, Image g, int px, int py)
 
     for (int i = 0; i < f().rows; i++){
         for (int j = 0; j < f().cols; j++){
-            num += (f(i,j) - mean_f)*(h(i,j) - mean_gw);
+            num += (f(i,j) - mean_f)*(gw(i,j) - mean_gw);
             denom1 += pow(f(i,j) - mean_f, 2);
-            denom2 += pow(h(i,j) - mean_gw, 2);
+            denom2 += pow(gw(i,j) - mean_gw, 2);
         }
     }
     return num/sqrt(denom1*denom2);

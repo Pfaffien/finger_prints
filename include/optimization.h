@@ -5,7 +5,7 @@
 
 float l(Image, Image, int px = 0, int py = 0);
 int argmin(Image, Image, int arg);
-void argmin_txy(Image, Image, int &, int &, int number = 5);
+void argmin_txy(Image, Image, int &, int &, int number = 10);
 
 float l_n(Image, Image, int px = 0, int py = 0);
 int argmin_n(Image, Image, int arg);

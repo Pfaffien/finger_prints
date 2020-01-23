@@ -446,13 +446,22 @@ Image Image::Translation(double px, double py)
     cv::Mat_<float> res(rows, cols, 1);
 
     double x, y;
+    double px_prime, py_prime;
     int i_prime, j_prime;
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             
              //Transform indices to double
-            IntToDoubleIndex(i + py, j + px, x, y);
+            IntToDoubleIndex(i+py, j+px, x, y);
+            
+            /*
+            px_prime = px/std::max(rows, cols);
+            py_prime = py/std::max(rows, cols);
+
+            x += py_prime;
+            y += px_prime;
+            */
 
             //Transform rotated pixel indices back to integer indices
             DoubleToIntIndex(x, y, i_prime, j_prime);
