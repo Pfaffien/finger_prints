@@ -37,8 +37,8 @@ float c_isotropic(float, float param = 1, int func = 0);
 
 /**
  * \fn float c_anisotropic (int x, int y, cv::Point center, float param_x = 0.00035, float param_y = 0.000175, float param = 50)
- * \brief Definition of an anisotropic function
- * The anisotropic function corresponds to the isotropic selected function adapted to ba anisotropic
+ * \brief Definition of an anisotropic function in cartesian coordinates
+ * The anisotropic function corresponds to the isotropic selected function adapted to be anisotropic
  * \param x, y coordinates of the point
  * \param center center of the image
  * \param param_x, param_y weigths of x and y
@@ -47,13 +47,22 @@ float c_isotropic(float, float param = 1, int func = 0);
  */
 float c_anisotropic(int, int, cv::Point, float param_x = 0.00035, float param_y = 0.000175, float param = 50);
 
-
+/**
+ * \fn float c_anisotropic_polar (float r, float theta, cv::Point center, float param_x = 0.00035, float param_y = 0.000175, float param = 50)
+ * \brief Definition of an anisotropic function in polar coordinates
+ * The anisotropic function corresponds to the isotropic selected function adapted to be anisotropic and to use polar coordinates
+ * \param r, theta coordinates of the point
+ * \param center center of the image
+ * \param param_x, param_y weigths along the x-axis and y-axis
+ * \param param parameter of the function
+ * \return Result of the anisotropic function
+ */
 float c_anisotropic_polar(float, float, cv::Point, float param_x = 0.00035, float param_y = 0.000175, float param = 50);
 
 
 /**
  * \fn std::vector<float> coeffs(cv::Point center, std::vector<cv::Point> coords, float param_x = 0.00035, float param_y = 0.000175, float param = 50, bool iso = false)
- * \brief Computes the new values of the pixels of coefficients coeffs
+ * \brief Computes the new values of the pixels of coefficients coeffs using the cartesian version of the function
  * \param center center of the image
  * \param coords points to modify the value
  * \param param_x, param_y weigths of x and y
@@ -63,7 +72,16 @@ float c_anisotropic_polar(float, float, cv::Point, float param_x = 0.00035, floa
  */
 std::vector<float> coeffs(cv::Point center, std::vector<cv::Point> coords, float param_x = 0.00035, float param_y = 0.000175, float param = 50, bool iso = false);
 
-
+/**
+ * \fn std::vector<float> coeffs_polar(cv::Point center, std::vector<cv::Point> coords, float param_x = 0.00035, float param_y = 0.000175, float param = 50, bool iso = false)
+ * \brief Computes the new values of the pixels of coefficients coeffs using the polar version of the function
+ * \param center center of the image
+ * \param coords points to modify the value
+ * \param param_x, param_y weigths of x and y
+ * \param param parameter of the function
+ * \param iso if true use an isotropic function if false an anisotropic function
+ * \return Returns the list of modified coefficients
+ */
 std::vector<float> coeffs_polar(cv::Point center, std::vector<cv::Point> coords, float param_x = 0.00035, float param_y = 0.000175, float param = 50, bool iso = false);
 
 
