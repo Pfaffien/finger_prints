@@ -854,3 +854,9 @@ Image Image::DilateGray(cv::Mat_<float> kernel)
 
     return -res;
 }
+
+//TODO: using random points to approximate a weak pressure (create a method)
+//TODO: skeletonization (ZS thinning) (create a method)
+//TODO: conversion of a dry finger to a clean image with skeletonization and dilatation (create a method)
+//TODO: conversion of a moist finger to a clean image with erosion (?) (create a method)
+//TODO: deconvolution (algorithm to approximate the blurring kernel) to unblur an image (create a method)
