@@ -52,6 +52,7 @@ std::vector<float> coeffs(cv::Point center, std::vector<cv::Point> coords,
     int size = coords.size();
     float dist;
 
+    //Utiliser la fonction c_anisotropic aussi vu qu'elle permet d'avoir un résultat isotrope
     if (iso) {
         for (int i = 0; i < size; i++) {
             dist = cv::norm(center - coords[i]);
@@ -67,12 +68,13 @@ std::vector<float> coeffs(cv::Point center, std::vector<cv::Point> coords,
 
 
 std::vector<float> coeffs_polar(cv::Point center, std::vector<cv::Point> coords,
-                          float param_x, float param_y, float param, bool iso)
+                          float param_x, float param_y, float param, float param_rot, bool iso)
 {
     std::vector<float> res;
     int size = coords.size();
     float dist;
 
+    //Utiliser la fonction c_anisotropic aussi vu qu'elle permet d'avoir un résultat isotrope
     if (iso) {
         for (int i = 0; i < size; i++) {
             dist = cv::norm(center - coords[i]);
@@ -81,8 +83,14 @@ std::vector<float> coeffs_polar(cv::Point center, std::vector<cv::Point> coords,
     } else {
         float r, theta;
         for (int i = 0; i < size; i++) {
-            cartesian_to_polar(center, coords[i], r, theta);
-            res.push_back(c_anisotropic_polar(r, theta, center, param_x, param_y, param));
+            cv::Point rotated(int(cos(param_rot) * coords[i].x - sin(param_rot) * coords[i].y),
+                              int(sin(param_rot) * coords[i].x + cos(param_rot) * coords[i].y));
+            cartesian_to_polar(center, rotated, r, theta);
+
+            if (-PI/8 <= theta && theta <= 0)
+                res.push_back(c_anisotropic_polar(r, theta, center, 1.5*param_x, param_y, 5*param));
+            else
+                res.push_back(c_anisotropic_polar(r, theta, center, param_x, param_y, param));
         }
     }
 

@@ -79,10 +79,11 @@ std::vector<float> coeffs(cv::Point center, std::vector<cv::Point> coords, float
  * \param coords points to modify the value
  * \param param_x, param_y weigths of x and y
  * \param param parameter of the function
+ * \param param_rot rotation of the ellipsoid
  * \param iso if true use an isotropic function if false an anisotropic function
  * \return Returns the list of modified coefficients
  */
-std::vector<float> coeffs_polar(cv::Point center, std::vector<cv::Point> coords, float param_x = 0.00035, float param_y = 0.000175, float param = 50, bool iso = false);
+std::vector<float> coeffs_polar(cv::Point center, std::vector<cv::Point> coords, float param_x = 0.00035, float param_y = 0.000175, float param = 50, float param_rot = -PI/32, bool iso = false);
 
 
 /**
