@@ -52,16 +52,11 @@ std::vector<float> coeffs(cv::Point center, std::vector<cv::Point> coords,
     int size = coords.size();
     float dist;
 
-    //Utiliser la fonction c_anisotropic aussi vu qu'elle permet d'avoir un résultat isotrope
-    if (iso) {
-        for (int i = 0; i < size; i++) {
-            dist = cv::norm(center - coords[i]);
-	        res.push_back(c_isotropic(dist, param));
-        }
-    } else {
-        for (int i = 0; i < size; i++)
+    for (int i = 0; i < size; i++)
+        if (iso)
+            res.push_back(c_anisotropic(coords[i].x, coords[i].y, center, param_x, param_x, param));
+        else
             res.push_back(c_anisotropic(coords[i].x, coords[i].y, center, param_x, param_y, param));
-    }
 
     return res;
 }
@@ -73,40 +68,38 @@ std::vector<float> coeffs_polar(cv::Point center, std::vector<cv::Point> coords,
 {
     std::vector<float> res;
     int size = coords.size();
-    float dist;
     std::vector<std::pair<float, float>> rand_ang = random_angles(number_angles, threshold);
     bool in_rand_ang = false;
+    float r, theta;
 
-    //Utiliser la fonction c_anisotropic aussi vu qu'elle permet d'avoir un résultat isotrope
-    if (iso) {
-        for (int i = 0; i < size; i++) {
-            dist = cv::norm(center - coords[i]);
-	        res.push_back(c_isotropic(dist, param));
-        }
-    } else {
-        float r, theta;
-        for (int i = 0; i < size; i++) {
-            cv::Point rotated(int(cos(param_rot) * coords[i].x - sin(param_rot) * coords[i].y),
-                              int(sin(param_rot) * coords[i].x + cos(param_rot) * coords[i].y));
-            cartesian_to_polar(center, rotated, r, theta);
+    for (int i = 0; i < size; i++) {
+        cv::Point rotated(int(cos(param_rot) * coords[i].x - sin(param_rot) * coords[i].y),
+                            int(sin(param_rot) * coords[i].x + cos(param_rot) * coords[i].y));
+        cartesian_to_polar(center, rotated, r, theta);
 
-            for (auto it : rand_ang) {
-                if (it.first <= theta && theta <= it.second) {
-                    in_rand_ang = true;
+        for (auto it : rand_ang) {
+            if (it.first <= theta && theta <= it.second) {
+                in_rand_ang = true;
+                if (iso)
+                    res.push_back(c_anisotropic_polar(r, theta, center, 1.5*param_x, 1.5*param_x, 5*param));
+                else
                     res.push_back(c_anisotropic_polar(r, theta, center, 1.5*param_x, param_y, 5*param));
-                    break;
-                }
-                in_rand_ang = false;
+                break;
             }
-
-            if (!in_rand_ang)
-                res.push_back(c_anisotropic_polar(r, theta, center, param_x, param_y, param));
-
-            // if (-PI/8 <= theta && theta <= 0)
-            //     res.push_back(c_anisotropic_polar(r, theta, center, 1.5*param_x, param_y, 5*param));
-            // else
-            //     res.push_back(c_anisotropic_polar(r, theta, center, param_x, param_y, param));
+            in_rand_ang = false;
         }
+
+        if (!in_rand_ang) {
+            if (iso)
+                res.push_back(c_anisotropic_polar(r, theta, center, param_x, param_x, param));
+            else
+                res.push_back(c_anisotropic_polar(r, theta, center, param_x, param_y, param));
+        }
+
+        // if (-PI/8 <= theta && theta <= 0)
+        //     res.push_back(c_anisotropic_polar(r, theta, center, 1.5*param_x, param_y, 5*param));
+        // else
+        //     res.push_back(c_anisotropic_polar(r, theta, center, param_x, param_y, param));
     }
 
     return res;

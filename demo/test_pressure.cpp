@@ -51,7 +51,7 @@ int main()
     cv::Point center = finger.center();
 
     //isotropic function
-    Image iso = finger.pressure(center, points, false, 50, 0.00035, 0.00035);
+    Image iso = finger.pressure(center, points, true);
     //anisotropic function
     Image aniso = finger.pressure(center, points);
     //anisotropic polar function
