@@ -106,9 +106,33 @@ std::vector<float> linspace(float begin, float end, int N, bool endpoint)
     if (endpoint) total_it++;
 
     for (int i = 0; i < total_it; i++)
-        res.push_back((i * (end - begin) + begin)/N);
+        res.push_back(begin + (i * (end - begin))/N);
 
     return res;
+}
+
+
+std::vector<std::pair<float, float>> random_angles(int number, float threshold)
+{
+    std::vector<float> angles = linspace(-PI, PI, 10000);
+    std::vector<std::pair<float, float>> res(number, std::pair<float, float>(0, 0));
+    float tmp_angle1, tmp_angle2;
+
+    srand(time(NULL));
+
+    for (int i = 0; i < number; i++) {
+        do {
+            tmp_angle1 = angles[rand() % 10000];
+            tmp_angle2 = angles[rand() % 10000];
+        } while (abs(tmp_angle1 - tmp_angle2) > threshold || tmp_angle1 == tmp_angle2);
+
+        if (tmp_angle1 <= tmp_angle2)
+            res[i] = std::pair<float, float>(tmp_angle1, tmp_angle2);
+        else
+            res[i] = std::pair<float, float>(tmp_angle2, tmp_angle1);
+    }
+
+        return res;
 }
 
 

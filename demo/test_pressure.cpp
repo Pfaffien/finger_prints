@@ -64,5 +64,10 @@ int main()
     aniso_polar.display("Anisotropic polar");
     aniso_polar.save("anisotropic_polar");
 
+    std::vector<std::pair<float, float>> rand_ang = random_angles(3, 0.5);
+
+    for (int i = 0; i < 3; i++)
+        std::cout << "(" << rand_ang[i].first << ", " << rand_ang[i].second << ")" << std::endl;
+
     return 0;
 }

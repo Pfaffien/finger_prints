@@ -16,6 +16,7 @@
 #include <opencv2/core/types.hpp>
 #include <opencv2/highgui.hpp>
 #include <cmath>
+#include <cstdlib>
 
 #define PI 3.1415926535897932384626433832795
 
@@ -96,6 +97,9 @@ std::vector<float> coeffs_polar(cv::Point center, std::vector<cv::Point> coords,
  * \return Returns the vector of points
 */
 std::vector<float> linspace(float, float, int, bool endpoint = false);
+
+
+std::vector<std::pair<float, float>> random_angles(int, float);
 
 
 /**
