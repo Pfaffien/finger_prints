@@ -68,11 +68,14 @@ std::vector<float> coeffs(cv::Point center, std::vector<cv::Point> coords,
 
 
 std::vector<float> coeffs_polar(cv::Point center, std::vector<cv::Point> coords,
-                          float param_x, float param_y, float param, float param_rot, bool iso)
+                          float param_x, float param_y, float param, float param_rot,
+                          int number_angles, float threshold, bool iso)
 {
     std::vector<float> res;
     int size = coords.size();
     float dist;
+    std::vector<std::pair<float, float>> rand_ang = random_angles(number_angles, threshold);
+    bool in_rand_ang = false;
 
     //Utiliser la fonction c_anisotropic aussi vu qu'elle permet d'avoir un résultat isotrope
     if (iso) {
@@ -87,10 +90,22 @@ std::vector<float> coeffs_polar(cv::Point center, std::vector<cv::Point> coords,
                               int(sin(param_rot) * coords[i].x + cos(param_rot) * coords[i].y));
             cartesian_to_polar(center, rotated, r, theta);
 
-            if (-PI/8 <= theta && theta <= 0)
-                res.push_back(c_anisotropic_polar(r, theta, center, 1.5*param_x, param_y, 5*param));
-            else
+            for (auto it : rand_ang) {
+                if (it.first <= theta && theta <= it.second) {
+                    in_rand_ang = true;
+                    res.push_back(c_anisotropic_polar(r, theta, center, 1.5*param_x, param_y, 5*param));
+                    break;
+                }
+                in_rand_ang = false;
+            }
+
+            if (!in_rand_ang)
                 res.push_back(c_anisotropic_polar(r, theta, center, param_x, param_y, param));
+
+            // if (-PI/8 <= theta && theta <= 0)
+            //     res.push_back(c_anisotropic_polar(r, theta, center, 1.5*param_x, param_y, 5*param));
+            // else
+            //     res.push_back(c_anisotropic_polar(r, theta, center, param_x, param_y, param));
         }
     }
 

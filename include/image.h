@@ -215,7 +215,7 @@ class Image{
         * \param param, param_x, param_y parameters of the functions
         * \return Image with modified pressure
         */
-  	    Image PressurePolar(cv::Point center, std::vector<cv::Point> coords,  bool iso = false, float param = 50, float param_x = 0.00035, float param_y = 0.000175, float param_rot = -PI/32);
+  	    Image PressurePolar(cv::Point center, std::vector<cv::Point> coords,  bool iso = false, float param_rot = 0, int number_angles = 0, float threshold = 0.5, float param = 50, float param_x = 0.00035, float param_y = 0.000175);
 
 
 

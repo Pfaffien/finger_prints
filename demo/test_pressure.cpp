@@ -56,7 +56,7 @@ int main()
     Image aniso = finger.pressure(center, points);
     //anisotropic polar function
     Image aniso_polar = finger.PressurePolar(center, points);
-
+    
     iso.display("Isotropic");
     iso.save("isotropic");
     aniso.display("Anisotropic");
@@ -64,10 +64,10 @@ int main()
     aniso_polar.display("Anisotropic polar");
     aniso_polar.save("anisotropic_polar");
 
-    std::vector<std::pair<float, float>> rand_ang = random_angles(3, 0.5);
-
-    for (int i = 0; i < 3; i++)
-        std::cout << "(" << rand_ang[i].first << ", " << rand_ang[i].second << ")" << std::endl;
+    //Rotation and random angles
+    Image best = finger.PressurePolar(center, points, false, -PI/32, 5);
+    best.display("Best");
+    best.save("best_weak_pressure");
 
     return 0;
 }

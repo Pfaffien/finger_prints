@@ -333,10 +333,12 @@ Image Image::pressure(cv::Point center, std::vector<cv::Point> coords,
 
 
 Image Image::PressurePolar(cv::Point center, std::vector<cv::Point> coords,
-                           bool iso, float param, float param_x, float param_y, float param_rot)
+                           bool iso, float param_rot, int number_angles,
+                           float threshold, float param, float param_x, float param_y)
 {
     std::vector<float> new_values = coeffs_polar(center, coords, param_x,
-                                           param_y, param, param_rot, iso);
+                                           param_y, param, param_rot,
+                                           number_angles, threshold, iso);
   
     Image diff = -(*this);
     
