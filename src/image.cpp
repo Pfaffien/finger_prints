@@ -443,37 +443,69 @@ Image Image::Rotation(double theta)
 //voir comment adapter pour pouvoir prendre px et py non entier (il faudra utiliser l'interpolation)
 Image Image::Translation(double px, double py)
 {
-    cv::Mat_<float> res(rows, cols, 1);
-
+    cv::Mat new_mat = cv::Mat::ones(rows, cols, CV_32F);
+    Image new_img(new_mat);
     double x, y;
-    double px_prime, py_prime;
-    int i_prime, j_prime;
+    double x_trans, y_trans;
+    int neighbour_x, neighbour_y;
+    double interp_x1, interp_x2, dist_x, dist_y;
+
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             
-             //Transform indices to double
-            IntToDoubleIndex(i+py, j+px, x, y);
-            
-            /*
-            px_prime = px/std::max(rows, cols);
-            py_prime = py/std::max(rows, cols);
+            x_trans = i + py;
+            y_trans = j + px;
 
-            x += py_prime;
-            y += px_prime;
-            */
+            //Determine indices of nearest neighbouring pixel of given coordinate
+            neighbour_x = floor(x_trans);
+            neighbour_y = floor(y_trans);
 
-            //Transform rotated pixel indices back to integer indices
-            DoubleToIntIndex(x, y, i_prime, j_prime);
-
-            if (i_prime < 0 || i_prime >= rows || j_prime < 0 || j_prime >= cols)
+            //Check if computed neighbouring pixel is in range [0,rows-1]x[0,cols-1];
+            //If it is not, continue with next pixel, current pixel will
+            // keep default value 1
+            if ((neighbour_x < 0) || (neighbour_x >= rows))
                 continue;
-            
-            res(i_prime,j_prime) = pixels(i,j); 
+            if ((neighbour_y < 0) || (neighbour_y >= cols))
+                continue;
+
+            //Compute distance of coordinates to neighbouring pixel
+            // in x- and y-direction
+            dist_x = x_trans - neighbour_x;
+            dist_y = y_trans - neighbour_y;
+
+            //Handle boundaries seperately
+            if ((neighbour_x == rows - 1) && (neighbour_y == cols - 1))
+            {
+
+                new_img(i, j) = pixels(rows - 1, cols - 1);
+            }
+            else if (neighbour_x == rows - 1)
+            {
+
+                //Interpolation in y-direction
+                new_img(i, j) = (1. - dist_y) * pixels(neighbour_x, neighbour_y) + dist_y * pixels(neighbour_x, neighbour_y + 1);
+            }
+            else if (neighbour_y == cols - 1)
+            {
+
+                //Interpolation in x-direction
+                new_img(i, j) = (1. - dist_x) * pixels(neighbour_x, neighbour_y) + dist_x * pixels(neighbour_x + 1, neighbour_y);
+            }
+            else
+            {
+
+                //Bilinear interpolation
+                //Interpolate value in x-direction
+                interp_x1 = (1. - dist_x) * pixels(neighbour_x, neighbour_y) + dist_x * pixels(neighbour_x + 1, neighbour_y);
+                interp_x2 = (1. - dist_x) * pixels(neighbour_x, neighbour_y + 1) + dist_x * pixels(neighbour_x + 1, neighbour_y + 1);
+                //Interpolation in y-direction
+                new_img(i, j) = (1. - dist_y) * interp_x1 + dist_y * interp_x2;
+            }           
         }
     } 
 
-    return Image(res);
+    return new_img;
 }
 
 void Image::BilinearInterpolation()
