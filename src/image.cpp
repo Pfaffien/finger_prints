@@ -856,6 +856,69 @@ Image Image::DilateGray(cv::Mat_<float> kernel)
     return -res;
 }
 
+
+Image Image::Erode(cv::Mat_<float> kernel, std::string erosion_type)
+{
+    if (erosion_type == "binary") 
+        return this->ErodeBin(kernel);
+        
+    else if (erosion_type == "grayscale")
+        return this->ErodeGray(kernel);
+
+    else if (erosion_type == "complex")
+    {
+        double min, max;
+        double dist, dist_max;
+        cv::Mat_<uchar> grayscale = (-(*this)).from1to255();
+        cv::Mat_<uchar> tmp(kernel.rows, kernel.cols, (int) 0);
+        cv::Mat_<float> res(rows, cols, 255);
+        cv::Point center = this->center();
+        int ii, jj;
+
+        dist_max = distance_max(pixels, center.x, center.y);
+
+        for (int y = 0; y < rows; y++)
+        {
+            for (int x = 0; x < cols; x++)
+            {
+                for (int j = 0; j < kernel.rows; j++)
+                {
+                    for (int i = 0; i < kernel.cols; i++)
+                    {
+                        //Tests for boundary conditions
+                        ii = x - i;
+                        jj = y - j;
+
+                        if (ii < 0)
+                            ii = 0;
+                        if (jj < 0)
+                            jj = 0;
+
+                        dist = cv::norm(cv::Point(ii, jj) - center);
+
+                        // if (dist > 50) {
+                            tmp(j, i) = abs(grayscale(jj, ii) - dist * kernel(j, i));
+                            minMaxLoc(tmp, &min, &max);
+                            res(y, x) = min;
+                        // } else {
+                        //     res(y, x) = grayscale.at<uchar>(y, x);
+                        // }
+                        
+                    }
+                }
+            }
+        }
+        cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
+
+        return -Image(res);
+    }
+    else
+        throw std::runtime_error("Unknown operation. Supported types: binary, grayscale, complex");
+
+    
+}
+
+
 //TODO: skeletonization (ZS thinning) (create a method)
 //TODO: conversion of a dry finger to a clean image with skeletonization and dilatation (create a method)
 //TODO: conversion of a moist finger to a clean image with erosion (?) (create a method)

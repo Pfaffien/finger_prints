@@ -361,6 +361,8 @@ class Image{
          * \return Dilated image
          */
         Image DilateGray(cv::Mat_<float> kernel);
+
+        Image Erode(cv::Mat_<float> kernel, std::string erosion_type = "complex");
 };
 
 

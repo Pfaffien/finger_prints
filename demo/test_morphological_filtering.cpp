@@ -89,5 +89,18 @@ int main()
     Image erosion_dry = finger.ErodeBin(diamond());
     erosion_dry.display("Approximation of dry");
 
+    cv::destroyAllWindows();
+
+    //Using a complex erosion
+    Image filter("../img/filters/mixed.png");
+    Image dry_complex = finger.Erode(filter(), "complex");
+    dry_complex.display("Dry complex");
+
+    Image dry_diamond = finger.ErodeGray(filter());
+    dry_diamond.display("Dry gray");
+
+    Image diff_complex = dry_complex - dry_diamond;
+    diff_complex.display("Diff");
+
     return 0;
 }
