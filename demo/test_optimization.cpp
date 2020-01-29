@@ -16,9 +16,11 @@ int main()
 
     Image res = finger.Translation(p, 0);
     res.display("Result translation x");
+    res.save("tx");
 
     Image diff = res - finger_tx;
     diff.display("Difference translation x");
+    diff.save("diff_tx");
 
     //Clear the windows
     cv::destroyAllWindows();
@@ -34,9 +36,11 @@ int main()
 
     res = finger.Translation(px, py);
     res.display("Result translation xy");
+    res.save("txy");
 
     diff = res - finger_txy;
     diff.display("Difference translation xy");
+    diff.save("diff_txy");
 
 
     // //Improvements
@@ -46,9 +50,11 @@ int main()
 
     res = finger.Translation(px_d, py_d);
     res.display("Result translation xy improvement");
+    res.save("imp_txy");
 
     diff = res - finger_txy;
     diff.display("Difference translation xy improvement");
+    diff.save("diff_imp_txy");
     
     //Clear the windows
     cv::destroyAllWindows();
@@ -63,25 +69,35 @@ int main()
     res = finger.Translation(px, py);
     res = res.InverseRotation(theta);
     res.display("Result rtxy");
+    res.save("rtxy");
 
     diff = res - rtxy;
     diff.display("Difference rtxy");
+    diff.save("diff_rtxy");
 
+    //Clear the windows
+    cv::destroyAllWindows();
     
     p = descent_x(finger_tx, finger, 10, 0.8);
     cout << p << endl;
     res = finger.Translation(p, 0);
     res.display("Descent x");
+    res.save("grad_x");
 
-    // Image diff = res - finger_tx;
-    // diff.display("diff");
-
+    diff = res - finger_tx;
+    diff.display("Difference descent x");
+    diff.save("diff_grad_x");
+ 
+    //Clear the windows
+    cv::destroyAllWindows();
+ 
     finger_txy.display("txy");
     descent(finger_txy, finger, px_d, py_d, 5, -25, 0.5, 0.5);
     cout << "(p_x, p_y) = (" << px_d  << ", " << py_d << ")" << endl;
     res = finger.Translation(px_d, py_d);
+
     res.display("res");
-    
+    res.save("grad_xy");    
 
     return 0;
 }
