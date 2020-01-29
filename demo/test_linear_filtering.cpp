@@ -57,7 +57,7 @@ int main(){
     finger.display("initial");
 
     //initialization of the blurring filter
-    size = 9;
+    size = 5;
     cv::Mat_<float> blur(size, size, 1);
     blur /= pow(size, 2);
 
@@ -74,6 +74,7 @@ int main(){
 
     //comparison of the result
     Image diff_blur = classic_blur - dft_blur;
+    cv::normalize(diff_blur(), diff_blur(), 0, 1, cv::NORM_MINMAX);
     diff_blur.display("diff blur");
     diff_blur.save("diff_blur");
     float err_blur = classic_blur.error(dft_blur, 0.001);

@@ -183,119 +183,114 @@ double descent_x(Image f, Image g, double p0, double alpha)
     double p = p0;
     double p_up, p_down;
     double val, val_up, val_down;
+    double al = alpha;
     val = l(f,g);
+    if (val < 500) return 0;
 
-    while (alpha > 0.001) {
+    while (al > 0.001) {
 
-        p_up = p*(1+alpha);
-        p_down = p*(1-alpha);
+        p_up = p*(1+al);
+        p_down = p*(1-al);
 
         val_up = l(f, g, p_up);
         val_down = l(f, g, p_down);
 
         if (val_up < val) {
             p = p_up;
-            alpha *= (1+0.1);
+            al *= (1+0.1);
             val = val_up;
         } else if (val_down < val){
             p = p_down;
-            alpha *= (1+0.1);
+            al *= (1+0.1);
             val = val_down;
-        } else alpha /= 2;
+        } else al /= 2;
 
     }
-
+    std::cout << val << std::endl;
     return p;
 }
 
-double descent_y(Image f, Image g, double p0, double alpha)
+void descent(Image f, Image g, double& px, double& py, double p0x, double p0y, double alphax, double alphay)
 {
-    double p = p0;
-    double p_up, p_down;
-    double val, val_up, val_down;
+    px = p0x;
+    py = p0y;
+    double val, valuu, valud, valdu, valdd;
+    double valxu, valxd, valyu, valyd;
+    double pxu, pxd, pyu, pyd;
+
     val = l(f,g);
+    if (val < 500) {
+        px = 0;
+        py = 0;
+        return;
+    };
 
-    while (alpha > 0.001) {
+    while (alphax > 0.001 || alphay > 0.001){
 
-        p_up = p*(1+alpha);
-        p_down = p*(1-alpha);
+        pxu = px*(1+alphax);
+        pxd = px*(1-alphax);
+        pyu = py*(1+alphay);
+        pyd = py*(1-alphay);
 
-        val_up = l(f, g, 0, p_up);
-        val_down = l(f, g, 0, p_down);
+        valuu = l(f,g,pxu,pyu);
+        valud = l(f,g,pxu,pyd);
+        valdu = l(f,g,pxd,pyu);
+        valdd = l(f,g,pxd,pyd);
+        valxu = l(f,g,pxu,0);
+        valxd = l(f,g,pxd,0);
+        valyu = l(f,g,0,pyu);
+        valyd = l(f,g,0,pyd);
 
-        if (val_up < val) {
-            p = p_up;
-            alpha *= (1+0.1);
-            val = val_up;
-        } else if (val_down < val){
-            p = p_down;
-            alpha *= (1+0.1);
-            val = val_down;
-        } else alpha /= 2;
-
+        if (valuu < val) {
+            px = pxu;
+            py = pyu;
+            alphax *= 1.1;
+            alphay *= 1.1;
+            val = valuu;
+        } else if (valud < val) {
+            px = pxu;
+            py = pyd;
+            alphax *= (1+0.1);
+            alphay *= 1.1;
+            val = valud;
+        } else if (valdu < val){
+            px = pxd;
+            py = pyu;
+            alphax *= 1.1;
+            alphay *= 1.1;
+            val = valdu;
+        } else if (valdd < val) {
+            px = pxd;
+            py = pyd;
+            alphax *= 1.1;
+            alphay *= 1.1;
+            val = valdd;
+        } else if (valxu < val) {
+            px = pxu;
+            alphax *= 1.1;
+            alphay /= 2;
+            val = valxu;
+        } else if (valxd < val) {
+            px = pxd;
+            alphax *= 1.1;
+            alphay /= 2;
+            val = valxd;
+        } else if (valyu < val) {
+            py = pyu;
+            alphax /= 2;
+            alphay *= 1.1;
+            val = valyu;
+        } else if (valyd < val) {
+            py = pyd;
+            alphax /= 2;
+            alphay *= 1.1;
+            val = valyd;
+        } else {
+            alphax /= 2;
+            alphay /= 2;
+        }
     }
-
-    return p;
 }
-
-void descent_xy(Image f, Image g, double &px, double &py, double p0x, double p0y, 
-                double alphax, double alphay, int number)
-{
-    px = 0;
-    py = 0;
-    double val;
-    Image tmp(g());
-
-    for (int i = 0; i < number; i++){
-        val = descent_x(f, tmp, p0x, alphax);
-        px = val;
-        std::cout << val << std::endl;
-        tmp = tmp.Translation(val, 0);
-        tmp.display("bla");
-        val = descent_y(f, tmp, p0y, alphay);
-        py = val;
-        tmp = tmp.Translation(0, val);
-        std::cout << val << std::endl;
-        tmp.display("bla");
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

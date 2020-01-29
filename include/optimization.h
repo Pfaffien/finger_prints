@@ -14,10 +14,7 @@ void argmin_txy_n(Image, Image, int&, int&, int number = 5);
 double improvement(Image , Image , int , int);
 void improvement_xy(Image , Image , double&, double &, int number = 5);
 double descent_x(Image , Image , double p0 = 10, double alpha = 0.1);
-double descent_y(Image , Image , double p0 = 10, double alpha = 0.1);
-void descent_xy(Image f, Image g, double& px, double& py, double p0x = 10, double p0y = 10, 
-                double alphax = 0.1, double alphay = 0.1, int number = 5);
-
+void descent(Image f, Image g, double& px, double& py, double p0x, double p0y, double alphax, double alphay);
 
 
 #endif

@@ -39,7 +39,7 @@ int main()
     diff.display("Difference translation xy");
 
 
-    //Improvements
+    // //Improvements
     double px_d(0), py_d(0);
     improvement_xy(finger_txy, finger, px_d, py_d);
     cout << "(p_x, p_y) = (" << px_d  << ", " << py_d << ")" << endl;
@@ -67,20 +67,21 @@ int main()
     diff = res - rtxy;
     diff.display("Difference rtxy");
 
-    /*
-    double p = descent_x(finger_tx, finger, 30);
+    
+    p = descent_x(finger_tx, finger, 10, 0.8);
     cout << p << endl;
-    Image res = finger.Translation(p, 0);
+    res = finger.Translation(p, 0);
     res.display("Descent x");
-    Image diff = res - finger_tx;
-    diff.display("diff");
 
-       
-    descent_xy(finger_txy, finger, px, py, -10, 30);
-    cout << "(p_x, p_y) = (" << px  << ", " << py << ")" << endl;
-    res = finger.Translation(-10, 30);
+    // Image diff = res - finger_tx;
+    // diff.display("diff");
+
+    finger_txy.display("txy");
+    descent(finger_txy, finger, px_d, py_d, 5, -25, 0.5, 0.5);
+    cout << "(p_x, p_y) = (" << px_d  << ", " << py_d << ")" << endl;
+    res = finger.Translation(px_d, py_d);
     res.display("res");
-    */
+    
 
     return 0;
 }
