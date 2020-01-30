@@ -363,6 +363,8 @@ class Image{
         Image DilateGray(cv::Mat_<float> kernel);
 
         Image Erode(cv::Mat_<float> kernel, std::string erosion_type = "complex");
+
+        Image Skeletonize();
 };
 
 

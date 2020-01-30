@@ -767,7 +767,7 @@ Image Image::DilateNaive(std::vector<cv::Point> struct_elt)
 Image Image::ErodeBin(cv::Mat_<float> kernel)
 {
     Image bin = this->Binarize();
-    Image res(cv::Mat_<float>(rows, cols, (int)0));
+    Image res(cv::Mat_<float>(rows, cols, (int) 0));
     int ii, jj;
 
     for (int y = 0; y < rows; y++)
@@ -916,6 +916,305 @@ Image Image::Erode(cv::Mat_<float> kernel, std::string erosion_type)
         throw std::runtime_error("Unknown operation. Supported types: binary, grayscale, complex");
 
     
+}
+
+
+Image Image::Skeletonize()
+{
+    Image bin = this->Binarize();
+    bin = -bin;
+    Image tmp(cv::Mat_<float>(rows, cols, (int) 0));
+    int N(0), S(0);
+    int ii, jj, xx, yy;
+    bool eight_neighbours = true;
+    //To store de values of the neighbours and calculate S
+    std::vector<int>(8, -1);
+    int p2(0), p3(0), p4(0), p5(0), p6(0), p7(0), p8(0), p9(0);
+    int counter = 0;
+    int counters = 25;
+
+do {
+    counter = 0;
+    //STEP 1
+    for (int y = 1; y < rows-1; y++) {
+        for (int x = 1; x < cols-1; x++) {
+            //8-Neighbourhood
+            N = -bin(y, x);
+            for (int j = -1; j < 2; j++) {
+                for (int i = -1; i < 2; i++) {
+                    //Boundary conditions
+                    ii = x + i;
+                    jj = y + j;
+
+                    //Attention, test si > rows et cols aussi non ?
+                    if (ii < 0) {
+                        ii = 0;
+                        eight_neighbours = false;
+                    }
+                    if (jj < 0) {
+                        jj = 0;
+                        eight_neighbours = false;
+                    }
+
+                    N += bin(jj, ii);
+                    //Trouver un moyen de calculer S
+
+                }
+
+                //Conditions
+                //Attention, x +/- 1 et y +/- 1 ne sont pas forcément définis
+                if (y-1 < 0) {
+                    yy = 0;
+                    xx = x;
+                    p2 = bin(yy, xx);
+
+                    if (x-1 < 0) {
+                        xx = 0;
+                        p9 = bin(yy, xx);
+                    } else if (x+1 >= cols) {
+                        xx = cols-1;
+                        p3 = bin(yy, xx);
+                    }
+
+                } else if (y+1 >= rows) {
+                    yy = rows-1;
+                    xx = x;
+                    p6 = bin(yy, xx);
+
+                    if (x-1 < 0) {
+                        xx = 0;
+                        p7 = bin(yy, xx);
+                    } else if (x+1 >= cols) {
+                        xx = cols-1;
+                        p5 = bin(yy, xx);
+                    }
+
+                } else {
+                    yy = y-1;
+                    xx = x;
+                    p2 = bin(yy, xx);
+
+                    if (x-1 < 0) {
+                        xx = 0;
+                        p9 = bin(yy, xx);
+                    } else if (x+1 >= cols) {
+                        xx = cols-1;
+                        p3 = bin(yy, xx);
+                    }
+
+                    yy = y+1;
+                    xx = x;
+                    p2 = bin(yy, xx);
+
+                    if (x-1 < 0) {
+                        xx = 0;
+                        p9 = bin(yy, xx);
+                    } else if (x+1 >= cols) {
+                        xx = cols-1;
+                        p3 = bin(yy, xx);
+                    }
+
+                }
+
+                if (x-1 < 0) {
+                    p8 = bin(y, x);
+                } else {
+                    p8 = bin(y, x-1);
+                }
+
+                if (x+1 >= cols) {
+                    p4 = bin(y, x);
+                } else {
+                    p4 = bin(y, x+1);
+                }
+
+                S = 0;
+                if (p2 == 0 && p3 == 1) S++;
+                if (p3 ==0 && p4 == 1) S++;
+                if (p4 == 0 && p5 == 1) S++;
+                if (p5 == 0 && p6 == 1) S++;
+                if (p6 == 0 && p7 == 1) S++;
+                if (p7 == 0 && p8 == 1) S++;
+                if (p8 == 0 && p9 == 1) S++;
+                if (p9 == 0 && p2 == 1) S++;
+
+                // p2 = y-1 < 0 ? bin(y, x) : bin(y-1, x);
+                // p4 = x+1 >= cols ? bin(y, x) : bin(y, x+1);
+                // p6 = y+1 >= rows ? bin(y, x) : bin(y+1, x);
+                // p8 = x-1 < 0 ? bin(y, x) : bin(y, x-1);
+
+                if (eight_neighbours &&
+                    2 <= N && N <= 6 &&
+                    S == 1 &&
+                    p2 * p4 * p6 == 0 &&
+                    p4 * p6 * p8 == 0) {
+                    tmp(y, x) = 1;
+                    counter++;
+                }
+            }
+        }
+    }
+
+    //Setting noted points to zero
+    for (int y = 0; y < rows; y++) {
+        for (int x = 0; x < cols; x++) {
+            if (tmp(y, x) == 1) {
+                bin(y, x) = 0;
+                //Reinitializing tmp
+                tmp(y, x) = 0;
+            }
+        }
+    }
+
+    eight_neighbours = true;
+
+    //STEP 2
+    for (int y = 1; y < rows-1; y++) {
+        for (int x = 1; x < cols-1; x++) {
+            //8-Neighbourhood
+            N = -bin(y, x);
+            for (int j = -1; j < 2; j++) {
+                for (int i = -1; i < 2; i++) {
+                    //Boundary conditions
+                    ii = x + i;
+                    jj = y + j;
+
+                    //Attention, test si > rows et cols aussi non ?
+                    if (ii < 0) {
+                        ii = 0;
+                        eight_neighbours = false;
+                    } else if (ii >= cols) {
+                        ii = cols-1;
+                        eight_neighbours = false;
+                    }
+
+                    if (jj < 0) {
+                        jj = 0;
+                        eight_neighbours = false;
+                    } else if (jj >= rows) {
+                        jj = rows-1;
+                        eight_neighbours = false;
+                    }
+
+                    N += bin(jj, ii);
+                    //Trouver un moyen de calculer S
+
+                }
+
+                //Conditions
+                //Attention, x +/- 1 et y +/- 1 ne sont pas forcément définis
+                if (y-1 < 0) {
+                    yy = 0;
+                    xx = x;
+                    p2 = bin(yy, xx);
+
+                    if (x-1 < 0) {
+                        xx = 0;
+                        p9 = bin(yy, xx);
+                    } else if (x+1 >= cols) {
+                        xx = cols-1;
+                        p3 = bin(yy, xx);
+                    }
+
+                } else if (y+1 >= rows) {
+                    yy = rows-1;
+                    xx = x;
+                    p6 = bin(yy, xx);
+
+                    if (x-1 < 0) {
+                        xx = 0;
+                        p7 = bin(yy, xx);
+                    } else if (x+1 >= cols) {
+                        xx = cols-1;
+                        p5 = bin(yy, xx);
+                    }
+
+                } else {
+                    yy = y-1;
+                    xx = x;
+                    p2 = bin(yy, xx);
+
+                    if (x-1 < 0) {
+                        xx = 0;
+                        p9 = bin(yy, xx);
+                    } else if (x+1 >= cols) {
+                        xx = cols-1;
+                        p3 = bin(yy, xx);
+                    }
+
+                    yy = y+1;
+                    xx = x;
+                    p2 = bin(yy, xx);
+
+                    if (x-1 < 0) {
+                        xx = 0;
+                        p9 = bin(yy, xx);
+                    } else if (x+1 >= cols) {
+                        xx = cols-1;
+                        p3 = bin(yy, xx);
+                    }
+
+                }
+
+                if (x-1 < 0) {
+                    p8 = bin(y, x);
+                } else {
+                    p8 = bin(y, x-1);
+                }
+
+                if (x+1 >= cols) {
+                    p4 = bin(y, x);
+                } else {
+                    p4 = bin(y, x+1);
+                }
+
+                S = 0;
+                if (p2 == 0 && p3 == 1) S++;
+                if (p3 ==0 && p4 == 1) S++;
+                if (p4 == 0 && p5 == 1) S++;
+                if (p5 == 0 && p6 == 1) S++;
+                if (p6 == 0 && p7 == 1) S++;
+                if (p7 == 0 && p8 == 1) S++;
+                if (p8 == 0 && p9 == 1) S++;
+                if (p9 == 0 && p2 == 1) S++;                
+                std::cout << "S: " << S << std::endl;
+                std::cout << "N: " << N << std::endl;
+                std::cout << p2 << p4 << p6 << p8 << std::endl;
+                
+                // p2 = y-1 < 0 ? bin(y, x) : bin(y-1, x);
+                // p4 = x+1 >= cols ? bin(y, x) : bin(y, x+1);
+                // p6 = y+1 >= rows ? bin(y, x) : bin(y+1, x);
+                // p8 = x-1 < 0 ? bin(y, x) : bin(y, x-1);
+
+                if (eight_neighbours &&
+                    2 <= N && N <= 6 &&
+                    S == 1 &&
+                    p2 * p4 * p6 == 0 &&
+                    p2 * p6 * p8 == 0) {
+                    tmp(y, x) = 1;
+                    counter++;
+                }
+            }
+        }
+    }
+
+    //Setting noted points to zero
+    for (int y = 0; y < rows; y++) {
+        for (int x = 0; x < cols; x++) {
+            if (tmp(y, x) == 1) {
+                bin(y, x) = 0;
+                //Reinitializing tmp
+                tmp(y, x) = 0;
+            }
+        }
+    }
+    std::cout << counter << std::endl;
+
+    eight_neighbours = true;
+    counters--;
+} while(counters != 0);
+
+    return -bin;    
 }
 
 
