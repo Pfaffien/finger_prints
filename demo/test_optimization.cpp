@@ -42,8 +42,8 @@ int main()
     diff.display("Difference translation xy");
     diff.save("diff_txy");
 
-
-    // //Improvements
+/*
+    //Improvements
     double px_d(0), py_d(0);
     improvement_xy(finger_txy, finger, px_d, py_d);
     cout << "(p_x, p_y) = (" << px_d  << ", " << py_d << ")" << endl;
@@ -58,6 +58,7 @@ int main()
     
     //Clear the windows
     cv::destroyAllWindows();
+*/
 
     //RTXY
     Image rtxy("../img/rtxy_finger.png");
@@ -75,6 +76,7 @@ int main()
     diff.display("Difference rtxy");
     diff.save("diff_rtxy");
 
+/*
     //Clear the windows
     cv::destroyAllWindows();
     
@@ -98,6 +100,7 @@ int main()
 
     res.display("res");
     res.save("grad_xy");    
+*/
 
     return 0;
 }

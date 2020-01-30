@@ -57,22 +57,13 @@ void argmin_txy(Image f, Image g, int &px, int &py, int number){
     py = 0;
     Image tmp = Image(g());
     int val = 0;
-    bool stop = false;
 
     for (int i = 0; i < number; i++){
         val = argmin(f, tmp, 0);
-        if (val != 0) {
-            px += val;
-            tmp = tmp.Translation(val, 0);
-        }
-        else stop = true;
-
+        if (val != 0) px += val;
         val = argmin(f, tmp, 1);
-        if (val != 0) {
-            py += val;
-            tmp = tmp.Translation(0, val);
-        }
-        else if (stop) return;
+        if (val != 0) py += val;
+        tmp = g.Translation(px, py);
     }
 }
 
@@ -84,7 +75,6 @@ void argmin_rtxy(Image f, Image g, int& px, int& py, double& theta, int number)
     theta = 0;
     int val_p;
     double val_t;
-    int stop = 0;
 
     Image tmp = Image(g().clone());
 
@@ -92,25 +82,20 @@ void argmin_rtxy(Image f, Image g, int& px, int& py, double& theta, int number)
         val_t = argmin(f, tmp, 2);
         if (abs(val_t) > 0.001){
             theta += val_t;
-            tmp = tmp.InverseRotation(val_t);
         }
-        else stop = 1;
 
         val_p = argmin(f, tmp, 0);
         if (val_p != 0) {
             px += val_p;
-            tmp = tmp.Translation(val_p, 0);
-
         }
-        else stop += 1;
 
         val_p = argmin(f, tmp, 1);
         if (val_p != 0) {
             py += val_p;
-            tmp = tmp.Translation(0, val_p);
         }
-        else if (stop == 2) return;
-        stop = 0;
+
+        tmp = g.Rotation(theta);
+        tmp = tmp.Translation(px, py);
     }
 }
 
@@ -337,7 +322,7 @@ void descent(Image f, Image g, double& px, double& py, double p0x, double p0y, d
 
 
 
-
+/*
 //il y a surement un problème avec cette fonction
 float l_n(Image f, Image g, int px, int py)
 {
@@ -415,4 +400,4 @@ void argmin_txy_n(Image f, Image g, int &px, int &py, int number){
 
     }
 }
-
+*/
