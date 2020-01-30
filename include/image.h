@@ -219,6 +219,7 @@ class Image{
          * \param[in] theta rotation factor
          * */
         Image Rotation(double theta);
+        
         //Pure interpolation
         /**
          * \brief Bi-linear interpolation
@@ -234,7 +235,32 @@ class Image{
          * This function combines rotation and interpolation in such a way that no rounding of indices is performed anymore (in contrast to the combination of \ref Rotation and \ref BilinearInterpolation). Another difference is that we are looping over the pixels in the rotated target image instead of the pixels in the original image. Therefore we are perforing a backward rotation of the factor 2*PI-THETA to get the intensity values for our result pixels.
          * \param[in] theta is the rotation factor
          * */
-        Image InverseRotation(double theta);
+        Image InverseRotation(double theta, int extension = 0);
+
+
+        //Pure rotation function
+        /**
+         * \brief Scaled rotate image
+         *
+         * This function rotates an image by a factor theta, and with other parameters. It only rotates within a circle, and rotates more in the center and on the borders. 
+         * It works, for the rest, the same way as the rotation.
+         * \param[in] theta rotation factor
+         * \param[in] radius radius of the circle we apply to trotation in
+         * \param[in] center_x coordinate x of the center of this circle
+         * \param[in] center_y coordinate y of the center of this circle
+         * */
+        
+        
+        float error(Image img, float level);
+        
+        double ThetaScaled(int i, int j, cv::Point origin, double radius, double theta);
+        
+        /*TODO comment this new function*/
+        Image ScaledRotation(double theta, double radius, double center_x, double center_y);
+        
+        Image DifferenceMatrix(Image second);
+        
+        Image InverseScaledRotation(double theta, double radius, double center_x, double center_y);
 };
 
 #endif  // IMAGES_H_

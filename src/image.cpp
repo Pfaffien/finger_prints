@@ -1,5 +1,5 @@
 #include "image.h"
-
+#include <cmath>
 //TODO méthodes convolutions
 
 //Constructor 
@@ -147,8 +147,7 @@ Image Image::sym_xy(){
 }
 
 //All pixels into a vector
-std::vector<cv::Point> Image::matrix2vector()
-{
+std::vector<cv::Point> Image::matrix2vector(){
     std::vector<cv::Point> coord(rows*cols);
 
     for (int i = 0; i < (*this)().rows; i++) {
@@ -161,8 +160,7 @@ std::vector<cv::Point> Image::matrix2vector()
 }
 
 //Set of points of the image outside the geometric figure
-std::vector<cv::Point> Image::outside_ellipse(cv::Point center, float a, float b)
-{
+std::vector<cv::Point> Image::outside_ellipse(cv::Point center, float a, float b){
     std::vector<cv::Point> coords;
     cv::Point tmp((int) 0, (int) 0);
     float dist, maximum = std::max(a, b);;
@@ -226,7 +224,7 @@ cv::Mat_<uchar> Image::from1to255()
 }
 
 
-// Plotting and saving
+// Plotting
 void Image::display(cv::String imageName){
     //Convert intensity values back to [0,255]
     cv::Mat_<float> tmp = pixels.clone();
@@ -240,6 +238,7 @@ void Image::display(cv::String imageName){
     cv::waitKey(0);
 }
 
+//Saving
 void Image::save(std::string filename){
     //Convert intensity values back to [0,255]
     cv::Mat_<float> tmp = pixels.clone();
@@ -365,10 +364,9 @@ Image Image::Rotation(double theta){
             new_img(i_prime, j_prime) = (*this)(i, j); 
         }
     }
-    
     return new_img;
-    
 }
+
 
 //Apply bilinear interpolation to a given image matrix
 void Image::BilinearInterpolation(){
@@ -406,9 +404,170 @@ void Image::BilinearInterpolation(){
     }
 }
 
+//Backward method for performing image rotation with bilinear interpolation with a possible entension
+Image Image::InverseRotation(double theta, int extension){
+    
+    //Get maximum of rows and cols
+    int max = std::max(rows,cols);
+    
+    //Create a new image that will be the rotation of the original image. 
+    // Pixels get the default value 1
+    cv::Mat new_mat = cv::Mat::ones(rows+extension,cols+extension,CV_32F);
+    Image new_img(new_mat);
+    
+    //Auxiliary variables
+    double x, y, x_rot, y_rot;
+    int neighbour_x, neighbour_y;
+    double interp_x1, interp_x2, dist_x, dist_y;
+    
+    
+    //Loop over all pixels in rotated image
+    for (int i = 0; i < rows+extension; i++) {
+        for (int j = 0; j < cols+extension; j++) {
+    
+            //Transform pixel indices to coordinates in [-1,1]x[-a,a], 
+            // where a is aspect ratio of the image
+            IntToDoubleIndex(i, j, x, y);
+            
+            
+            //Rotate the coordinates by a given value theta
+            RotateIndices(x, y, 2*M_PI - theta, x_rot, y_rot);        
+            
+            //Transform the coordinates back to the [0,rows-1]x[0,cols-1] range
+            x_rot = (x_rot*max + rows+extension)/2.;
+            y_rot = (y_rot*max + cols+extension)/2.;
+            
+            //Determine indices of nearest neighbouring pixel of given coordinate
+            neighbour_x = floor(x_rot);
+            neighbour_y = floor(y_rot);
+            
+            //Check if computed neighbouring pixel is in range [0,rows-1]x[0,cols-1];
+            //If it is not, continue with next pixel, current pixel will 
+            // keep default value 1
+            if ((neighbour_x < 0) || (neighbour_x >=rows)) continue;
+            if ((neighbour_y < 0) || (neighbour_y >=cols)) continue;
+            
+            //Compute distance of coordinates to neighbouring pixel 
+            // in x- and y-direction
+            dist_x = x_rot - neighbour_x;
+            dist_y = y_rot - neighbour_y; 
+            
+            //Handle boundaries seperately
+            if ((neighbour_x == rows-1)&&(neighbour_y == cols-1)) {
+                new_img(i,j) = (*this)(rows-1,cols-1);
+            } else if (neighbour_x == rows-1) {
+                //Interpolation in y-direction
+                new_img(i, j) = (1.-dist_y)*(*this)(neighbour_x,neighbour_y) + dist_y*(*this)(neighbour_x,neighbour_y+1);
+            } else if (neighbour_y == cols-1) {
+                //Interpolation in x-direction
+                new_img(i, j) = (1.-dist_x)*(*this)(neighbour_x,neighbour_y) + dist_x*(*this)(neighbour_x+1,neighbour_y);
+            } else {
+                //Bilinear interpolation
+                //Interpolate value in x-direction
+                interp_x1 = (1.-dist_x)*(*this)(neighbour_x,neighbour_y)
+                            + dist_x*(*this)(neighbour_x+1,neighbour_y);
+                interp_x2 = (1.-dist_x)*(*this)(neighbour_x,neighbour_y+1)
+                            + dist_x*(*this)(neighbour_x+1,neighbour_y+1);
+                //Interpolation in y-direction
+                new_img(i, j) = (1.-dist_y)*interp_x1 + dist_y*interp_x2;
+            }        
+        }
+    }
+    
+    return new_img;
+}
 
-//Backward method for performing image rotation with bilinear interpolation
-Image Image::InverseRotation(double theta){
+//Compute the difference between two image matrices
+Image Image::DifferenceMatrix(Image second){
+    
+    //Create new matrix for storing the difference
+    cv::Mat new_mat = cv::Mat::zeros(rows,cols,CV_32F);
+    Image image_diff(new_mat);
+    
+    //Loop over all pixels
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            image_diff(i, j) = std::abs(second(i,j) - (*this)(i,j));
+        }
+    }
+    
+    return image_diff;
+}
+
+//Method to calculate the scaled theta
+double Image::ThetaScaled(int i, int j, cv::Point origin, double radius, double theta){
+    
+    double dist, theta_prime;
+    
+    //Creation of a point at the current indices
+    cv::Point tmp_point (i,j);
+    
+    //Computation of the distance between the point and the original
+    dist = cv::norm(origin - tmp_point);
+            
+    //Check if the point is inside the circle
+    if (dist < radius){
+        theta_prime = std::abs(-2*pow(dist/radius, 3) + 3*pow(dist/radius, 2));
+        theta_prime = 1-theta_prime;
+        theta_prime = theta*theta_prime;
+    }
+    else //if the points lies outside the radius
+        theta_prime = 0;
+    
+    return theta_prime;
+}
+
+//Compute pure scaled rotation (without interpolation)
+Image Image::ScaledRotation(double theta, double radius, double center_x, double center_y){
+    
+    //Create a new image that will be the rotation of the original image
+    cv::Mat new_mat = cv::Mat::ones(rows,cols,CV_32F);
+    Image new_img(new_mat);
+    
+    //Auxiliary indexing variables
+    double x, y, x_prime, y_prime;
+    int i_prime, j_prime;
+    double theta_prime;
+    
+    //Coordinates of the origin of the wanted circle
+    int origin_x = rows*center_x;
+    int origin_y = cols*center_y;
+    
+    //Creation of a point, at the origin of the wanted circle
+    cv::Point origin (origin_x,origin_y);
+    
+    //Loop over all pixel in original image
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            
+            //Calculation of theta_prime
+            theta_prime = ThetaScaled(i, j, origin, radius, theta);
+            
+            //Transform indices to double
+            IntToDoubleIndex(i, j, x, y);
+            
+            //Rotate indices
+            RotateIndices(x, y, theta_prime, x_prime, y_prime);
+            
+            //Transform rotated pixel indices back to integer indices
+            DoubleToIntIndex(x_prime, y_prime, i_prime, j_prime);
+            
+            //Check if computed pixel is in range (0,rows)x(0,cols)
+            if ((i_prime < 0) ||(i_prime >= rows)) continue;
+            if ((j_prime < 0) ||(j_prime >= cols)) continue;
+            
+            //Set new pixel to intensity of original pixel
+            new_img(i_prime, j_prime) = (*this)(i, j); 
+        }
+    }
+    
+    return new_img;
+    
+}
+
+//Backward method for performing image scaled rotation with bilinear interpolation
+Image Image::InverseScaledRotation(double theta, double radius, double center_x, double center_y){
+    
     
     //Get maximum of rows and cols
     int max = std::max(rows,cols);
@@ -423,16 +582,29 @@ Image Image::InverseRotation(double theta){
     int neighbour_x, neighbour_y;
     double interp_x1, interp_x2, dist_x, dist_y;
     
+    //Scaled theta or the rotation
+    double theta_prime;
+    
+    //Coordinates of the origin of the wanted circle
+    int origin_x = rows*center_x;
+    int origin_y = cols*center_y;
+    
+    //Creation of a point, at the orig in of the wanted circle
+    cv::Point origin (origin_x,origin_y);
+    
     //Loop over all pixels in rotated image
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
     
+            //Calculation of theta_prime
+            theta_prime = ThetaScaled(i, j, origin, radius, theta);
+            
             //Transform pixel indices to coordinates in [-1,1]x[-a,a], 
             // where a is aspect ratio of the image
             IntToDoubleIndex(i, j, x, y);
             
             //Rotate the coordinates by a given value theta
-            RotateIndices(x, y, 2*M_PI - theta, x_rot, y_rot);        
+            RotateIndices(x, y, 2*M_PI - theta_prime, x_rot, y_rot);        
             
             //Transform the coordinates back to the [0,rows-1]x[0,cols-1] range
             x_rot = (x_rot*max + rows)/2.;
@@ -478,19 +650,18 @@ Image Image::InverseRotation(double theta){
     return new_img;
 }
 
-/*//Compute the difference between two image matrices
-Image Image::DifferenceMatrix(Image second){
-    
-    //Create new matrix for storing the difference
-    cv::Mat new_mat = cv::Mat::zeros(rows,cols,CV_32F);
-    Image image_diff(new_mat);
-    
-    //Loop over all pixels
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            image_diff(i, j) = std::abs((*this)(i,j) - second(i,j));
+float Image::error(Image img, float level){
+    Image diff = *this - img;
+    float res = 0;
+
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < cols; j++)
+        {
+            if (diff(i, j) > level)
+                res++;
         }
     }
-    
-    return image_diff;
-}*/
+
+    return res / (rows * cols);
+}
