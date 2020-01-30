@@ -7,7 +7,7 @@
  */
 
 
-#include "starter3.h"
+#include "linear_filtering.h"
 #include "image.h"
 
 
@@ -20,7 +20,8 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
     int middle_x = k.cols/2;
     int middle_y = k.rows/2;
 
-    int mm, nn, ii, jj; //initialization of usefull indices
+    //new indices
+    int mm, nn, ii, jj;
 
     for (int i = 0; i < f.rows; i++) {
         for (int j = 0; j < f.cols; j++) {
@@ -35,9 +36,8 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
                     jj = j + middle_x - nn;
 
                     //Are we at the boundary of the image?
-                    if (ii >= 0 && ii < f.rows && jj>=0 && jj < f.cols) {
+                    if (ii >= 0 && ii < f.rows && jj>=0 && jj < f.cols)
                         res(i,j) += f(ii,jj)*k(mm,nn);
-                    }
                     //we use the extension to deal with boundaries
                     else {
                         if (ii < 0) ii = 0;
@@ -52,14 +52,18 @@ cv::Mat_<float> convolution(cv::Mat_<float> f, cv::Mat_<float> k)
     }
     // normalization of the result
     cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
+
     return res;
 }
 
 
 cv::Mat_<float> convolutionDFT(cv::Mat_<float> f, cv::Mat_<float> k)
 {
+    //optimal size for the Fourier Transform
     int M = f.rows + k.rows-1;
     int N = f.cols + k.cols-1;
+
+    //initialization of the usefull matrices
     cv::Mat_<float> conv(M, N, int(0));
     cv::Mat_<float> res(f.rows, f.cols);
 
@@ -106,13 +110,13 @@ float distance_max(cv::Mat_<float> mat, int x_c, int y_c)
     double min, max;
     minMaxLoc(dist, &min, &max);
 
-    return (float)max;
+    return (float) max;
 }
 
 
 cv::Mat_<float> kernel_decrease(int size, float distance, float distance_max)
 {
-    cv::Mat_<float> id(size, size, (int) 0);
+    cv::Mat_<float> id(size, size, (int)0);
     id(size/2, size/2) = 1;
 
     id = id * (distance_max - distance) / distance_max;
@@ -123,11 +127,17 @@ cv::Mat_<float> kernel_decrease(int size, float distance, float distance_max)
 
 cv::Mat_<float> kernel_blur(int size, float distance, float distance_max)
 {
+    //blurring kernel
     cv::Mat_<float> k(size, size, 1);
     k /= pow(size, 2);
+
+    //identity kernel
     cv::Mat_<float> id(size, size, (int) 0);
     id(size/2, size/2) = 1;
+
+    //mixed kernel
     k = k * distance/distance_max + id * (distance_max - distance)/distance_max;
+
     return k;
 }
 
@@ -156,14 +166,16 @@ cv::Mat_<float> convolution_complex(cv::Mat_<float> f, int size, int x_c,
         tmp.y = i;
         for (int j = 0; j < f.cols; j++){
             tmp.x = j;
+
             //distance of the center
             dist = cv::norm(center - tmp);
+
             //creation of the kernel
             if (decrease) kern = kernel_decrease(size, dist, dist_max);
             else kern = kernel_blur(size, dist, dist_max);
+
             for (int m = 0; m < size; m++) {
                 for (int n = 0; n < size; n++) {
-
                     //indices for the kernel
                     mm = size - 1 - m;
                     nn = size - 1 - n;
@@ -173,24 +185,25 @@ cv::Mat_<float> convolution_complex(cv::Mat_<float> f, int size, int x_c,
                     jj = j + middle_x - nn;
 
                     //Are we at the boundary of the image?
-                    if (ii >= 0 && ii < f.rows && jj>=0 && jj < f.cols) {
+                    if (ii >= 0 && ii < f.rows && jj>=0 && jj < f.cols)
                         res(i,j) += f(ii,jj)*kern(mm,nn);
-                    }
+
                     //we use the extension to deal with boundaries
                     else {
                         if (ii < 0) ii = 0;
                         if (jj < 0) jj = 0;
                         if (ii >= f.rows) ii = f.rows - 1;
                         if (jj >= f.cols) jj = f.cols - 1;
+
                         res(i,j) += f(ii,jj)*kern(mm,nn);
                     }
                 }
             }
         }
     }
-
     // normalization of the resultat
     cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
+
     return res;
 }
 
@@ -204,24 +217,27 @@ cv::Mat_<float> normalization(cv::Mat_<float> mat)
         }
     }
     cv::Mat_<float> res = mat.clone();
+
     return res/sum;
 }
 
 
 cv::Mat_<float> kernel_test(int size, float dist, float dist_max)
-{
+{   
+    //identity kernel
     cv::Mat_<float> id(size, size, int(0));
     id(size/2, size/2) = 1;
-    // std::cout << id << std::endl;
-    cv::Mat_<float> blur_1(size, size, int(0));
 
+    //small blurring kernel (blur less than the other)
+    cv::Mat_<float> blur_1(size, size, int(0));
     for (int i = size/8; i < size-size/8; i++) {
         for (int j = size/8; j < size-size/8; j++) {
             blur_1(i,j) = 1;
         }
     }
-
     blur_1 /= pow(size-2*size/8,2);
+
+    //blurring kernel
     cv::Mat_<float> blur_2(size, size, 1);
     blur_2 /= pow(size,2);
 

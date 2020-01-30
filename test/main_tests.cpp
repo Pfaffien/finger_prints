@@ -1,10 +1,8 @@
-#include <opencv2/core.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/highgui.hpp>
-#include <iostream>
+/**
+ * \file main_tests.cpp
+ * \brief main function to perform all google tests
+ */
 
-#include "image.h"
-#include "gtest/gtest.h"
 
 #include "test_getters.h"
 #include "test_difference.h"
@@ -12,6 +10,9 @@
 #include "test_convolution.h"
 #include "test_distmax.h"
 #include "test_rectangles.h"
+#include "test_binarization.h"
+#include "test_equality.h"
+#include "test_error.h"
 
 
 int main(int argc,char *argv[]) {

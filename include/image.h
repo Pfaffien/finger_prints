@@ -1,17 +1,19 @@
-#ifndef IMAGE_H_
-#define IMAGE_H_
+#ifndef _IMAGE_H_
+#define _IMAGE_H_
+
 
 /**
  * \file image.h
- * \brief Definition of the basis of the image
+ * \brief Definition of the class image and the methods
  * \author Thomas B. Clara B. Carole B. Svenja B.
  * \version 0.1
  * \date 01/12/20
  */
 
+
 #include <iostream>
 #include <vector>
-
+#include <cmath>
 #include <opencv2/core.hpp>
 #include <opencv2/core/types.hpp>
 #include <opencv2/highgui.hpp>
@@ -19,9 +21,8 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-
-#include "main1.h"
-#include "starter3.h"
+#include "pressure.h"
+#include "linear_filtering.h"
 
 
 /**
@@ -36,7 +37,8 @@ class Image{
         int cols;               //!< Number of columns of the pixel matrix
 
     public:
-        //Constructors
+        //CONSTRUCTORS
+
         /**
         * \brief Constructor from string
         * \param filename is a string representing the path to the image
@@ -47,9 +49,13 @@ class Image{
         * \brief Constructor from matrix
         * \param  pixel matrix representing an image
         */
-        Image(const cv::Mat_<float>& pixel);
+        Image(const cv::Mat_<float> &pixel);
 
-        //Operator overloading
+
+
+
+        //OPERATOR OVERLOADING
+
         /**
         * \brief Getter for the pixel of index (i,j)
         * \param i,j indices of the pixel
@@ -63,13 +69,13 @@ class Image{
         * \return Convolution of this and FILTER
         */
         Image operator*(cv::Mat_<float> filter);
+
         /**
         * \brief Convolution with image
         * \param filter is an instance of image. The convolution is performed with the pixel matrix of this class.
         * \return Convolution of this and the matrix of FILTER.
         */
         Image operator*(Image filter);
-
 
         /**
         * \brief Getter of the matrix of pixels
@@ -78,13 +84,46 @@ class Image{
         cv::Mat_<float> operator()() const;
 
         /**
+         * \brief Swap high intensity and low intensity
+         * \return ones-img
+         */
+        Image operator-();
+
+        /**
         * \brief Subtraction of images
         * \param img Image
         * \return this-img
         */
         Image operator-(const Image & img);
 
-        //Functions for min max
+        /**
+         * \brief Equality of images
+         * \param img Image
+         */
+        bool operator==(const Image &img);
+
+
+
+        //BASICS
+
+        /**
+        * \brief Conversion of matrix in [0,1] to matrix of [0,255]
+        * \return Converted matrix
+        */
+        cv::Mat_<uchar> from1to255();
+
+        /**
+        * \brief Display the image
+        * \param imageName name of the image
+        */
+        void display(cv::String imageName = "Display finger_print");
+
+        /**
+        * \brief save the image in the folder img/saved
+        * \param s name of the saved image
+        */
+        void save(std::string s = "finger_print");
+
         /**
         * \brief Maximum
         * \return Maximal intensity value of the image
@@ -97,7 +136,14 @@ class Image{
         */
         double min();
 
-        //Rectangles
+  	    /**
+  	    * \brief Computes the error between two images
+  	    * \param img image to compare this with
+  	    * \param level tolerance between the two images
+  	    * \return Error between the images in pourcentage
+  	    */
+  	    float error(Image img, float level);
+
         /**
         * \brief Change the value of the pixels in a rectangle
         * \param x, y coordinates of the upper left point of the rectangle
@@ -108,7 +154,6 @@ class Image{
         */
         Image rectangle(int x, int y, unsigned int length, unsigned int width, float color);
 
-        //Symetries
         /**
         * \brief Symmetry along axis x
         * \return Symmetrized image
@@ -127,6 +172,22 @@ class Image{
         */
         Image sym_xy();
 
+        /**
+         * \brief Finds the center of the image
+         * \return Points of the center
+         */
+        cv::Point center();
+
+        /**
+         * \brief Computes the mean of the image
+         * \return The mean of the image
+         */
+        float mean();
+
+
+
+        //PRESSURE
+
         //Eventuellement le faire pour une ellipse quelconque
         /**
         * \brief Put the pixels of the image in a vector of Point
@@ -142,40 +203,33 @@ class Image{
         */
         std::vector<cv::Point> outside_ellipse(cv::Point center, float a, float b);
 
-  	    //Pressure variation
         /**
-        * \brief Change the pressure of the image
+        * \brief Change the pressure of the image using cartesian coordinates
         * \param center center of the image
         * \param coords vector of coordinates to change
         * \param iso boolean saying if the function used is isotropic or not
         * \param param, param_x, param_y parameters of the functions
         * \return Image with modified pressure
         */
-  	    Image pressure(cv::Point center, std::vector<cv::Point> coords,  bool iso = false, float param = 50, float param_x = 0.00035, float param_y = 0.000175);
-
-        //Conversion
-        /**
-        * \brief Conversion of matrix in [0,1] to matrix of [0,255]
-        * \return Converted matrix
-        */
-        cv::Mat_<uchar> from1to255();
-
-        //Plotting and saving
-        /**
-        * \brief Display the image
-        * \param imageName name of the image
-        */
-        void display(cv::String imageName = "Display finger_print");
+  	    Image pressure(cv::Point center, std::vector<cv::Point> coords,  bool iso = false,
+                        float param = 50, float param_x = 0.00035, float param_y = 0.000175);
 
         /**
-        * \brief save the image in the folder img/saved
-        * \param s name of the saved image
+        * \brief Change the pressure of the image using polar coordinates
+        * \param center center of the image
+        * \param coords vector of coordinates to change
+        * \param iso boolean saying if the function used is isotropic or not
+        * \param param, param_x, param_y parameters of the functions
+        * \return Image with modified pressure
         */
-        void save(std::string s = "finger_print");
+  	    Image PressurePolar(cv::Point center, std::vector<cv::Point> coords,  bool iso = false,
+                            float param_rot = 0, int number_angles = 0, float threshold = 0.5,
+                            float param = 50, float param_x = 0.00035, float param_y = 0.000175);
 
-        //Scaled Rotation function
 
-        //Index shifting
+
+        //WARPS
+
         /**
          * \brief Index change integer to double
          *
@@ -188,6 +242,7 @@ class Image{
          * The inverse of this function is given by \ref DoubleToIntIndex.
          * */
         void IntToDoubleIndex(int i, int j, double& x, double& y);
+
         /**
          * \brief Index change integer to double
          *
@@ -199,6 +254,7 @@ class Image{
          * \param[out] y integer index for column (=y-direction)
          * */
         void DoubleToIntIndex(double x_prime, double y_prime, int& x, int& y);
+
         /**
          * \brief Rotate indices
          *
@@ -211,7 +267,6 @@ class Image{
          * */
         void RotateIndices(double x, double y, double theta, double& x_prime, double& y_prime);
 
-        //Pure rotation function
         /**
          * \brief Rotate image
          *
@@ -219,8 +274,7 @@ class Image{
          * \param[in] theta rotation factor
          * */
         Image Rotation(double theta);
-        
-        //Pure interpolation
+
         /**
          * \brief Bi-linear interpolation
          *
@@ -228,7 +282,6 @@ class Image{
          * */
         void BilinearInterpolation();
 
-        //Combined rotation and interpolation
         /**
          * \brief Improved rotation method
          *
@@ -237,30 +290,35 @@ class Image{
          * */
         Image InverseRotation(double theta, int extension = 0);
 
-
-        //Pure rotation function
         /**
          * \brief Scaled rotate image
          *
-         * This function rotates an image by a factor theta, and with other parameters. It only rotates within a circle, and rotates more in the center and on the borders. 
+         * This function rotates an image by a factor theta, and with other parameters. It only rotates within a circle, and rotates more in the center and on the borders.
          * It works, for the rest, the same way as the rotation.
          * \param[in] theta rotation factor
          * \param[in] radius radius of the circle we apply to trotation in
          * \param[in] center_x coordinate x of the center of this circle
          * \param[in] center_y coordinate y of the center of this circle
          * */
-        
-        
-        float error(Image img, float level);
-        
         double ThetaScaled(int i, int j, cv::Point origin, double radius, double theta);
-        
-        /*TODO comment this new function*/
         Image ScaledRotation(double theta, double radius, double center_x, double center_y);
-        
-        Image DifferenceMatrix(Image second);
-        
         Image InverseScaledRotation(double theta, double radius, double center_x, double center_y);
+        Image Translation(double px, double py);
+
+
+
+        // MORPHOLOGICAL FILTERING
+        Image BinarizeNaive(float);
+        Image Binarize();
+        Image DilateNaive(std::vector<cv::Point>);
+        Image ErodeNaive(std::vector<cv::Point>);
+        Image ErodeBin(cv::Mat_<float>);
+        Image DilateBin(cv::Mat_<float>);
+        Image ErodeGray(cv::Mat_<float>);
+        Image DilateGray(cv::Mat_<float>);
+        Image Erode(cv::Mat_<float>, std::string);
+        Image Skeletonize();
 };
 
-#endif  // IMAGES_H_
+
+#endif  /* _IMAGE_H_ */

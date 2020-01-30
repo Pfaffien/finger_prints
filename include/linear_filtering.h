@@ -1,15 +1,17 @@
-#ifndef _STARTER3_H
-#define _STARTER3_H
+#ifndef _LINEAR_FILTERING_H_
+#define _LINEAR_FILTERING_H_
 
 /**
- * \file starter3.h
+ * \file linear_filtering.h
  * \brief Useful functions to answer the part starter 3 and main 3
  * \author Thomas.B Clara.B
  * \version 0.1
  * \date 01/12/20
  */
 
+
 #include "image.h"
+
 
 /**
  * \fn cv::Mat_<float> convolution(cv::Mat_<float> A, cv::Mat_<float> B)
@@ -64,9 +66,10 @@ float distance_max(cv::Mat_<float>, int, int);
 
 
 /**
- * \fn cv::Mat_<float> convolution_complex(cv::Mat_<float> F, int size, int x_c, int y_c, bool decrease)
+ * \fn cv::Mat_<float> convolution_complex(cv::Mat_<float> F, int size, int x_c, int y_c, bool decrease=true)
  * \brief Computes the convolution product of the matrix of the image and a kernel
     which depends of the distance to the center of each point
+ * The function can either perform an energy decreasing filtering or a blurring decreasing filtering
  * \param F matrix of the image
  * \param size size of the kernel
  * \param x_c, y_c coordinates of the center
@@ -84,6 +87,7 @@ cv::Mat_<float> convolution_complex(cv::Mat_<float>, int, int, int, bool decreas
  */
 cv::Mat_<float> normalization(cv::Mat_<float>);
 
+
 /**
  * \fn cv::Mat_<float> kernel_test(int size, float dist, float dist_max)
  * \brief Creates a filter that blurs the image when the distance to the center
@@ -96,4 +100,5 @@ cv::Mat_<float> normalization(cv::Mat_<float>);
 cv::Mat_<float> kernel_test(int, float, float);
 //pourquoi pas essayer le flou de gauss
 
-#endif
+
+#endif   /* _LINEAR_FILTERING_H_ */

@@ -1,10 +1,11 @@
 #ifndef _TEST_MINMAX_
 #define _TEST_MINMAX_
 
-#include <opencv2/core.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/highgui.hpp>
-#include <iostream>
+/**
+ * \file test_minmax.h
+ * \brief Unit test for min max
+ */
+
 
 #include "image.h"
 #include "gtest/gtest.h"

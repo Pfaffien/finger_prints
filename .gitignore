@@ -33,6 +33,7 @@
 
 # Repository
 build/
+.vscode/
 
 # Swap
 *.swp

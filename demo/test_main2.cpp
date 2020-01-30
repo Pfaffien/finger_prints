@@ -39,7 +39,7 @@ int main()
     rotate3.save("scaled_rot_warp");
     
     //Printing the image difference
-    Image Diff_2 = warp_finger.DifferenceMatrix(rotate3);
+    Image Diff_2 = warp_finger-rotate3;
     Diff_2.display("Difference Matrix 2");
     
     Diff_2.save("diff_scaled_rot");

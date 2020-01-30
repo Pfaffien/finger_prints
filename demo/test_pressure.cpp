@@ -1,23 +1,19 @@
 /**
- * \file main1.h
- * \brief Usefull functions to answer the part main 1
+ * \file test_pressure.cpp
+ * \brief Test of the implementation of the pressure variation
  * \author Thomas.B Clara.B
  * \version 0.1
  * \date 01/14/20
  */
 
 #include "image.h"
-#include "main1.h"
+#include "pressure.h"
 
 using namespace std;
 
 int main()
 {
-    Image finger("../img/clean_finger.png");
-    finger.display("Finger");
-    cv::Point center(7*finger().cols/16, 9*finger().rows/16);
-
-    // Test of radial functions
+    // Test of radial functions on a white image
     int size = 300;
     cv::Point center_test(size/2, size/2);
     cv::Mat_<float> ones(size, size, 1);
@@ -42,18 +38,36 @@ int main()
     vect[1].save("exponential_solution");
     vect[2].display("Inverse");
     vect[2].save("inverse_solution");
-
+    
+    //Clear the windows
+    cv::destroyAllWindows();
+   
+    //Image used for the test
+    Image finger("../img/clean_finger.png");
+    finger.display("Finger");
 
     // Test of the selected class of function
-    vector<cv::Point> points = finger.matrix2vector();
+    vector<cv::Point> points = finger.matrix2vector(); //we apply the function to all pixels
+    cv::Point center = finger.center();
 
-    Image iso = finger.pressure(center, points, false, 50, 0.00035, 0.00035);
+    //isotropic function
+    Image iso = finger.pressure(center, points, true);
+    //anisotropic function
     Image aniso = finger.pressure(center, points);
-
+    //anisotropic polar function
+    Image aniso_polar = finger.PressurePolar(center, points);
+    
     iso.display("Isotropic");
     iso.save("isotropic");
     aniso.display("Anisotropic");
     aniso.save("anisotropic");
+    aniso_polar.display("Anisotropic polar");
+    aniso_polar.save("anisotropic_polar");
+
+    //Rotation and random angles
+    Image best = finger.PressurePolar(center, points, false, -PI/32, 5);
+    best.display("Best");
+    best.save("best_weak_pressure");
 
     return 0;
 }

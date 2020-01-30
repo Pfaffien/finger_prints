@@ -1,21 +1,31 @@
 #ifndef _TEST_DIFFERENCE_
 #define _TEST_DIFFERENCE_
 
-#include <opencv2/core.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/highgui.hpp>
-#include <iostream>
+/**
+ * \file test_difference.h
+ * \brief Unit test for difference
+ */
+
 
 #include "image.h"
 #include "gtest/gtest.h"
 
 
-TEST(difference, overloading)
+TEST(overloading, swap_intensity)
 {
-    cv::Mat_<float> mat(10, 15, 0.5);
-    cv::Mat_<float> mat2(10, 15, 0.2);
-    Image img(mat);
-    Image img2(mat2);
+    Image img(cv::Mat_<float>(10, 15, 0.3));
+    Image test(cv::Mat_<float>(10, 15, 0.7));
+
+    Image swapped = -img;
+
+    EXPECT_TRUE(swapped == test);
+}
+
+
+TEST(overloading, subtraction)
+{
+    Image img(cv::Mat_<float>(10, 15, 0.5));
+    Image img2(cv::Mat_<float>(10, 15, 0.2));
     Image diff = img - img2;
 
     for (int i = 0; i < 10; i++) {

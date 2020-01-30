@@ -1,12 +1,14 @@
 #ifndef _TEST_CONVOLUTION_H_
 #define _TEST_CONVOLUTION_H_
 
-#include <iostream>
-#include <cmath>
-#include <opencv2/core/types.hpp>
+/**
+ * \file test_convolution.h
+ * \brief Unit test for convolution
+ */
+
+
 
 #include "gtest/gtest.h"
-#include "starter3.h"
 #include "image.h"
 
 
@@ -117,7 +119,7 @@ TEST(convolution, fft)
   }
 }
 
-TEST(convolution, methods)
+TEST(overloading, convolution)
 {
     //f
     cv::Mat_<float> f(5, 5, 100);
