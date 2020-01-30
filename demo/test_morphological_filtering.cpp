@@ -97,10 +97,11 @@ int main()
 
     // cv::destroyAllWindows();
 
-    // //Using a complex erosion
-    // Image filter("../img/filters/mixed.png");
-    // Image dry_complex = finger.Erode(filter(), "complex");
-    // dry_complex.display("Dry complex");
+    //Using a complex erosion
+    Image filter("../img/filters/cross_3x3.png");
+    Image dry_complex = finger.Erode(filter(), "complex");
+    dry_complex.display("Dry complex");
+    dry_complex.save("dry_complex");
 
     // Image dry_diamond = finger.ErodeGray(filter());
     // dry_diamond.display("Dry gray");
