@@ -11,8 +11,9 @@ void argmin_rtxy(Image, Image, int&, int&, double&, int number = 10);
 double improvement(Image , Image , int , int);
 void improvement_xy(Image , Image , double&, double &, int number = 5);
 
-double descent_x(Image , Image , double p0 = 10, double alpha = 0.1);
-void descent(Image f, Image g, double& px, double& py, double p0x, double p0y, double alphax, double alphay);
+double descent(Image , Image , double p0 = 10, double alpha = 0.1, int arg = 0);
+void descent_xy(Image f, Image g, double& px, double& py, double p0x, double p0y, 
+                double alphax, double alphay, int number = 10);
 
 /*
 float l_n(Image, Image, int px = 0, int py = 0);

@@ -509,14 +509,14 @@ void Image::BilinearInterpolation()
 }
 
 
-Image Image::InverseRotation(double theta, int extension)
+Image Image::InverseRotation(double theta)
 {
     //Get maximum of rows and cols
     int max = std::max(rows, cols);
 
     //Create a new image that will be the rotation of the original image.
     // Pixels get the default value 1
-    cv::Mat new_mat = cv::Mat::ones(rows+extension,cols+extension,CV_32F);
+    cv::Mat new_mat = cv::Mat::ones(rows,cols,CV_32F);
     Image new_img(new_mat);
 
     //Auxiliary variables
@@ -526,8 +526,8 @@ Image Image::InverseRotation(double theta, int extension)
 
 
     //Loop over all pixels in rotated image
-    for (int i = 0; i < rows+extension; i++) {
-        for (int j = 0; j < cols+extension; j++) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
 
             //Transform pixel indices to coordinates in [-1,1]x[-a,a],
             // where a is aspect ratio of the image
@@ -538,8 +538,8 @@ Image Image::InverseRotation(double theta, int extension)
             RotateIndices(x, y, 2 * M_PI - theta, x_rot, y_rot);
 
             //Transform the coordinates back to the [0,rows-1]x[0,cols-1] range
-            x_rot = (x_rot*max + rows+extension)/2.;
-            y_rot = (y_rot*max + cols+extension)/2.;
+            x_rot = (x_rot*max + rows)/2.;
+            y_rot = (y_rot*max + cols)/2.;
 
             //Determine indices of nearest neighbouring pixel of given coordinate
             neighbour_x = floor(x_rot);

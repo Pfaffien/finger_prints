@@ -56,14 +56,25 @@ void argmin_txy(Image f, Image g, int &px, int &py, int number){
     px = 0;
     py = 0;
     Image tmp = Image(g());
-    int val = 0;
+    int vpx(0), vpy(0);
+    double val;
+    double prec = l(f,g);
+    double val_min = 100000;
 
     for (int i = 0; i < number; i++){
-        val = argmin(f, tmp, 0);
-        if (val != 0) px += val;
-        val = argmin(f, tmp, 1);
-        if (val != 0) py += val;
-        tmp = g.Translation(px, py);
+        vpx += argmin(f, tmp, 0);
+        vpy += argmin(f, tmp, 1);
+        
+        val = l(f,g,vpx, vpy);
+        if (val == prec) return;
+        prec = val;
+
+        if (val < val_min){
+            px = vpx;
+            py = vpy;
+            val_min = val;
+        }
+        tmp = g.Translation(vpx, vpy);
     }
 }
 
@@ -73,29 +84,32 @@ void argmin_rtxy(Image f, Image g, int& px, int& py, double& theta, int number)
     px = 0;
     py = 0;
     theta = 0;
-    int val_p;
-    double val_t;
+    double val_min = 10000000;
+    double val;
+    double prec = l(f,g);
+    int vpx(0), vpy(0);
+    double vt;
 
     Image tmp = Image(g().clone());
 
     for (int i = 0; i < number; i++){
-        val_t = argmin(f, tmp, 2);
-        if (abs(val_t) > 0.001){
-            theta += val_t;
+        vpx += argmin(f, tmp, 0);
+        vpy += argmin(f, tmp, 1);
+        vt += argmin(f, tmp, 2);
+
+        val = l(f,g,vpx,vpy,vt);
+        if (val == prec) return ;
+        prec = val;
+
+        if (val < val_min){
+            px = vpx;
+            py = vpy;
+            theta = vt;
+            val_min = val;
         }
 
-        val_p = argmin(f, tmp, 0);
-        if (val_p != 0) {
-            px += val_p;
-        }
-
-        val_p = argmin(f, tmp, 1);
-        if (val_p != 0) {
-            py += val_p;
-        }
-
-        tmp = g.Rotation(theta);
-        tmp = tmp.Translation(px, py);
+        tmp = g.InverseRotation(vt);
+        tmp = tmp.Translation(vpx, vpy);
     }
 }
 
@@ -108,7 +122,7 @@ double improvement(Image f, Image g, int p, int arg)
 
     switch (arg) {
         case 0:
-            for (double i = p-1; i < p+1; i = i + 0.1){
+            for (double i = p-1; i <= p+1; i = i+0.05){
                 val = l(f,g,i);
                 if (val < val_min){
                     val_min = val;
@@ -118,7 +132,7 @@ double improvement(Image f, Image g, int p, int arg)
             return min;
 
         case 1:
-            for (double i = p-1; i < p+1; i = i+0.1){
+            for (double i = p-1; i <= p+1; i = i+0.05){
                 val = l(f,g,0,i);
                
                 if (val < val_min){
@@ -140,36 +154,43 @@ void improvement_xy(Image f, Image g, double &px_d, double &py_d, int number)
     //initialization of px and py
     int px(0), py(0);
     argmin_txy(f, g, px, py);
+    px_d = px;
+    py_d = py;
+
+    double vpx(0), vpy(0);
+    double val = l(f,g,px,py);
+    double prec = val;
+    double val_min = val;
 
     Image gw = g.Translation(px, py);
-    float val = 0;
-    bool stop = false;
 
     for (int i = 0; i < number; i++){
-        val = improvement(f, gw, px, 0);
-        if (val != px_d) {
-            px_d = val;
-            gw = gw.Translation(val, 0);
-        }
-        else stop = true;
+        vpx += improvement(f, gw, px, 0);
+        vpy += improvement(f, gw, py, 1);
 
-        val = improvement(f, gw, py, 1);
-        if (val != py_d) {
-            py_d = val;
-            gw = gw.Translation(0, val);
+        val = l(f,g,vpx,vpy);
+        if (val == prec) return;
+        prec = val;
+
+        if (val < val_min){
+            px_d = vpx;
+            py_d = vpy;
+            val_min = val;
         }
-        else if (stop) return;
+
+        gw = g.Translation(vpx, vpy);
     }
 }
 
 
-double descent_x(Image f, Image g, double p0, double alpha)
+double descent(Image f, Image g, double p0, double alpha, int arg)
 {
     double p = p0;
     double p_up, p_down;
     double val, val_up, val_down;
     double al = alpha;
     val = l(f,g);
+
     if (val < 500) return 0;
 
     while (al > 0.001) {
@@ -177,8 +198,21 @@ double descent_x(Image f, Image g, double p0, double alpha)
         p_up = p*(1+al);
         p_down = p*(1-al);
 
-        val_up = l(f, g, p_up);
-        val_down = l(f, g, p_down);
+        switch (arg)
+        {
+            case 0:
+            val_up = l(f, g, p_up);
+            val_down = l(f, g, p_down);
+        case 1:
+            val_up = l(f, g, 0, p_up);
+            val_down = l(f, g, 0, p_down);
+        case 2:
+            val_up = l(f, g, 0, 0, p_up);
+            val_down = l(f, g, 0, 0, p_down);
+        default:
+            val_up = 0;
+            val_down = 0;
+        }
 
         if (val_up < val) {
             p = p_up;
@@ -191,9 +225,44 @@ double descent_x(Image f, Image g, double p0, double alpha)
         } else al /= 2;
 
     }
-    std::cout << val << std::endl;
     return p;
 }
+
+
+
+void descent_xy(Image f, Image g, double& px, double& py, double p0x, double p0y, 
+                double alphax, double alphay, int number)
+{
+    px = p0x;
+    py = p0y;
+    double val_min = l(f,g,px,py);
+    double val;
+    double vpx(0), vpy(0);
+
+    Image tmp(g());
+
+    for (int i = 0; i < number; i++){
+        vpx = descent(f, tmp, px, alphax, 0);
+        vpy = descent(f, tmp, py, alphay, 1);
+
+        tmp = g.Translation(vpx, vpy);
+
+        val = l(f,g,vpx,vpy);
+
+        if (val < val_min){
+            px = vpx;
+            py = vpy;
+            val_min = val;
+            alphax /= 2;
+            alphay /= 2;
+        } else {
+            alphax *= 1.1;
+            alphay *= 1.1;
+        }
+    }
+}
+
+/*
 
 void descent(Image f, Image g, double& px, double& py, double p0x, double p0y, double alphax, double alphay)
 {
@@ -276,11 +345,7 @@ void descent(Image f, Image g, double& px, double& py, double p0x, double p0y, d
         }
     }
 }
-
-
-
-
-
+*/
 
 
 

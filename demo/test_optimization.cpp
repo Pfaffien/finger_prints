@@ -5,10 +5,12 @@ using namespace std;
 int main()
 {
     Image finger("../img/clean_finger.png");
-    finger.display("Finger");
+    Image finger_tx("../img/tx_finger.png");
+    Image finger_txy("../img/txy_finger.png");
+    Image rtxy("../img/rtxy_finger.png");
+
 
     //X translation
-    Image finger_tx("../img/tx_finger.png");
     finger_tx.display("Finger tx");
 
     int p = argmin(finger_tx, finger, 0);
@@ -25,13 +27,12 @@ int main()
     //Clear the windows
     cv::destroyAllWindows();
 
+/*
     //XY translation 
-    Image finger_txy("../img/txy_finger.png");
     finger_txy.display("Finger txy");
 
     int px, py;
     argmin_txy(finger_txy, finger, px, py);
-    
     cout << "(p_x, p_y) = (" << px  << ", " << py << ")" << endl;
 
     res = finger.Translation(px, py);
@@ -42,8 +43,13 @@ int main()
     diff.display("Difference translation xy");
     diff.save("diff_txy");
 
-/*
+    //Clear the windows
+    cv::destroyAllWindows();   
+
+
     //Improvements
+    finger_txy.display("txy");
+
     double px_d(0), py_d(0);
     improvement_xy(finger_txy, finger, px_d, py_d);
     cout << "(p_x, p_y) = (" << px_d  << ", " << py_d << ")" << endl;
@@ -58,13 +64,13 @@ int main()
     
     //Clear the windows
     cv::destroyAllWindows();
-*/
+
 
     //RTXY
-    Image rtxy("../img/rtxy_finger.png");
     rtxy.display("rtxy");
+
     double theta;
-    argmin_rtxy(rtxy, finger, px, py, theta);
+    argmin_rtxy(rtxy, finger, px, py, theta, 15);
     cout << "(px, py, theta) = " << "(" << px << ", " << py << ", " << theta << ")" << endl;
 
     res = finger.Translation(px, py);
@@ -76,13 +82,18 @@ int main()
     diff.display("Difference rtxy");
     diff.save("diff_rtxy");
 
-/*
     //Clear the windows
     cv::destroyAllWindows();
     
-    p = descent_x(finger_tx, finger, 10, 0.8);
-    cout << p << endl;
-    res = finger.Translation(p, 0);
+
+    //Coordinate descent x
+    finger_tx.display("tx");
+
+    double pp;
+    pp = descent(finger_tx, finger, 10, 0.8, 0);
+    cout << pp << endl;
+
+    res = finger.Translation(pp, 0);
     res.display("Descent x");
     res.save("grad_x");
 
@@ -92,15 +103,23 @@ int main()
  
     //Clear the windows
     cv::destroyAllWindows();
- 
-    finger_txy.display("txy");
-    descent(finger_txy, finger, px_d, py_d, 5, -25, 0.5, 0.5);
-    cout << "(p_x, p_y) = (" << px_d  << ", " << py_d << ")" << endl;
-    res = finger.Translation(px_d, py_d);
-
-    res.display("res");
-    res.save("grad_xy");    
+    
 */
+    //Coordinate descent xy
+    finger_txy.display("txy");
+
+    double px_d, py_d;
+    descent_xy(finger_txy, finger, px_d, py_d, 10, -20, 0.2, 0.2);
+    cout << "(p_x, p_y) = (" << px_d  << ", " << py_d << ")" << endl;
+    
+    res = finger.Translation(px_d, py_d);
+    res.display("res");
+    res.save("grad_xy");   
+
+    diff = res - finger_txy;
+    diff.display("Difference descent xy");
+    diff.save("diff_grad_xy");
+
 
     return 0;
 }

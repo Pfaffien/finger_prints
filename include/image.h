@@ -288,7 +288,7 @@ class Image{
          * This function combines rotation and interpolation in such a way that no rounding of indices is performed anymore (in contrast to the combination of \ref Rotation and \ref BilinearInterpolation). Another difference is that we are looping over the pixels in the rotated target image instead of the pixels in the original image. Therefore we are perforing a backward rotation of the factor 2*PI-THETA to get the intensity values for our result pixels.
          * \param[in] theta is the rotation factor
          * */
-        Image InverseRotation(double theta, int extension = 0);
+        Image InverseRotation(double theta);
 
         /**
          * \brief Scaled rotate image
