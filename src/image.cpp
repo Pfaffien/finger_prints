@@ -251,6 +251,40 @@ Image Image::sym_xy()
 }
 
 
+cv::Point Image::center()
+{
+    Image cpy = -(*this);
+    cv::Point tmp(0,0);
+    cv::Point sum(0,0);
+    float sum_val = 0;
+
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
+            tmp.x = j;
+            tmp.y = i;
+
+            sum += cpy(i,j)*tmp;
+            sum_val += cpy(i,j);
+        }
+    }
+    sum /= sum_val;
+    
+    return cv::Point((int)sum.x, (int)sum.y);
+}
+
+
+float Image::mean()
+{
+    float sum = 0;
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++)
+            sum += pixels(i,j);
+    }
+
+    return sum/(rows*cols);
+}
+
+
 
 
 //PRESSURE
@@ -355,70 +389,6 @@ Image Image::PressurePolar(cv::Point center, std::vector<cv::Point> coords,
 
 //WARPS
 
-cv::Point Image::center()
-{
-    Image cpy = -(*this);
-    cv::Point tmp(0,0);
-    cv::Point sum(0,0);
-    float sum_val = 0;
-
-    for (int i = 0; i < rows; i++){
-        for (int j = 0; j < cols; j++){
-            tmp.x = j;
-            tmp.y = i;
-
-            sum += cpy(i,j)*tmp;
-            sum_val += cpy(i,j);
-        }
-    }
-    sum /= sum_val;
-    
-    return cv::Point((int)sum.x, (int)sum.y);
-}
-
-
-Image Image::TranslationV(int length)
-{
-    cv::Mat_<float> res(rows, cols, int(0));
-
-    if (length > 0){
-        for (int i = 0; i < rows-length; i++)
-        {
-            for (int j = 0; j < cols; j++)
-                res(i+length, j) = pixels(i, j);
-        }
-    } else {
-        for (int i = -length; i < rows; i++){
-            for (int j = 0; j < cols; j++)
-                res(i+length,j) = pixels(i,j);
-        }
-    }
-   
-    return Image(res);
-}
-
-
-Image Image::TranslationH(int length)
-{
-    cv::Mat_<float> res(rows, cols, int(0));
-
-    if (length > 0){
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < cols-length; j++)
-                res(i, j+length) = pixels(i, j);
-        }
-    } else {
-        for (int i = 0; i < rows; i++){
-            for (int j = -length; j < cols; j++)
-                res(i,j+length) = pixels(i,j);
-        }
-    }
-   
-    return Image(res);
-}
-
-
 void Image::IntToDoubleIndex(int i, int j, double &x, double &y)
 {
     //Get maximum of rows and cols
@@ -487,6 +457,74 @@ Image Image::Rotation(double theta)
     return new_img;
 }
 
+
+//voir comment adapter pour pouvoir prendre px et py non entier (il faudra utiliser l'interpolation)
+Image Image::Translation(double px, double py)
+{
+    cv::Mat new_mat = cv::Mat::ones(rows, cols, CV_32F);
+    Image new_img(new_mat);
+    double x, y;
+    double x_trans, y_trans;
+    int neighbour_x, neighbour_y;
+    double interp_x1, interp_x2, dist_x, dist_y;
+
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            
+            x_trans = i + py;
+            y_trans = j + px;
+
+            //Determine indices of nearest neighbouring pixel of given coordinate
+            neighbour_x = floor(x_trans);
+            neighbour_y = floor(y_trans);
+
+            //Check if computed neighbouring pixel is in range [0,rows-1]x[0,cols-1];
+            //If it is not, continue with next pixel, current pixel will
+            // keep default value 1
+            if ((neighbour_x < 0) || (neighbour_x >= rows))
+                continue;
+            if ((neighbour_y < 0) || (neighbour_y >= cols))
+                continue;
+
+            //Compute distance of coordinates to neighbouring pixel
+            // in x- and y-direction
+            dist_x = x_trans - neighbour_x;
+            dist_y = y_trans - neighbour_y;
+
+            //Handle boundaries seperately
+            if ((neighbour_x == rows - 1) && (neighbour_y == cols - 1))
+            {
+
+                new_img(i, j) = pixels(rows - 1, cols - 1);
+            }
+            else if (neighbour_x == rows - 1)
+            {
+
+                //Interpolation in y-direction
+                new_img(i, j) = (1. - dist_y) * pixels(neighbour_x, neighbour_y) + dist_y * pixels(neighbour_x, neighbour_y + 1);
+            }
+            else if (neighbour_y == cols - 1)
+            {
+
+                //Interpolation in x-direction
+                new_img(i, j) = (1. - dist_x) * pixels(neighbour_x, neighbour_y) + dist_x * pixels(neighbour_x + 1, neighbour_y);
+            }
+            else
+            {
+
+                //Bilinear interpolation
+                //Interpolate value in x-direction
+                interp_x1 = (1. - dist_x) * pixels(neighbour_x, neighbour_y) + dist_x * pixels(neighbour_x + 1, neighbour_y);
+                interp_x2 = (1. - dist_x) * pixels(neighbour_x, neighbour_y + 1) + dist_x * pixels(neighbour_x + 1, neighbour_y + 1);
+                //Interpolation in y-direction
+                new_img(i, j) = (1. - dist_y) * interp_x1 + dist_y * interp_x2;
+            }           
+        }
+    } 
+
+    return new_img;
+}
 
 void Image::BilinearInterpolation()
 {

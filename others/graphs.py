@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from math import *
 
 """
-C++ project
+C++ project: pressure
 """
 
 
