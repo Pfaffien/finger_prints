@@ -45,12 +45,12 @@ class Image{
         */
         Image(cv::String filename);
 
+
         /**
         * \brief Constructor from matrix
         * \param  pixel matrix representing an image
         */
         Image(const cv::Mat_<float> &pixel);
-
 
 
 
@@ -63,12 +63,14 @@ class Image{
         */
         float& operator()(int i, int j);
 
+
         /**
         * \brief Convolution with matrix
         * \param filter is a matrix to perform the convolution with
         * \return Convolution of this and FILTER
         */
         Image operator*(cv::Mat_<float> filter);
+
 
         /**
         * \brief Convolution with image
@@ -77,11 +79,13 @@ class Image{
         */
         Image operator*(Image filter);
 
+
         /**
         * \brief Getter of the matrix of pixels
         * \return Matrix of pixels
         */
         cv::Mat_<float> operator()() const;
+
 
         /**
          * \brief Swap high intensity and low intensity
@@ -89,12 +93,14 @@ class Image{
          */
         Image operator-();
 
+
         /**
         * \brief Subtraction of images
         * \param img Image
         * \return this-img
         */
         Image operator-(const Image & img);
+
 
         /**
          * \brief Equality of images
@@ -112,11 +118,13 @@ class Image{
         */
         cv::Mat_<uchar> from1to255();
 
+
         /**
         * \brief Display the image
         * \param imageName name of the image
         */
         void display(cv::String imageName = "Display finger_print");
+
 
         /**
         * \brief save the image in the folder img/saved
@@ -124,17 +132,20 @@ class Image{
         */
         void save(std::string s = "finger_print");
 
+
         /**
         * \brief Maximum
         * \return Maximal intensity value of the image
         */
         double max();
 
+
         /**
         * \brief Minimum
         * \return Minimal intensity value of the image
         */
         double min();
+
 
   	    /**
   	    * \brief Computes the error between two images
@@ -143,6 +154,7 @@ class Image{
   	    * \return Error between the images in pourcentage
   	    */
   	    float error(Image img, float level);
+
 
         /**
         * \brief Change the value of the pixels in a rectangle
@@ -154,11 +166,13 @@ class Image{
         */
         Image rectangle(int x, int y, unsigned int length, unsigned int width, float color);
 
+
         /**
         * \brief Symmetry along axis x
         * \return Symmetrized image
         */
         Image sym_x();
+
 
         /**
         * \brief Symmetry along axis y
@@ -166,17 +180,20 @@ class Image{
         */
         Image sym_y();
 
+
         /**
         * \brief Symmetry along axis x and y
         * \return Symmetrized image
         */
         Image sym_xy();
 
+
         /**
          * \brief Finds the center of the image
          * \return Points of the center
          */
         cv::Point center();
+
 
         /**
          * \brief Computes the mean of the image
@@ -195,6 +212,7 @@ class Image{
         */
         std::vector<cv::Point> matrix2vector();
 
+
         /**
         * \brief Put the pixels that are outside an ellipse in a vector of Point
         * \param center center of the ellipse
@@ -202,6 +220,7 @@ class Image{
         * \return vector of Point
         */
         std::vector<cv::Point> outside_ellipse(cv::Point center, float a, float b);
+
 
         /**
         * \brief Change the pressure of the image using cartesian coordinates
@@ -213,6 +232,7 @@ class Image{
         */
   	    Image pressure(cv::Point center, std::vector<cv::Point> coords,  bool iso = false,
                         float param = 50, float param_x = 0.00035, float param_y = 0.000175);
+
 
         /**
         * \brief Change the pressure of the image using polar coordinates
@@ -243,6 +263,7 @@ class Image{
          * */
         void IntToDoubleIndex(int i, int j, double& x, double& y);
 
+
         /**
          * \brief Index change integer to double
          *
@@ -254,6 +275,7 @@ class Image{
          * \param[out] y integer index for column (=y-direction)
          * */
         void DoubleToIntIndex(double x_prime, double y_prime, int& x, int& y);
+
 
         /**
          * \brief Rotate indices
@@ -267,6 +289,7 @@ class Image{
          * */
         void RotateIndices(double x, double y, double theta, double& x_prime, double& y_prime);
 
+
         /**
          * \brief Rotate image
          *
@@ -275,6 +298,7 @@ class Image{
          * */
         Image Rotation(double theta);
 
+
         /**
          * \brief Bi-linear interpolation
          *
@@ -282,13 +306,16 @@ class Image{
          * */
         void BilinearInterpolation();
 
+
         /**
          * \brief Improved rotation method
          *
          * This function combines rotation and interpolation in such a way that no rounding of indices is performed anymore (in contrast to the combination of \ref Rotation and \ref BilinearInterpolation). Another difference is that we are looping over the pixels in the rotated target image instead of the pixels in the original image. Therefore we are perforing a backward rotation of the factor 2*PI-THETA to get the intensity values for our result pixels.
-         * \param[in] theta is the rotation factor
+         * \param theta is the rotation factor
+         * \param extension 
          * */
-        Image InverseRotation(double theta);
+        Image InverseRotation(double theta, int extension = 0);
+
 
         /**
          * \brief Scaled rotate image
@@ -301,23 +328,49 @@ class Image{
          * \param[in] center_y coordinate y of the center of this circle
          * */
         double ThetaScaled(int i, int j, cv::Point origin, double radius, double theta);
+
+
         Image ScaledRotation(double theta, double radius, double center_x, double center_y);
+
+
         Image InverseScaledRotation(double theta, double radius, double center_x, double center_y);
+
+
         Image Translation(double px, double py);
 
 
 
         // MORPHOLOGICAL FILTERING
+
         Image BinarizeNaive(float);
+
+
         Image Binarize();
+
+
         Image DilateNaive(std::vector<cv::Point>);
+
+
         Image ErodeNaive(std::vector<cv::Point>);
+
+
         Image ErodeBin(cv::Mat_<float>);
+
+
         Image DilateBin(cv::Mat_<float>);
+
+
         Image ErodeGray(cv::Mat_<float>);
+
+
         Image DilateGray(cv::Mat_<float>);
+
+
         Image Erode(cv::Mat_<float>, std::string);
+
+
         Image Skeletonize();
+
 };
 
 

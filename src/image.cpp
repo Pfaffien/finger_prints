@@ -92,12 +92,9 @@ bool Image::operator==(const Image &img)
     if (rows != img.rows || cols != img.cols)
         throw std::runtime_error("Sizes do not match");
 
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < cols; j++)
-        {
-            if (pixels(i, j) != img.pixels(i, j))
-            {
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
+            if (pixels(i, j) != img.pixels(i, j)){
                 eq = false;
                 break;
             }
@@ -131,10 +128,8 @@ float Image::error(Image img, float level)
     Image diff = *this - img;
     float res = 0;
 
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < cols; j++)
-        {
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
             if (diff(i, j) > level)
                 res++;
         }
@@ -194,8 +189,7 @@ Image Image::rectangle(int x_begin, int y_begin,
     cv::Mat_<float> new_mat = pixels.clone();
     Image new_pixels(new_mat);
 
-    for (int i = y_begin; i < y_begin + length; i++)
-    {
+    for (int i = y_begin; i < y_begin + length; i++){
         for (int j = x_begin; j < x_begin + width; j++)
             new_pixels(i, j) = color;
     }
@@ -209,8 +203,7 @@ Image Image::sym_x()
     cv::Mat new_mat = pixels.clone();
     Image new_pixels(new_mat);
 
-    for (int j = 0; j < cols; j++)
-    {
+    for (int j = 0; j < cols; j++){
         for (int i = 0; i < rows; i++)
             new_pixels(i, j) = pixels(rows - i - 1, j);
     }
@@ -224,8 +217,7 @@ Image Image::sym_y()
     cv::Mat new_mat = pixels.clone();
     Image new_img(new_mat);
 
-    for (int i = 0; i < rows; i++)
-    {
+    for (int i = 0; i < rows; i++){
         for (int j = 0; j < cols; j++)
             new_img(i, j) = pixels(i, cols - j - 1);
     }
@@ -239,8 +231,7 @@ Image Image::sym_xy()
     cv::Mat_<float> new_mat(cols, rows);
     Image new_img(new_mat);
 
-    for (int i = 0; i < rows; i++)
-    {
+    for (int i = 0; i < rows; i++){
         for (int j = 0; j < cols; j++)
             new_img(j, i) = pixels(i, j);
     }
@@ -291,8 +282,7 @@ std::vector<cv::Point> Image::matrix2vector()
 {
     std::vector<cv::Point> coord(rows * cols);
 
-    for (int i = 0; i < rows; i++)
-    {
+    for (int i = 0; i < rows; i++){
         for (int j = 0; j < cols; j++)
             coord[i * cols + j] = cv::Point(j, i);
     }
@@ -309,34 +299,25 @@ std::vector<cv::Point> Image::outside_ellipse(cv::Point center, float a, float b
     ;
     cv::Point focus1, focus2;
 
-    if (a == b)
-    {
-
+    if (a == b){
         focus1 = center;
         focus2 = center;
-    } else if (a > b)
-    {
-
+    } else if (a > b){
         dist = sqrt(a * a - b * b);
         focus1.x = center.x - dist;
         focus1.y = center.y;
         focus2.x = center.x + dist;
         focus2.y = center.y;
-    }
-    else if (a < b)
-    {
-
+    }else if (a < b){
         dist = sqrt(b * b - a * a);
         focus1.x = center.x;
         focus1.y = center.y - dist;
         focus2.x = center.x;
         focus2.y = center.y + dist;
     }
-    for (int i = 0; i < pixels.rows; i++)
-    {
+    for (int i = 0; i < pixels.rows; i++){
         tmp.y = i;
-        for (int j = 0; j < pixels.cols; j++)
-        {
+        for (int j = 0; j < pixels.cols; j++){
             tmp.x = j;
             if (cv::norm(tmp - focus1) + cv::norm(tmp - focus2) > 2 * maximum)
                 coords.push_back(cv::Point(tmp.x, tmp.y));
@@ -427,10 +408,8 @@ Image Image::Rotation(double theta)
     int i_prime, j_prime;
 
     //Loop over all pixel in original image
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < cols; j++)
-        {
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
 
             //Transform indices to double
             IntToDoubleIndex(i, j, x, y);
@@ -459,26 +438,21 @@ Image Image::Rotation(double theta)
 void Image::BilinearInterpolation()
 {
     //Loop over all pixels to find the non-affected ones
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < cols; j++)
-        {
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
             //Check if pixel is corner or boundary pixel
-            if (pixels(i, j) == 1)
-            {
+            if (pixels(i, j) == 1){
 
-                if (i == 0)
-                {
+                if (i == 0){
+                    
                     if (j == 0)
-
                         pixels(i, j) = 0.5 * (pixels(i + 1, j) + pixels(i, j + 1));
                     else if (j == cols - 1)
                         pixels(i, j) = 0.5 * (pixels(i + 1, j) + pixels(i, j - 1));
                     else
                         pixels(i, j) = (1. / 3.) * (pixels(i + 1, j) + pixels(i, j - 1) + pixels(i, j + 1));
-                }
-                else if (i == rows - 1)
-                {
+                
+                } else if (i == rows - 1){
 
                     if (j == cols - 1)
                         pixels(i, j) = 0.5 * (pixels(i - 1, j) + pixels(i, j - 1));
@@ -486,22 +460,20 @@ void Image::BilinearInterpolation()
                         pixels(i, j) = 0.5 * (pixels(i - 1, j) + pixels(i, j + 1));
                     else
                         pixels(i, j) = (1. / 3.) * (pixels(i - 1, j) + pixels(i, j - 1) + pixels(i, j + 1));
-                }
-                else if (j == 0)
-                {
+                
+                } else if (j == 0){
 
                     pixels(i, j) = (1. / 3.) * (pixels(i + 1, j) + pixels(i - 1, j) + pixels(i, j + 1));
-                }
-                else if (j == cols - 1)
-                {
+                
+                } else if (j == cols - 1){
 
                     pixels(i, j) = (1. / 3.) * (pixels(i + 1, j) + pixels(i - 1, j) + pixels(i, j - 1));
-                }
-                else
-                {
+                
+                } else {
 
                     //Interpolation for non-boundary pixels
                     pixels(i, j) = 0.25 * (pixels(i - 1, j) + pixels(i + 1, j) + pixels(i, j - 1) + pixels(i, j + 1));
+                
                 }
             }
         }
@@ -509,14 +481,14 @@ void Image::BilinearInterpolation()
 }
 
 
-Image Image::InverseRotation(double theta)
+Image Image::InverseRotation(double theta, int extension)
 {
     //Get maximum of rows and cols
     int max = std::max(rows, cols);
 
     //Create a new image that will be the rotation of the original image.
     // Pixels get the default value 1
-    cv::Mat new_mat = cv::Mat::ones(rows,cols,CV_32F);
+    cv::Mat new_mat = cv::Mat::ones(rows+extension,cols+extension,CV_32F);
     Image new_img(new_mat);
 
     //Auxiliary variables
@@ -526,20 +498,19 @@ Image Image::InverseRotation(double theta)
 
 
     //Loop over all pixels in rotated image
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
+    for (int i = 0; i < rows+extension; i++) {
+        for (int j = 0; j < cols+extension; j++) {
 
             //Transform pixel indices to coordinates in [-1,1]x[-a,a],
             // where a is aspect ratio of the image
             IntToDoubleIndex(i, j, x, y);
 
-
             //Rotate the coordinates by a given value theta
             RotateIndices(x, y, 2 * M_PI - theta, x_rot, y_rot);
 
             //Transform the coordinates back to the [0,rows-1]x[0,cols-1] range
-            x_rot = (x_rot*max + rows)/2.;
-            y_rot = (y_rot*max + cols)/2.;
+            x_rot = (x_rot*max + rows + extension)/2.;
+            y_rot = (y_rot*max + cols + extension)/2.;
 
             //Determine indices of nearest neighbouring pixel of given coordinate
             neighbour_x = floor(x_rot);
@@ -559,25 +530,21 @@ Image Image::InverseRotation(double theta)
             dist_y = y_rot - neighbour_y;
 
             //Handle boundaries seperately
-            if ((neighbour_x == rows - 1) && (neighbour_y == cols - 1))
-            {
+            if ((neighbour_x == rows - 1) && (neighbour_y == cols - 1)){
 
                 new_img(i, j) = pixels(rows - 1, cols - 1);
-            }
-            else if (neighbour_x == rows - 1)
-            {
+
+            } else if (neighbour_x == rows - 1){
 
                 //Interpolation in y-direction
                 new_img(i, j) = (1. - dist_y) * pixels(neighbour_x, neighbour_y) + dist_y * pixels(neighbour_x, neighbour_y + 1);
-            }
-            else if (neighbour_y == cols - 1)
-            {
+            
+            } else if (neighbour_y == cols - 1){
 
                 //Interpolation in x-direction
                 new_img(i, j) = (1. - dist_x) * pixels(neighbour_x, neighbour_y) + dist_x * pixels(neighbour_x + 1, neighbour_y);
-            }
-            else
-            {
+            
+            } else{
 
                 //Bilinear interpolation
                 //Interpolate value in x-direction
@@ -585,6 +552,7 @@ Image Image::InverseRotation(double theta)
                 interp_x2 = (1. - dist_x) * pixels(neighbour_x, neighbour_y + 1) + dist_x * pixels(neighbour_x + 1, neighbour_y + 1);
                 //Interpolation in y-direction
                 new_img(i, j) = (1. - dist_y) * interp_x1 + dist_y * interp_x2;
+
             }
         }
     }
@@ -610,8 +578,7 @@ double Image::ThetaScaled(int i, int j, cv::Point origin,
         theta_prime = std::abs(-2*pow(dist/radius, 3) + 3*pow(dist/radius, 2));
         theta_prime = 1-theta_prime;
         theta_prime = theta*theta_prime;
-    }
-    else //if the points lies outside the radius
+    } else //if the points lies outside the radius
         theta_prime = 0;
 
     return theta_prime;
@@ -787,25 +754,21 @@ Image Image::Translation(double px, double py)
             dist_y = y_trans - neighbour_y;
 
             //Handle boundaries seperately
-            if ((neighbour_x == rows - 1) && (neighbour_y == cols - 1))
-            {
+            if ((neighbour_x == rows - 1) && (neighbour_y == cols - 1)){
 
                 new_img(i, j) = pixels(rows - 1, cols - 1);
-            }
-            else if (neighbour_x == rows - 1)
-            {
+
+            } else if (neighbour_x == rows - 1){
 
                 //Interpolation in y-direction
                 new_img(i, j) = (1. - dist_y) * pixels(neighbour_x, neighbour_y) + dist_y * pixels(neighbour_x, neighbour_y + 1);
-            }
-            else if (neighbour_y == cols - 1)
-            {
+            
+            } else if (neighbour_y == cols - 1){
 
                 //Interpolation in x-direction
                 new_img(i, j) = (1. - dist_x) * pixels(neighbour_x, neighbour_y) + dist_x * pixels(neighbour_x + 1, neighbour_y);
-            }
-            else
-            {
+            
+            } else {
 
                 //Bilinear interpolation
                 //Interpolate value in x-direction
@@ -813,6 +776,7 @@ Image Image::Translation(double px, double py)
                 interp_x2 = (1. - dist_x) * pixels(neighbour_x, neighbour_y + 1) + dist_x * pixels(neighbour_x + 1, neighbour_y + 1);
                 //Interpolation in y-direction
                 new_img(i, j) = (1. - dist_y) * interp_x1 + dist_y * interp_x2;
+
             }
         }
     }
@@ -820,7 +784,8 @@ Image Image::Translation(double px, double py)
     return new_img;
 }
 
-//MORPHOLOGICAL FILTER
+
+
 
 //MORPHOLOGICAL FILTER
 
@@ -830,10 +795,8 @@ Image Image::BinarizeNaive(float threshold)
     cv::Mat_<uchar> grayscale = this->from1to255();
     Image res(cv::Mat_<float>(rows, cols, (int)0));
 
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < cols; j++)
-        {
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
             if (grayscale(i, j) > threshold)
                 res(i, j) = 1;
             else
@@ -862,23 +825,20 @@ Image Image::Binarize()
     Image res(cv::Mat_<float>(rows, cols, (int)0));
 
     //Creation of the intensity histogram
-    for (int i = 0; i < rows; i++)
-    {
+    for (int i = 0; i < rows; i++){
         for (int j = 0; j < cols; j++)
             histogram[grayscale(i, j)]++;
     }
 
     //Normalization of histogram and
     //initialization of muT
-    for (int i = 0; i <= max_intensity; i++)
-    {
+    for (int i = 0; i <= max_intensity; i++){
         histogram[i] /= N;
         muT += i * histogram[i];
     }
 
     //Otsu's method
-    for (int t = 0; t <= max_intensity; t++)
-    {
+    for (int t = 0; t <= max_intensity; t++){
         omega += histogram[t];
 
         if (omega == 0)
@@ -890,18 +850,15 @@ Image Image::Binarize()
         sigmaB2 = numerator / denominator;
 
         //Test to chose the optimal threshold
-        if (sigmaB2 > var_max)
-        {
+        if (sigmaB2 > var_max){
             threshold = t;
             var_max = sigmaB2;
         }
     }
 
     //Classification
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < cols; j++)
-        {
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
             if (grayscale(i, j) > threshold)
                 res(i, j) = 1;
             else
@@ -921,22 +878,17 @@ Image Image::ErodeNaive(std::vector<cv::Point> struct_elt)
     Image res(cv::Mat_<float>(rows, cols, 1));
     std::vector<cv::Point> high_intensity;
 
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < cols; j++)
-        {
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
             if (swapped(i, j) == 1)
                 // Point(j, i) because j represents x and i y
                 high_intensity.push_back(cv::Point(j, i));
         }
     }
 
-    for (int i = 1; i < rows - 1; i++)
-    {
-        for (int j = 1; j < cols - 1; j++)
-        {
-            for (auto ii : struct_elt)
-            {
+    for (int i = 1; i < rows - 1; i++){
+        for (int j = 1; j < cols - 1; j++){
+            for (auto ii : struct_elt){
                 if (std::find(high_intensity.begin(), high_intensity.end(), cv::Point(j, i) + ii) == high_intensity.end())
                     res(i, j) = 0;
             }
@@ -965,14 +917,10 @@ Image Image::ErodeBin(cv::Mat_<float> kernel)
     Image res(cv::Mat_<float>(rows, cols, (int) 0));
     int ii, jj;
 
-    for (int y = 0; y < rows; y++)
-    {
-        for (int x = 0; x < cols; x++)
-        {
-            for (int j = 0; j < kernel.rows; j++)
-            {
-                for (int i = 0; i < kernel.cols; i++)
-                {
+    for (int y = 0; y < rows; y++){
+        for (int x = 0; x < cols; x++){
+            for (int j = 0; j < kernel.rows; j++){
+                for (int i = 0; i < kernel.cols; i++){
 
                     //Tests for boundary conditions
                     ii = x - i;
@@ -982,8 +930,7 @@ Image Image::ErodeBin(cv::Mat_<float> kernel)
                         ii = 0;
                     if (jj < 0)
                         jj = 0;
-                    if (bin(jj, ii) == 1 && kernel(j, i) == 1)
-                    {
+                    if (bin(jj, ii) == 1 && kernel(j, i) == 1){
                         res(y, x) = 1;
                         break;
                     }
@@ -1013,14 +960,10 @@ Image Image::ErodeGray(cv::Mat_<float> kernel)
     cv::Mat_<float> res(rows, cols, 255);
     int ii, jj;
 
-    for (int y = 0; y < rows; y++)
-    {
-        for (int x = 0; x < cols; x++)
-        {
-            for (int j = 0; j < kernel.rows; j++)
-            {
-                for (int i = 0; i < kernel.cols; i++)
-                {
+    for (int y = 0; y < rows; y++){
+        for (int x = 0; x < cols; x++){
+            for (int j = 0; j < kernel.rows; j++){
+                for (int i = 0; i < kernel.cols; i++){
                     //Tests for boundary conditions
                     ii = x - i;
                     jj = y - j;
@@ -1060,8 +1003,7 @@ Image Image::Erode(cv::Mat_<float> kernel, std::string erosion_type)
     else if (erosion_type == "grayscale")
         return this->ErodeGray(kernel);
 
-    else if (erosion_type == "complex")
-    {
+    else if (erosion_type == "complex"){
         double min, max;
         double dist, dist_max;
         cv::Mat_<uchar> grayscale = (-(*this)).from1to255();
@@ -1072,14 +1014,10 @@ Image Image::Erode(cv::Mat_<float> kernel, std::string erosion_type)
 
         dist_max = distance_max(pixels, center.x, center.y);
 
-        for (int y = 0; y < rows; y++)
-        {
-            for (int x = 0; x < cols; x++)
-            {
-                for (int j = 0; j < kernel.rows; j++)
-                {
-                    for (int i = 0; i < kernel.cols; i++)
-                    {
+        for (int y = 0; y < rows; y++){
+            for (int x = 0; x < cols; x++){
+                for (int j = 0; j < kernel.rows; j++){
+                    for (int i = 0; i < kernel.cols; i++){
                         //Tests for boundary conditions
                         ii = x - i;
                         jj = y - j;
@@ -1106,8 +1044,7 @@ Image Image::Erode(cv::Mat_<float> kernel, std::string erosion_type)
         cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);
 
         return -Image(res);
-    }
-    else
+    } else
         throw std::runtime_error("Unknown operation. Supported types: binary, grayscale, complex");
 
 
@@ -1128,286 +1065,285 @@ Image Image::Skeletonize()
     int counter = 0;
     int counters = 25;
 
-do {
-    counter = 0;
-    //STEP 1
-    for (int y = 1; y < rows-1; y++) {
-        for (int x = 1; x < cols-1; x++) {
-            //8-Neighbourhood
-            N = -bin(y, x);
-            for (int j = -1; j < 2; j++) {
-                for (int i = -1; i < 2; i++) {
-                    //Boundary conditions
-                    ii = x + i;
-                    jj = y + j;
+    do {
+        counter = 0;
+        //STEP 1
+        for (int y = 1; y < rows-1; y++) {
+            for (int x = 1; x < cols-1; x++) {
+                //8-Neighbourhood
+                N = -bin(y, x);
+                for (int j = -1; j < 2; j++) {
+                    for (int i = -1; i < 2; i++) {
+                        //Boundary conditions
+                        ii = x + i;
+                        jj = y + j;
 
-                    //Attention, test si > rows et cols aussi non ?
-                    if (ii < 0) {
-                        ii = 0;
-                        eight_neighbours = false;
+                        //Attention, test si > rows et cols aussi non ?
+                        if (ii < 0) {
+                            ii = 0;
+                            eight_neighbours = false;
+                        } if (jj < 0) {
+                            jj = 0;
+                            eight_neighbours = false;
+                        }
+
+                        N += bin(jj, ii);
+                        //Trouver un moyen de calculer S
+
                     }
-                    if (jj < 0) {
-                        jj = 0;
-                        eight_neighbours = false;
+
+                    //Conditions
+                    //Attention, x +/- 1 et y +/- 1 ne sont pas forcément définis
+                    if (y-1 < 0) {
+                        yy = 0;
+                        xx = x;
+                        p2 = bin(yy, xx);
+
+                        if (x-1 < 0) {
+                            xx = 0;
+                            p9 = bin(yy, xx);
+                        } else if (x+1 >= cols) {
+                            xx = cols-1;
+                            p3 = bin(yy, xx);
+                        }
+
+                    } else if (y+1 >= rows) {
+                        yy = rows-1;
+                        xx = x;
+                        p6 = bin(yy, xx);
+
+                        if (x-1 < 0) {
+                            xx = 0;
+                            p7 = bin(yy, xx);
+                        } else if (x+1 >= cols) {
+                            xx = cols-1;
+                            p5 = bin(yy, xx);
+                        }
+
+                    } else {
+                        yy = y-1;
+                        xx = x;
+                        p2 = bin(yy, xx);
+
+                        if (x-1 < 0) {
+                            xx = 0;
+                            p9 = bin(yy, xx);
+                        } else if (x+1 >= cols) {
+                            xx = cols-1;
+                            p3 = bin(yy, xx);
+                        }
+
+                        yy = y+1;
+                        xx = x;
+                        p2 = bin(yy, xx);
+
+                        if (x-1 < 0) {
+                            xx = 0;
+                            p9 = bin(yy, xx);
+                        } else if (x+1 >= cols) {
+                            xx = cols-1;
+                            p3 = bin(yy, xx);
+                        }
+
                     }
-
-                    N += bin(jj, ii);
-                    //Trouver un moyen de calculer S
-
-                }
-
-                //Conditions
-                //Attention, x +/- 1 et y +/- 1 ne sont pas forcément définis
-                if (y-1 < 0) {
-                    yy = 0;
-                    xx = x;
-                    p2 = bin(yy, xx);
 
                     if (x-1 < 0) {
-                        xx = 0;
-                        p9 = bin(yy, xx);
-                    } else if (x+1 >= cols) {
-                        xx = cols-1;
-                        p3 = bin(yy, xx);
+                        p8 = bin(y, x);
+                    } else {
+                        p8 = bin(y, x-1);
                     }
 
-                } else if (y+1 >= rows) {
-                    yy = rows-1;
-                    xx = x;
-                    p6 = bin(yy, xx);
-
-                    if (x-1 < 0) {
-                        xx = 0;
-                        p7 = bin(yy, xx);
-                    } else if (x+1 >= cols) {
-                        xx = cols-1;
-                        p5 = bin(yy, xx);
+                    if (x+1 >= cols) {
+                        p4 = bin(y, x);
+                    } else {
+                        p4 = bin(y, x+1);
                     }
 
-                } else {
-                    yy = y-1;
-                    xx = x;
-                    p2 = bin(yy, xx);
+                    S = 0;
+                    if (p2 == 0 && p3 == 1) S++;
+                    if (p3 ==0 && p4 == 1) S++;
+                    if (p4 == 0 && p5 == 1) S++;
+                    if (p5 == 0 && p6 == 1) S++;
+                    if (p6 == 0 && p7 == 1) S++;
+                    if (p7 == 0 && p8 == 1) S++;
+                    if (p8 == 0 && p9 == 1) S++;
+                    if (p9 == 0 && p2 == 1) S++;
 
-                    if (x-1 < 0) {
-                        xx = 0;
-                        p9 = bin(yy, xx);
-                    } else if (x+1 >= cols) {
-                        xx = cols-1;
-                        p3 = bin(yy, xx);
+                    // p2 = y-1 < 0 ? bin(y, x) : bin(y-1, x);
+                    // p4 = x+1 >= cols ? bin(y, x) : bin(y, x+1);
+                    // p6 = y+1 >= rows ? bin(y, x) : bin(y+1, x);
+                    // p8 = x-1 < 0 ? bin(y, x) : bin(y, x-1);
+
+                    if (eight_neighbours &&
+                        2 <= N && N <= 6 &&
+                        S == 1 &&
+                        p2 * p4 * p6 == 0 &&
+                        p4 * p6 * p8 == 0) {
+                        tmp(y, x) = 1;
+                        counter++;
                     }
-
-                    yy = y+1;
-                    xx = x;
-                    p2 = bin(yy, xx);
-
-                    if (x-1 < 0) {
-                        xx = 0;
-                        p9 = bin(yy, xx);
-                    } else if (x+1 >= cols) {
-                        xx = cols-1;
-                        p3 = bin(yy, xx);
-                    }
-
-                }
-
-                if (x-1 < 0) {
-                    p8 = bin(y, x);
-                } else {
-                    p8 = bin(y, x-1);
-                }
-
-                if (x+1 >= cols) {
-                    p4 = bin(y, x);
-                } else {
-                    p4 = bin(y, x+1);
-                }
-
-                S = 0;
-                if (p2 == 0 && p3 == 1) S++;
-                if (p3 ==0 && p4 == 1) S++;
-                if (p4 == 0 && p5 == 1) S++;
-                if (p5 == 0 && p6 == 1) S++;
-                if (p6 == 0 && p7 == 1) S++;
-                if (p7 == 0 && p8 == 1) S++;
-                if (p8 == 0 && p9 == 1) S++;
-                if (p9 == 0 && p2 == 1) S++;
-
-                // p2 = y-1 < 0 ? bin(y, x) : bin(y-1, x);
-                // p4 = x+1 >= cols ? bin(y, x) : bin(y, x+1);
-                // p6 = y+1 >= rows ? bin(y, x) : bin(y+1, x);
-                // p8 = x-1 < 0 ? bin(y, x) : bin(y, x-1);
-
-                if (eight_neighbours &&
-                    2 <= N && N <= 6 &&
-                    S == 1 &&
-                    p2 * p4 * p6 == 0 &&
-                    p4 * p6 * p8 == 0) {
-                    tmp(y, x) = 1;
-                    counter++;
                 }
             }
         }
-    }
 
-    //Setting noted points to zero
-    for (int y = 0; y < rows; y++) {
-        for (int x = 0; x < cols; x++) {
-            if (tmp(y, x) == 1) {
-                bin(y, x) = 0;
-                //Reinitializing tmp
-                tmp(y, x) = 0;
-            }
-        }
-    }
-
-    eight_neighbours = true;
-
-    //STEP 2
-    for (int y = 1; y < rows-1; y++) {
-        for (int x = 1; x < cols-1; x++) {
-            //8-Neighbourhood
-            N = -bin(y, x);
-            for (int j = -1; j < 2; j++) {
-                for (int i = -1; i < 2; i++) {
-                    //Boundary conditions
-                    ii = x + i;
-                    jj = y + j;
-
-                    //Attention, test si > rows et cols aussi non ?
-                    if (ii < 0) {
-                        ii = 0;
-                        eight_neighbours = false;
-                    } else if (ii >= cols) {
-                        ii = cols-1;
-                        eight_neighbours = false;
-                    }
-
-                    if (jj < 0) {
-                        jj = 0;
-                        eight_neighbours = false;
-                    } else if (jj >= rows) {
-                        jj = rows-1;
-                        eight_neighbours = false;
-                    }
-
-                    N += bin(jj, ii);
-                    //Trouver un moyen de calculer S
-
-                }
-
-                //Conditions
-                //Attention, x +/- 1 et y +/- 1 ne sont pas forcément définis
-                if (y-1 < 0) {
-                    yy = 0;
-                    xx = x;
-                    p2 = bin(yy, xx);
-
-                    if (x-1 < 0) {
-                        xx = 0;
-                        p9 = bin(yy, xx);
-                    } else if (x+1 >= cols) {
-                        xx = cols-1;
-                        p3 = bin(yy, xx);
-                    }
-
-                } else if (y+1 >= rows) {
-                    yy = rows-1;
-                    xx = x;
-                    p6 = bin(yy, xx);
-
-                    if (x-1 < 0) {
-                        xx = 0;
-                        p7 = bin(yy, xx);
-                    } else if (x+1 >= cols) {
-                        xx = cols-1;
-                        p5 = bin(yy, xx);
-                    }
-
-                } else {
-                    yy = y-1;
-                    xx = x;
-                    p2 = bin(yy, xx);
-
-                    if (x-1 < 0) {
-                        xx = 0;
-                        p9 = bin(yy, xx);
-                    } else if (x+1 >= cols) {
-                        xx = cols-1;
-                        p3 = bin(yy, xx);
-                    }
-
-                    yy = y+1;
-                    xx = x;
-                    p2 = bin(yy, xx);
-
-                    if (x-1 < 0) {
-                        xx = 0;
-                        p9 = bin(yy, xx);
-                    } else if (x+1 >= cols) {
-                        xx = cols-1;
-                        p3 = bin(yy, xx);
-                    }
-
-                }
-
-                if (x-1 < 0) {
-                    p8 = bin(y, x);
-                } else {
-                    p8 = bin(y, x-1);
-                }
-
-                if (x+1 >= cols) {
-                    p4 = bin(y, x);
-                } else {
-                    p4 = bin(y, x+1);
-                }
-
-                S = 0;
-                if (p2 == 0 && p3 == 1) S++;
-                if (p3 ==0 && p4 == 1) S++;
-                if (p4 == 0 && p5 == 1) S++;
-                if (p5 == 0 && p6 == 1) S++;
-                if (p6 == 0 && p7 == 1) S++;
-                if (p7 == 0 && p8 == 1) S++;
-                if (p8 == 0 && p9 == 1) S++;
-                if (p9 == 0 && p2 == 1) S++;
-                std::cout << "S: " << S << std::endl;
-                std::cout << "N: " << N << std::endl;
-                std::cout << p2 << p4 << p6 << p8 << std::endl;
-
-                // p2 = y-1 < 0 ? bin(y, x) : bin(y-1, x);
-                // p4 = x+1 >= cols ? bin(y, x) : bin(y, x+1);
-                // p6 = y+1 >= rows ? bin(y, x) : bin(y+1, x);
-                // p8 = x-1 < 0 ? bin(y, x) : bin(y, x-1);
-
-                if (eight_neighbours &&
-                    2 <= N && N <= 6 &&
-                    S == 1 &&
-                    p2 * p4 * p6 == 0 &&
-                    p2 * p6 * p8 == 0) {
-                    tmp(y, x) = 1;
-                    counter++;
+        //Setting noted points to zero
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < cols; x++) {
+                if (tmp(y, x) == 1) {
+                    bin(y, x) = 0;
+                    //Reinitializing tmp
+                    tmp(y, x) = 0;
                 }
             }
         }
-    }
 
-    //Setting noted points to zero
-    for (int y = 0; y < rows; y++) {
-        for (int x = 0; x < cols; x++) {
-            if (tmp(y, x) == 1) {
-                bin(y, x) = 0;
-                //Reinitializing tmp
-                tmp(y, x) = 0;
+        eight_neighbours = true;
+
+        //STEP 2
+        for (int y = 1; y < rows-1; y++) {
+            for (int x = 1; x < cols-1; x++) {
+                //8-Neighbourhood
+                N = -bin(y, x);
+                for (int j = -1; j < 2; j++) {
+                    for (int i = -1; i < 2; i++) {
+                        //Boundary conditions
+                        ii = x + i;
+                        jj = y + j;
+
+                        //Attention, test si > rows et cols aussi non ?
+                        if (ii < 0) {
+                            ii = 0;
+                            eight_neighbours = false;
+                        } else if (ii >= cols) {
+                            ii = cols-1;
+                            eight_neighbours = false;
+                        }
+
+                        if (jj < 0) {
+                            jj = 0;
+                            eight_neighbours = false;
+                        } else if (jj >= rows) {
+                            jj = rows-1;
+                            eight_neighbours = false;
+                        }
+
+                        N += bin(jj, ii);
+                        //Trouver un moyen de calculer S
+
+                    }
+
+                    //Conditions
+                    //Attention, x +/- 1 et y +/- 1 ne sont pas forcément définis
+                    if (y-1 < 0) {
+                        yy = 0;
+                        xx = x;
+                        p2 = bin(yy, xx);
+
+                        if (x-1 < 0) {
+                            xx = 0;
+                            p9 = bin(yy, xx);
+                        } else if (x+1 >= cols) {
+                            xx = cols-1;
+                            p3 = bin(yy, xx);
+                        }
+
+                    } else if (y+1 >= rows) {
+                        yy = rows-1;
+                        xx = x;
+                        p6 = bin(yy, xx);
+
+                        if (x-1 < 0) {
+                            xx = 0;
+                            p7 = bin(yy, xx);
+                        } else if (x+1 >= cols) {
+                            xx = cols-1;
+                            p5 = bin(yy, xx);
+                        }
+
+                    } else {
+                        yy = y-1;
+                        xx = x;
+                        p2 = bin(yy, xx);
+
+                        if (x-1 < 0) {
+                            xx = 0;
+                            p9 = bin(yy, xx);
+                        } else if (x+1 >= cols) {
+                            xx = cols-1;
+                            p3 = bin(yy, xx);
+                        }
+
+                        yy = y+1;
+                        xx = x;
+                        p2 = bin(yy, xx);
+
+                        if (x-1 < 0) {
+                            xx = 0;
+                            p9 = bin(yy, xx);
+                        } else if (x+1 >= cols) {
+                            xx = cols-1;
+                            p3 = bin(yy, xx);
+                        }
+
+                    }
+
+                    if (x-1 < 0) {
+                        p8 = bin(y, x);
+                    } else {
+                        p8 = bin(y, x-1);
+                    }
+
+                    if (x+1 >= cols) {
+                        p4 = bin(y, x);
+                    } else {
+                        p4 = bin(y, x+1);
+                    }
+
+                    S = 0;
+                    if (p2 == 0 && p3 == 1) S++;
+                    if (p3 ==0 && p4 == 1) S++;
+                    if (p4 == 0 && p5 == 1) S++;
+                    if (p5 == 0 && p6 == 1) S++;
+                    if (p6 == 0 && p7 == 1) S++;
+                    if (p7 == 0 && p8 == 1) S++;
+                    if (p8 == 0 && p9 == 1) S++;
+                    if (p9 == 0 && p2 == 1) S++;
+                    std::cout << "S: " << S << std::endl;
+                    std::cout << "N: " << N << std::endl;
+                    std::cout << p2 << p4 << p6 << p8 << std::endl;
+
+                    // p2 = y-1 < 0 ? bin(y, x) : bin(y-1, x);
+                    // p4 = x+1 >= cols ? bin(y, x) : bin(y, x+1);
+                    // p6 = y+1 >= rows ? bin(y, x) : bin(y+1, x);
+                    // p8 = x-1 < 0 ? bin(y, x) : bin(y, x-1);
+
+                    if (eight_neighbours &&
+                        2 <= N && N <= 6 &&
+                        S == 1 &&
+                        p2 * p4 * p6 == 0 &&
+                        p2 * p6 * p8 == 0) {
+                        tmp(y, x) = 1;
+                        counter++;
+                    }
+                }
             }
         }
-    }
-    std::cout << counter << std::endl;
 
-    eight_neighbours = true;
-    counters--;
-} while(counters != 0);
+        //Setting noted points to zero
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < cols; x++) {
+                if (tmp(y, x) == 1) {
+                    bin(y, x) = 0;
+                    //Reinitializing tmp
+                    tmp(y, x) = 0;
+                }
+            }
+        }
+        std::cout << counter << std::endl;
+
+        eight_neighbours = true;
+        counters--;
+    } while(counters != 0);
 
     return -bin;
 }

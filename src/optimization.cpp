@@ -1,5 +1,6 @@
 #include "optimization.h"
 
+
 float l(Image f, Image g, int px, int py, double theta)
 {
     Image gw = g.Translation(px, py);
@@ -227,7 +228,6 @@ double descent(Image f, Image g, double p0, double alpha, int arg)
     }
     return p;
 }
-
 
 
 void descent_xy(Image f, Image g, double& px, double& py, double p0x, double p0y, 

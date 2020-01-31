@@ -27,7 +27,7 @@ int main()
     //Clear the windows
     cv::destroyAllWindows();
 
-/*
+
     //XY translation 
     finger_txy.display("Finger txy");
 
@@ -90,7 +90,7 @@ int main()
     finger_tx.display("tx");
 
     double pp;
-    pp = descent(finger_tx, finger, 10, 0.8, 0);
+    pp = descent(finger_tx, finger, 20, 0.8, 0);
     cout << pp << endl;
 
     res = finger.Translation(pp, 0);
@@ -104,11 +104,10 @@ int main()
     //Clear the windows
     cv::destroyAllWindows();
     
-*/
+
     //Coordinate descent xy
     finger_txy.display("txy");
 
-    double px_d, py_d;
     descent_xy(finger_txy, finger, px_d, py_d, 10, -20, 0.2, 0.2);
     cout << "(p_x, p_y) = (" << px_d  << ", " << py_d << ")" << endl;
     
