@@ -48,7 +48,7 @@ class Image{
 
         /**
         * \brief Constructor from matrix
-        * \param  pixel matrix representing an image
+        * \param  pixel is a matrix representing an image
         */
         Image(const cv::Mat_<float> &pixel);
 
@@ -58,8 +58,8 @@ class Image{
 
         /**
         * \brief Getter for the pixel of index (i,j)
-        * \param i,j indices of the pixel
-        * \return Pixel of index (i,j)
+        * \param i,j are the indices of the pixel
+        * \return Value of the pixel of index (i,j)
         */
         float& operator()(int i, int j);
 
@@ -67,7 +67,7 @@ class Image{
         /**
         * \brief Convolution with matrix
         * \param filter is a matrix to perform the convolution with
-        * \return Convolution of this and FILTER
+        * \return Convolution of this and filter
         */
         Image operator*(cv::Mat_<float> filter);
 
@@ -89,6 +89,7 @@ class Image{
 
         /**
          * \brief Swap high intensity and low intensity
+         * Exchanges the convention for black and white
          * \return ones-img
          */
         Image operator-();
@@ -96,7 +97,7 @@ class Image{
 
         /**
         * \brief Subtraction of images
-        * \param img Image
+        * \param img is an Image
         * \return this-img
         */
         Image operator-(const Image & img);
@@ -104,7 +105,7 @@ class Image{
 
         /**
          * \brief Equality of images
-         * \param img Image
+         * \param img is an Image
          */
         bool operator==(const Image &img);
 
@@ -121,34 +122,34 @@ class Image{
 
         /**
         * \brief Display the image
-        * \param imageName name of the image
+        * \param imageName is the name of the window
         */
         void display(cv::String imageName = "Display finger_print");
 
 
         /**
-        * \brief save the image in the folder img/saved
-        * \param s name of the saved image
+        * \brief Save the image in the folder img/saved
+        * \param s is the name of the saved image
         */
         void save(std::string s = "finger_print");
 
 
         /**
-        * \brief Maximum
+        * \brief Find the maximum value in the image
         * \return Maximal intensity value of the image
         */
         double max();
 
 
         /**
-        * \brief Minimum
+        * \brief Find the minimum value in the image
         * \return Minimal intensity value of the image
         */
         double min();
 
 
   	    /**
-  	    * \brief Computes the error between two images
+  	    * \brief Compute the error between two images
   	    * \param img image to compare this with
   	    * \param level tolerance between the two images
   	    * \return Error between the images in pourcentage
@@ -189,15 +190,16 @@ class Image{
 
 
         /**
-         * \brief Finds the center of the image
+         * \brief Find the center of the image
+         * This function uses the method of barycenter to find the center
          * \return Points of the center
          */
         cv::Point center();
 
 
         /**
-         * \brief Computes the mean of the image
-         * \return The mean of the image
+         * \brief Compute the mean of the image
+         * \return Mean of the image
          */
         float mean();
 
@@ -208,26 +210,26 @@ class Image{
         //Eventuellement le faire pour une ellipse quelconque
         /**
         * \brief Put the pixels of the image in a vector of Point
-        * \return vector of Point
+        * \return Vector of Point
         */
         std::vector<cv::Point> matrix2vector();
 
 
         /**
         * \brief Put the pixels that are outside an ellipse in a vector of Point
-        * \param center center of the ellipse
-        * \param a,b semi axes
-        * \return vector of Point
+        * \param center is the center of the ellipse
+        * \param a,b are the semi axes
+        * \return Vector of Point
         */
         std::vector<cv::Point> outside_ellipse(cv::Point center, float a, float b);
 
 
         /**
         * \brief Change the pressure of the image using cartesian coordinates
-        * \param center center of the image
-        * \param coords vector of coordinates to change
-        * \param iso boolean saying if the function used is isotropic or not
-        * \param param, param_x, param_y parameters of the functions
+        * \param center is the center of the image
+        * \param coords is the vector of coordinates to change
+        * \param iso is the boolean saying if the function used is isotropic or not
+        * \param param, param_x, param_y are the parameters of the functions
         * \return Image with modified pressure
         */
   	    Image pressure(cv::Point center, std::vector<cv::Point> coords,  bool iso = false,
@@ -236,10 +238,14 @@ class Image{
 
         /**
         * \brief Change the pressure of the image using polar coordinates
-        * \param center center of the image
-        * \param coords vector of coordinates to change
-        * \param iso boolean saying if the function used is isotropic or not
-        * \param param, param_x, param_y parameters of the functions
+        * \param center is the center of the image
+        * \param coords is the vector of coordinates to change
+        * \param iso is the boolean saying if the function used is isotropic or not
+        * \param param_rot
+        * \param number_angles
+        * \param threshold
+        * \param param
+        * \param param_x, param_y
         * \return Image with modified pressure
         */
   	    Image PressurePolar(cv::Point center, std::vector<cv::Point> coords,  bool iso = false,
@@ -254,10 +260,10 @@ class Image{
          * \brief Index change integer to double
          *
          * This function transforms given pixel indices (i,j) in the range [0,rows-1]x[0,cols-1] to the corresponding double indices (x,y) in [-1,1]x[-a,a] where a is aspect ratio of the image
-         * \param[in] i integer index for row (=x-direction)
-         * \param[in] j integer index for column (=y-direction)
-         * \param[out] x double index for row (=x-direction)
-         * \param[out] y double index for column (=y-direction)
+         * \param[in] i is the integer index for row (=x-direction)
+         * \param[in] j is the integer index for column (=y-direction)
+         * \param[out] x is the double index for row (=x-direction)
+         * \param[out] y is the double index for column (=y-direction)
          *
          * The inverse of this function is given by \ref DoubleToIntIndex.
          * */
@@ -269,10 +275,10 @@ class Image{
          *
          * This function transforms given indices (x,y) in the range [-1,1]x[-a,a] (a is aspect ratio of the image) to the corresponding integer indices (x,y) in [0,rows-1]x[0,cols-1]. To obtain integers, the values are rounded.
          * It is the inverse function of \ref IntToDoubleIndex.
-         * \param[in] x_prime double index for row (=x-direction)
-         * \param[in] y_prime double index for column (=y-direction)
-         * \param[out] x integer index for row (=x-direction)
-         * \param[out] y integer index for column (=y-direction)
+         * \param[in] x_prime is the double index for row (=x-direction)
+         * \param[in] y_prime is the double index for column (=y-direction)
+         * \param[out] x is the integer index for row (=x-direction)
+         * \param[out] y is the integer index for column (=y-direction)
          * */
         void DoubleToIntIndex(double x_prime, double y_prime, int& x, int& y);
 
@@ -281,11 +287,11 @@ class Image{
          * \brief Rotate indices
          *
          * This function rotates given indices (x,y) in the range [-1,1]x[-a,a] (a is aspect ratio of the image) by a factor theta.
-         * \param[in] x double index for row (=x-direction)
-         * \param[in] y double index for column (=y-direction)
-         * \param[in] theta rotation factor
-         * \param[out] x_prime rotated index for row (=x-direction)
-         * \param[out] y_prime rotated index for column (=y-direction)
+         * \param[in] x is the double index for row (=x-direction)
+         * \param[in] y is the double index for column (=y-direction)
+         * \param[in] theta is the rotation factor
+         * \param[out] x_prime is the rotated index for row (=x-direction)
+         * \param[out] y_prime is the rotated index for column (=y-direction)
          * */
         void RotateIndices(double x, double y, double theta, double& x_prime, double& y_prime);
 
@@ -294,7 +300,8 @@ class Image{
          * \brief Rotate image
          *
          * This function rotates an image by a factor theta. It therefore performs some index transformations and then the actual rotation.
-         * \param[in] theta rotation factor
+         * \param[in] theta is the rotation factor
+         * \return 
          * */
         Image Rotation(double theta);
 
@@ -313,62 +320,131 @@ class Image{
          * This function combines rotation and interpolation in such a way that no rounding of indices is performed anymore (in contrast to the combination of \ref Rotation and \ref BilinearInterpolation). Another difference is that we are looping over the pixels in the rotated target image instead of the pixels in the original image. Therefore we are perforing a backward rotation of the factor 2*PI-THETA to get the intensity values for our result pixels.
          * \param theta is the rotation factor
          * \param extension 
+         * \return 
          * */
         Image InverseRotation(double theta, int extension = 0);
 
 
         /**
-         * \brief Scaled rotate image
-         *
-         * This function rotates an image by a factor theta, and with other parameters. It only rotates within a circle, and rotates more in the center and on the borders.
-         * It works, for the rest, the same way as the rotation.
-         * \param[in] theta rotation factor
-         * \param[in] radius radius of the circle we apply to trotation in
-         * \param[in] center_x coordinate x of the center of this circle
-         * \param[in] center_y coordinate y of the center of this circle
+         * \brief 
+         * \param i
+         * \param j
+         * \param origin
+         * \param radius
+         * \param theta
+         * \return
          * */
         double ThetaScaled(int i, int j, cv::Point origin, double radius, double theta);
 
-
+        /**
+         * \brief 
+         * \param theta
+         * \param radius
+         * \param center_x
+         * \param center_y
+         * \return 
+         */ 
         Image ScaledRotation(double theta, double radius, double center_x, double center_y);
 
-
+        /**
+         * \brief
+         * \param theta
+         * \param radius
+         * \param center_x
+         * \param center_y
+         * \return 
+         */ 
         Image InverseScaledRotation(double theta, double radius, double center_x, double center_y);
 
 
+        /**
+         * \brief Translation of this of px pixels in x axis and py pixels in y axis
+         * \param px is the number of pixels to translate the image along x axis
+         * \param py is the number o pixels to translate the image along y axis
+         * \return Translated image
+         */ 
         Image Translation(double px, double py);
 
 
 
         // MORPHOLOGICAL FILTERING
 
-        Image BinarizeNaive(float);
+        /**
+         * \brief
+         * \param threshold
+         * \return Binarized image
+         */ 
+        Image BinarizeNaive(float threshold);
 
 
+        /**
+         * \brief
+         * \return Binarized image
+         */ 
         Image Binarize();
 
 
-        Image DilateNaive(std::vector<cv::Point>);
+        /**
+         * \brief
+         * \param struct_elt
+         * \return 
+         */
+        Image DilateNaive(std::vector<cv::Point> struct_elt);
 
 
-        Image ErodeNaive(std::vector<cv::Point>);
+        /**
+         * \brief
+         * \param struct_elt
+         * \return 
+         */
+        Image ErodeNaive(std::vector<cv::Point> struct_elt);
 
 
-        Image ErodeBin(cv::Mat_<float>);
+        /**
+         * \brief
+         * \param kernel
+         * \return 
+         */
+        Image ErodeBin(cv::Mat_<float> kernel);
 
 
-        Image DilateBin(cv::Mat_<float>);
+        /**
+         * \brief
+         * \param kernel
+         * \return 
+         */
+        Image DilateBin(cv::Mat_<float> kernel);
 
 
-        Image ErodeGray(cv::Mat_<float>);
+        /**
+         * \brief
+         * \param kernel
+         * \return 
+         */
+        Image ErodeGray(cv::Mat_<float> kernel);
 
 
-        Image DilateGray(cv::Mat_<float>);
+        /**
+         * \brief
+         * \param kernel
+         * \return 
+         */
+        Image DilateGray(cv::Mat_<float> kernel );
 
 
-        Image Erode(cv::Mat_<float>, std::string);
+        /**
+         * \brief
+         * \param kernel
+         * \param erosion_type
+         * \return 
+         */
+        Image Erode(cv::Mat_<float> kernel , std::string erosion_type);
 
 
+        /**
+         * \brief
+         * \return 
+         */
         Image Skeletonize();
 
 };

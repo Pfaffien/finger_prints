@@ -1,3 +1,12 @@
+/**
+ * \file test_optimization.cpp
+ * \brief Test of the implementation of optimization
+ * \author Clara.B
+ * \version 0.1
+ * \date 01/22/20
+ */
+
+
 #include "optimization.h"
 
 using namespace std;
@@ -108,7 +117,7 @@ int main()
     //Coordinate descent xy
     finger_txy.display("txy");
 
-    descent_xy(finger_txy, finger, px_d, py_d, 10, -20, 0.2, 0.2);
+    descent_xy(finger_txy, finger, px_d, py_d, 12, -15, 0.2, 0.2);
     cout << "(p_x, p_y) = (" << px_d  << ", " << py_d << ")" << endl;
     
     res = finger.Translation(px_d, py_d);

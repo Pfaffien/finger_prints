@@ -1,4 +1,10 @@
-
+/**
+ * \file test_elasticity.cpp
+ * \brief Test of the implementation of elasticity
+ * \author Svenja.B Carolle.B
+ * \version 0.1
+ * \date 01/20/20
+ */
 
 #include <opencv2/core.hpp>
 #include <opencv2/core/types.hpp>
