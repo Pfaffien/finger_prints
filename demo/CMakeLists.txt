@@ -23,7 +23,7 @@ add_executable(rotations test_rotations.cpp ${SRC_FILES})
 target_include_directories(rotations PUBLIC src)
 target_link_libraries(rotations ${OpenCV_LIBS} libFingerPrint)
 
-add_executable(elasticity test_elasticity.cpp ${SRC_DIR}/image.cpp)
+add_executable(elasticity test_elasticity.cpp ${SRC_FILES})
 target_include_directories(elasticity PUBLIC src)
 target_link_libraries(elasticity ${OpenCV_LIBS} libFingerPrint)
 
@@ -43,6 +43,5 @@ add_executable(optimization test_optimization.cpp ${SRC_FILES})
 target_include_directories(optimization PUBLIC src)
 target_link_libraries(optimization ${OpenCV_LIBS} libFingerPrint)
 
-#add_executable(demo demo.cpp ${SRC_FILES})
-#target_include_directories(demo PUBLIC src)
-#target_link_libraries(demo ${OPENCV_LIBS} libFingerPrint)
+add_executable(demo demo.cpp)
+target_include_directories(demo PUBLIC src)
