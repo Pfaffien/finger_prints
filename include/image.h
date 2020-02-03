@@ -165,7 +165,7 @@ class Image{
         * \param color color of the pixels in the rectangle
         * \return Image with the modified pixels
         */
-        Image rectangle(int x, int y, unsigned int length, unsigned int width, float color);
+        Image Rectangle(int x, int y, unsigned int length, unsigned int width, float color);
 
 
         /**
@@ -207,12 +207,11 @@ class Image{
 
         //PRESSURE
 
-        //Eventuellement le faire pour une ellipse quelconque
         /**
         * \brief Put the pixels of the image in a vector of Point
         * \return Vector of Point
         */
-        std::vector<cv::Point> matrix2vector();
+        std::vector<cv::Point> MatrixToVector();
 
 
         /**
@@ -221,7 +220,7 @@ class Image{
         * \param a,b are the semi axes
         * \return Vector of Point
         */
-        std::vector<cv::Point> outside_ellipse(cv::Point center, float a, float b);
+        std::vector<cv::Point> OutsideEllipse(cv::Point center, float a, float b);
 
 
         /**
@@ -232,7 +231,7 @@ class Image{
         * \param param, param_x, param_y are the parameters of the functions
         * \return Image with modified pressure
         */
-  	    Image pressure(cv::Point center, std::vector<cv::Point> coords,  bool iso = false,
+  	    Image Pressure(cv::Point center, std::vector<cv::Point> coords,  bool iso = false,
                         float param = 50, float param_x = 0.00035, float param_y = 0.000175);
 
 
@@ -241,11 +240,10 @@ class Image{
         * \param center is the center of the image
         * \param coords is the vector of coordinates to change
         * \param iso is the boolean saying if the function used is isotropic or not
-        * \param param_rot
-        * \param number_angles
-        * \param threshold
-        * \param param
-        * \param param_x, param_y
+        * \param param_rot is the angle by which the ellipsoid on which we apply the function is rotated
+        * \param number_angles is the number of angle ranges we want to use to approximate a weak pressure
+        * \param threshold is the threshold used to determine whether a random angle is kept or not
+        * \param param, param_x, param_y are the parameters of the function
         * \return Image with modified pressure
         */
   	    Image PressurePolar(cv::Point center, std::vector<cv::Point> coords,  bool iso = false,
@@ -370,75 +368,94 @@ class Image{
         // MORPHOLOGICAL FILTERING
 
         /**
-         * \brief
-         * \param threshold
+         * \brief Binarize an image using a user defined threshold
+         * \param threshold user defined parameter to determine whether a pixel is set to 0 or 1
          * \return Binarized image
          */ 
         Image BinarizeNaive(float threshold);
 
 
         /**
-         * \brief
+         * \brief Binarize an image using an optimal threshold (according to Otsu's method)
          * \return Binarized image
          */ 
         Image Binarize();
 
+        /**
+         * \brief Erode a binary image using a naive approach
+         * \param struct_elt is the structuring element
+         * \return Eroded image
+         */
+        Image ErodeNaive(std::vector<cv::Point> struct_elt);
 
         /**
-         * \brief
-         * \param struct_elt
-         * \return 
+         * \brief Dilate a binary image using \ref ErodeNaive
+         * Erosion and dilation are dual notions (an erosion of the foreground corresponds
+         * to a dilation of the background) thus it uses the already implemented \ref ErodeNaive
+         * \param struct_elt is the structuring element
+         * \return Dilated image
          */
         Image DilateNaive(std::vector<cv::Point> struct_elt);
 
 
-        /**
-         * \brief
-         * \param struct_elt
-         * \return 
-         */
-        Image ErodeNaive(std::vector<cv::Point> struct_elt);
 
 
         /**
-         * \brief
-         * \param kernel
-         * \return 
+         * \brief Erode an image after binarizing it
+         * \param kernel is the structuring element
+         * \return Eroded binary image
          */
         Image ErodeBin(cv::Mat_<float> kernel);
 
 
         /**
-         * \brief
-         * \param kernel
-         * \return 
+         * \brief Dilate an image after binarizing it using \ref ErodeBin
+         * Erosion and dilation are dual notions (an erosion of the foreground corresponds
+         * to a dilation of the background) thus it uses the already implemented \ref ErodeBin
+         * \param kernel the structuring element
+         * \return Dilated binary image
          */
         Image DilateBin(cv::Mat_<float> kernel);
 
 
         /**
-         * \brief
-         * \param kernel
-         * \return 
+         * \brief Erode a grayscale image
+         * \param kernel is the structuring element
+         * \return Eroded image
          */
         Image ErodeGray(cv::Mat_<float> kernel);
 
 
         /**
-         * \brief
-         * \param kernel
-         * \return 
+         * \brief Dilate a grayscale image using \ref ErodeGray
+         * Erosion and dilation are dual notions (an erosion of the foreground corresponds
+         * to a dilation of the background) thus it uses the already implemented \ref ErodeGray
+         * \param kernel the structuring element
+         * \return Dilated image
          */
-        Image DilateGray(cv::Mat_<float> kernel );
+        Image DilateGray(cv::Mat_<float> kernel);
 
 
         /**
-         * \brief
-         * \param kernel
-         * \param erosion_type
-         * \return 
+         * \brief A general method to use all the previous erosions
+         * \param kernel the structuring element
+         * This method also implements a complex erosion by taking the distance to the center
+         * into account
+         * \param erosion_type binary, grayscale or complex - determines which erosion to compute
+         * \return Eroded image
          */
-        Image Erode(cv::Mat_<float> kernel , std::string erosion_type);
+        Image Erode(cv::Mat_<float> kernel, std::string erosion_type);
+
+
+        /**
+         * \brief A general method to use all the previous dilations (calling \ref Erode)
+         * Erosion and dilation are dual notions (an erosion of the foreground corresponds
+         * to a dilation of the background) thus it uses the already implemented \ref Erode
+         * \param kernel the structuring element
+         * \param dilation_type binary, grayscale or complex - determines which dilation to compute
+         * \return Dilated image
+         */
+        Image Dilate(cv::Mat_<float> kernel, std::string dilation_type);
 
 
         /**

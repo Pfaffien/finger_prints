@@ -20,8 +20,8 @@ int main()
 
     finger.display("Clean finger");
 
-    Image res = finger.rectangle(180,150,70,30,0);
-    res = res.rectangle(50, 100, 60, 100, 1);
+    Image res = finger.Rectangle(180,150,70,30,0);
+    res = res.Rectangle(50, 100, 60, 100, 1);
     res.display("Black and white rectangles");
 
     res.save("rectangles");

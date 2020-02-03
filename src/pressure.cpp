@@ -149,8 +149,8 @@ std::vector<cv::Point> points_ellipse(cv::Point center, float a, float b)
     std::vector<cv::Point> res;
     std::vector<float> lin = linspace(0, 2*PI, 10000);
 
-    for (std::vector<float>::iterator i = lin.begin(); i != lin.end(); i++)
-        res.push_back(cv::Point(int(center.x + a * cos(*i)), int(center.y + b * sin(*i))));
+    for (auto it : lin)
+        res.push_back(cv::Point(int(center.x + a * cos(it)), int(center.y + b * sin(it))));
 
     return res;
 }

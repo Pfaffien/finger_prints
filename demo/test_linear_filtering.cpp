@@ -110,8 +110,8 @@ int main(){
 
 
     //Improvements
-    std::vector<cv::Point> pts = blur_img.matrix2vector();
-    Image best = blur_img.pressure(center, pts, false, 30, 0.0002, 0.0001);
+    std::vector<cv::Point> pts = blur_img.MatrixToVector();
+    Image best = blur_img.Pressure(center, pts, false, 30, 0.0002, 0.0001);
     best.display("Best");
     best.save("best");
 

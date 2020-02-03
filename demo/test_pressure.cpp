@@ -47,13 +47,13 @@ int main()
     finger.display("Finger");
 
     // Test of the selected class of function
-    vector<cv::Point> points = finger.matrix2vector(); //we apply the function to all pixels
+    vector<cv::Point> points = finger.MatrixToVector(); //we apply the function to all pixels
     cv::Point center = finger.center();
 
     //isotropic function
-    Image iso = finger.pressure(center, points, true);
+    Image iso = finger.Pressure(center, points, true);
     //anisotropic function
-    Image aniso = finger.pressure(center, points);
+    Image aniso = finger.Pressure(center, points);
     //anisotropic polar function
     Image aniso_polar = finger.PressurePolar(center, points);
     

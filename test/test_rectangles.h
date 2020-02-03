@@ -13,7 +13,7 @@
 TEST(rectangles, white)
 {
     Image finger("../img/clean_finger.png");
-    Image res = finger.rectangle(50, 100, 60, 100, 1);
+    Image res = finger.Rectangle(50, 100, 60, 100, 1);
 
     for (int i = 100; i < 160; i++) {
         for (int j = 50; j < 150; j++)
@@ -25,7 +25,7 @@ TEST(rectangles, white)
 TEST(rectangles, black)
 {
     Image finger("../img/clean_finger.png");
-    Image res = finger.rectangle(180, 150, 70, 30, 0);
+    Image res = finger.Rectangle(180, 150, 70, 30, 0);
 
     for (int i = 150; i < 220; i++) {
         for (int j = 180; j < 210; j++)

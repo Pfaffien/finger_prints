@@ -105,7 +105,7 @@ int main()
         switch (test)
         {
         case 1:
-            system("./demo/translations");
+            system("./demo/translation");
             break;
         case 2:
             system("./demo/optimization");

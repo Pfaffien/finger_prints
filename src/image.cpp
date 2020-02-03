@@ -182,7 +182,7 @@ void Image::save(std::string filename)
 }
 
 
-Image Image::rectangle(int x_begin, int y_begin,
+Image Image::Rectangle(int x_begin, int y_begin,
                        unsigned int length, unsigned int width,
                        float color)
 {
@@ -278,7 +278,7 @@ float Image::mean()
 
 //PRESSURE
 
-std::vector<cv::Point> Image::matrix2vector()
+std::vector<cv::Point> Image::MatrixToVector()
 {
     std::vector<cv::Point> coord(rows * cols);
 
@@ -291,7 +291,7 @@ std::vector<cv::Point> Image::matrix2vector()
 }
 
 
-std::vector<cv::Point> Image::outside_ellipse(cv::Point center, float a, float b)
+std::vector<cv::Point> Image::OutsideEllipse(cv::Point center, float a, float b)
 {
     std::vector<cv::Point> coords;
     cv::Point tmp((int)0, (int)0);
@@ -328,7 +328,7 @@ std::vector<cv::Point> Image::outside_ellipse(cv::Point center, float a, float b
 }
 
 
-Image Image::pressure(cv::Point center, std::vector<cv::Point> coords,
+Image Image::Pressure(cv::Point center, std::vector<cv::Point> coords,
                       bool iso, float param, float param_x, float param_y)
 {
     std::vector<float> new_values = coeffs(center, coords, param_x,
@@ -1051,6 +1051,16 @@ Image Image::Erode(cv::Mat_<float> kernel, std::string erosion_type)
 }
 
 
+Image Image::Dilate(cv::Mat_<float> kernel, std::string dilation_type)
+{
+    Image swapped = -(*this);
+    Image res = swapped.Erode(kernel, dilation_type);
+
+    return -res;
+}
+
+
+//BUG
 Image Image::Skeletonize()
 {
     Image bin = this->Binarize();
@@ -1067,6 +1077,7 @@ Image Image::Skeletonize()
 
     do {
         counter = 0;
+        std::cout << counter << std::endl;
         //STEP 1
         for (int y = 1; y < rows-1; y++) {
             for (int x = 1; x < cols-1; x++) {
@@ -1308,9 +1319,9 @@ Image Image::Skeletonize()
                     if (p7 == 0 && p8 == 1) S++;
                     if (p8 == 0 && p9 == 1) S++;
                     if (p9 == 0 && p2 == 1) S++;
-                    std::cout << "S: " << S << std::endl;
-                    std::cout << "N: " << N << std::endl;
-                    std::cout << p2 << p4 << p6 << p8 << std::endl;
+                    // std::cout << "S: " << S << std::endl;
+                    // std::cout << "N: " << N << std::endl;
+                    // std::cout << p2 << p4 << p6 << p8 << std::endl;
 
                     // p2 = y-1 < 0 ? bin(y, x) : bin(y-1, x);
                     // p4 = x+1 >= cols ? bin(y, x) : bin(y, x+1);
