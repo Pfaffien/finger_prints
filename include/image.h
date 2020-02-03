@@ -459,8 +459,8 @@ class Image{
 
 
         /**
-         * \brief
-         * \return 
+         * \brief Skeletonization on an image
+         * \return Binary skeleton of the image
          */
         Image Skeletonize();
 
