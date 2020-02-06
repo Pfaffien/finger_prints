@@ -336,22 +336,24 @@ class Image{
         double ThetaScaled(int i, int j, cv::Point origin, double radius, double theta);
 
         /**
-         * \brief  TODO
+         * \brief  Scaled Rotation
+         * This function does the same rotation than the method \ref Rotation, but it computes a rotation only for pixels that lies inside the circle given in parameter(center and radius). For the pixels inside this given circle, the rotation depends on the distance between the current pixel and the center of the circle. The intensity of rotation decreases while the distance increases. It uses the method \ref ThetaScaled.
          * \param theta is the rotation factor
          * \param radius is the radius of the circle we apply the rotation in
          * \param center_x is the x coordinate of the origin of the circle we apply the rotation in
          * \param center_y is the y coordinate of the origin of the circle we apply the rotation in
-         * \return TODO
+         * \return scaled rotated image
          */ 
         Image ScaledRotation(double theta, double radius, double center_x, double center_y);
 
         /**
-         * \brief  TODO
+         * \brief  Scaled Inverse Rotation
+         * This function does the same rotation than the method \ref InverseRotation. It computes a rotation only for pixels that lies inside the circle given in parameter(center and radius). For the pixels inside this given circle, the rotation depends on the distance between the current pixel and the center of the circle. The intensity of rotation decreases while the distance increases. It also interpolates as in the previous inverse rotation method. It uses the method \ref ThetaScaled.
          * \param theta is the rotation factor
          * \param radius is the radius of the circle we apply the rotation in
          * \param center_x is the x coordinate of the origin of the circle we apply the rotation in
          * \param center_y is the y coordinate of the origin of the circle we apply the rotation in
-         * \return  TODO
+         * \return  scaled inverse rotated image
          */ 
         Image InverseScaledRotation(double theta, double radius, double center_x, double center_y);
 
