@@ -17,55 +17,69 @@
 
 int main()
 {
-    //Create instance of image
+    //Create instance of image warp 2 finger
     cv::String s1( "../img/warp2_finger.png" );
     Image warp_finger(s1);
     
+    //Display original image
+    warp_finger.display("Initial warp 2 finger");
     
     cv::String s2( "../img/clean_finger.png" );
     Image clean_finger(s2);
     
-    //Display original image
-    warp_finger.display("Warp 2 finger");
-
     
-    //Rotate warp_finger without interpolation
-    Image rotate2 = warp_finger.InverseScaledRotation(0.0*M_PI, 90, 0.8, 0.5);
-    rotate2.BilinearInterpolation();
-    rotate2.display("Rotate 2 ");
+    //Rotate warp_finger with interpolation
+    Image small_rotate = warp_finger.InverseScaledRotation(0.0*M_PI, 90, 0.8, 0.5);
+    small_rotate.display("Small centered rotation");
     
     
-    //Rotate warp_finger without interpolation
-    Image rotate3 = rotate2.InverseScaledRotation(0.07*M_PI, 200, 0.7, 0.5);
+    //Rotate small_rotation with interpolation
+    Image whole_rotate = small_rotate.InverseScaledRotation(0.07*M_PI, 200, 0.7, 0.5);
+    whole_rotate.display("Rotation on whole warp_finger 3");
     
-
-    //Rotate warp_finger with first interpolation method
-    rotate3.display("Rotated warp_finger 3");
-    
-    rotate3.save("scaled_rot_warp");
     
     //Printing the image difference
-    Image Diff_2 = warp_finger-rotate3;
-    Diff_2.display("Difference Matrix 2");
+    Image Diff_2 = warp_finger-whole_rotate;
+    Diff_2.display("Difference between initial and whole rotation");
     
-    Diff_2.save("diff_scaled_rot");
+    
+    //Clear the windows
+    cv::destroyAllWindows();
+
+    //ScaledRotatin and inverse scaled InverseScaledRotation
+    
+    //Rotate warp_finger without interpolation
+    Image rotate1 = warp_finger.ScaledRotation(0.2*M_PI, 90, 0.8, 0.5);
+    rotate1.BilinearInterpolation();
+    rotate1.display("Inverse Scaled Rotated warp_finger 1");
+    
+    Image rot1 = rotate1.InverseScaledRotation(-0.2*M_PI, 90,0.8, 0.5);
+    Image Diff_4 = rot1-warp_finger;
+    Diff_4.display("Difference Matrix 4");
+    
+    
+     //Clear the windows
+    //cv::destroyAllWindows();
+
+    //ScaledRotatin and inverse scaled InverseScaledRotation
+    
+    Image rot2 = warp_finger.InverseScaledRotation(-0.2*M_PI, 90,0.8, 0.5);
+    
+    
+    
+    //Rotate warp_finger without interpolation
+    Image rotate2 = rot2.ScaledRotation(0.2*M_PI, 90, 0.8, 0.5);
+    rotate2.BilinearInterpolation();
+    rotate2.display("Inverse Scaled Rotated warp_finger 2");
+    
+    
+    Image Diff_5 = rotate2-warp_finger;
+    Diff_5.display("Difference Matrix 5");
     
     return 0;
 }
 
 
-/* ScaledRotatin and inverse scaled InverseScaledRotation
- * 
- * //Rotate warp_finger without interpolation
-    Image rotate1 = warp_finger.InverseScaledRotation(0.13*M_PI, 90, 0.8, 0.5);
-    rotate1.display("Inverse Scaled Rotated warp_finger 1");
-    
-    Image rot1 = rotate1.InverseScaledRotation(-0.13*M_PI, 90,0.8, 0.5);
-    Image Diff_4 = rot1.DifferenceMatrix(warp_finger);
-    Diff_4.display("Difference Matrix 4");
-    
-    
-    */
 
 /* Differences
  * 

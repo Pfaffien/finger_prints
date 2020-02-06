@@ -440,9 +440,9 @@ void Image::BilinearInterpolation()
     //Loop over all pixels to find the non-affected ones
     for (int i = 0; i < rows; i++){
         for (int j = 0; j < cols; j++){
-            //Check if pixel is corner or boundary pixel
+            //Check if the pixel has the default value 1
             if (pixels(i, j) == 1){
-
+                //Check if pixel is corner or boundary pixel
                 if (i == 0){
                     
                     if (j == 0)
@@ -565,7 +565,7 @@ Image Image::InverseRotation(double theta, int extension)
 double Image::ThetaScaled(int i, int j, cv::Point origin,
                           double radius, double theta){
 
-    double dist, theta_prime;
+    double dist, theta_scaled;
 
     //Creation of a point at the current indices
     cv::Point tmp_point (i,j);
@@ -575,13 +575,13 @@ double Image::ThetaScaled(int i, int j, cv::Point origin,
 
     //Check if the point is inside the circle
     if (dist < radius){
-        theta_prime = std::abs(-2*pow(dist/radius, 3) + 3*pow(dist/radius, 2));
-        theta_prime = 1-theta_prime;
-        theta_prime = theta*theta_prime;
+        theta_scaled = std::abs(-2*pow(dist/radius, 3) + 3*pow(dist/radius, 2));
+        theta_scaled = 1-theta_scaled;
+        theta_scaled = theta*theta_scaled;
     } else //if the points lies outside the radius
-        theta_prime = 0;
+        theta_scaled = 0;
 
-    return theta_prime;
+    return theta_scaled;
 }
 
 

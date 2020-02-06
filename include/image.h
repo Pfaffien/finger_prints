@@ -325,31 +325,32 @@ class Image{
 
         /**
          * \brief 
-         * \param i
-         * \param j
-         * \param origin
-         * \param radius
-         * \param theta
-         * \return
+         * This function computes 
+         * \param i is the x coordinate of the curente pixel 
+         * \param j is the x coordinate of the curente pixel
+         * \param origin is the origin of the circle we apply the rotation in
+         * \param radius is the radius of the circle we apply the rotation in
+         * \param theta is the rotation factor
+         * \return 
          * */
         double ThetaScaled(int i, int j, cv::Point origin, double radius, double theta);
 
         /**
          * \brief 
-         * \param theta
-         * \param radius
-         * \param center_x
-         * \param center_y
+         * \param theta is the rotation factor
+         * \param radius is the radius of the circle we apply the rotation in
+         * \param center_x is the x coordinate of the origin of the circle we apply the rotation in
+         * \param center_y is the y coordinate of the origin of the circle we apply the rotation in
          * \return 
          */ 
         Image ScaledRotation(double theta, double radius, double center_x, double center_y);
 
         /**
          * \brief
-         * \param theta
-         * \param radius
-         * \param center_x
-         * \param center_y
+         * \param theta is the rotation factor
+         * \param radius is the radius of the circle we apply the rotation in
+         * \param center_x is the x coordinate of the origin of the circle we apply the rotation in
+         * \param center_y is the y coordinate of the origin of the circle we apply the rotation in
          * \return 
          */ 
         Image InverseScaledRotation(double theta, double radius, double center_x, double center_y);
