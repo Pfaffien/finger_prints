@@ -1,7 +1,7 @@
 /**
  * \file test_elasticity.cpp
  * \brief Test of the implementation of elasticity
- * \author Svenja.B Carolle.B
+ * \author Svenja.B Carole.B
  * \version 0.1
  * \date 01/20/20
  */
