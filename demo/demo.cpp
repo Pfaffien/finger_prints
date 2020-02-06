@@ -138,16 +138,16 @@ int main()
         cout << endl;
 
         cout << "Do you want to launch another test?" << endl;
-        cout << "(yes/no): ";
+        cout << "yes(y)/no(n): ";
 
         cin >> choice;
 
-        while (choice.compare("yes") != 0 && choice.compare("no") != 0) {
-            cout << "Please answer either with yes or  with no: ";
+        while (choice.compare("y") != 0 && choice.compare("n") != 0) {
+            cout << "Please answer either with yes(y) or with no(n): ";
             cin >> choice;
         }
 
-    } while (choice.compare("no") != 0);
+    } while (choice.compare("n") != 0);
 
 
     return 0;
