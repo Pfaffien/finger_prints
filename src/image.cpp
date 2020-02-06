@@ -575,10 +575,11 @@ double Image::ThetaScaled(int i, int j, cv::Point origin,
 
     //Check if the point is inside the circle
     if (dist < radius){
-        theta_scaled = std::abs(-2*pow(dist/radius, 3) + 3*pow(dist/radius, 2));
-        theta_scaled = 1-theta_scaled;
+        //Compute the scaled theta depending on the distance just computed
+        theta_scaled = 1- dist/radius;
+        //Apply the scaled theta to the theta given in parameters
         theta_scaled = theta*theta_scaled;
-    } else //if the points lies outside the radius
+    } else //if the points lies outside the radius, no changes wanted
         theta_scaled = 0;
 
     return theta_scaled;
@@ -784,6 +785,309 @@ Image Image::Translation(double px, double py)
     return new_img;
 }
 
+void Image::SqueezeIndicesRectangle(double x_center, double y_center, double x, double y, double dist_max_x, double dist_max_y, double& x_prime, double& y_prime, double strength, int opt){
+    
+    double dist_x = x_center-x;
+    double dist_y = y_center-y;
+    //std::cerr << "dist_x/y " << dist_x << ", " << dist_y << std::endl;
+    double dist_x_abs = std::abs(dist_x);
+    double dist_y_abs = std::abs(dist_y);
+    
+    double distance = std::sqrt(dist_x*dist_x+dist_y*dist_y);
+    
+    if((dist_x_abs <= dist_max_x) && (dist_y_abs <= dist_max_y)){
+        
+        //Compute dist_max
+        double dist_max;
+        double tmp1, tmp2;
+        double norm_dist = std::sqrt(dist_x*dist_x + dist_y*dist_y);
+        
+        
+        //Determine in which part of rectangle the current pixel lies
+        if(y == y_center){
+                dist_max = dist_max_y;
+        } else if (x == x_center) {
+                dist_max = dist_max_x;
+        } else if ((x < x_center) && (y < y_center)) {
+            //Compute first angle
+            tmp1 = (-dist_x)*(-dist_max_x);
+            tmp2 = std::sqrt((dist_max_x)*(dist_max_x)) * norm_dist;
+            double cos_theta = tmp1/tmp2;
+            dist_max = std::abs(dist_max_x/cos_theta);
+                
+            //Compute second angle
+            tmp1 = (-dist_y)*(-dist_max_y);
+            tmp2 = std::sqrt((dist_max_y)*(dist_max_y)) * norm_dist;
+            if (tmp1/tmp2 > cos_theta) {
+                cos_theta = tmp1/tmp2;
+                dist_max = std::abs(dist_max_y/cos_theta);
+            }
+       
+        } else if ((x < x_center) && (y > y_center)) {
+            //Compute first angle
+            tmp1 = (-dist_x)*(-dist_max_x);
+            tmp2 = std::sqrt((dist_max_x)*(dist_max_x)) * norm_dist;
+            double cos_theta = tmp1/tmp2;
+            dist_max = std::abs(dist_max_x/cos_theta);
+            
+            //Compute second angle
+            tmp1 = (-dist_y)*(dist_max_y);
+            tmp2 = std::sqrt((dist_max_y)*(dist_max_y)) * norm_dist;
+            if(tmp1/tmp2 > cos_theta){
+                cos_theta = tmp1/tmp2;
+                dist_max = std::abs(dist_max_y/cos_theta);
+            }
+            
+        } else if ((x > x_center) && (y < y_center)) {
+            //Compute first angle
+            tmp1 = (-dist_y)*(-dist_max_y);
+            tmp2 = std::sqrt((dist_max_y)*(dist_max_y)) * norm_dist;
+            double cos_theta = tmp1/tmp2;
+            dist_max = std::abs(dist_max_y/cos_theta);
+            
+            //Compute second angle
+            tmp1 = (-dist_x)*(dist_max_x);
+            tmp2 = std::sqrt((dist_max_x)*(dist_max_x)) * norm_dist;
+            if(tmp1/tmp2 > cos_theta){
+                cos_theta = tmp1/tmp2;
+                dist_max = std::abs(dist_max_x/cos_theta);
+            }
+            
+        } else {
+            //Compute first angle
+            tmp1 = (-dist_y)*(dist_max_y);
+            tmp2 = std::sqrt((dist_max_y)*(dist_max_y)) * norm_dist;
+            double cos_theta = tmp1/tmp2;
+            dist_max = std::abs(dist_max_y/cos_theta);
+            
+            //Compute second angle
+            tmp1 = (-dist_x)*(dist_max_x);
+            tmp2 = std::sqrt((dist_max_x)*(dist_max_x)) * norm_dist;
+            if(tmp1/tmp2 > cos_theta){
+                cos_theta = tmp1/tmp2;
+                dist_max = std::abs(dist_max_x/cos_theta);
+            }
+            
+        }
+        //Choose function to compute the weight
+        switch (opt) {
+            case 0: {
+                //Linear option
+                double weight = strength*(dist_max-distance)/dist_max;
+                x_prime = x - 1/weight *dist_x;
+                y_prime = y - 1./weight *dist_y;
+                break;
+            }
+            case 1: {
+                //Square option
+                double var = 1-(dist_max-distance)/dist_max;
+                double weight = strength*var*var - 2*var +1;
+                x_prime = x - weight*dist_x;
+                y_prime = y - weight*dist_y;
+                break;
+            }
+            case 2: {
+                //Power 4 option
+                double var = 1-(dist_max-distance)/dist_max;
+                double weight = strength*std::pow(var-1,4);
+                x_prime = x - weight*dist_x;
+                y_prime = y - weight*dist_y;
+                break;
+            }
+            default: {
+                //Power 4 option
+                double var = 1-(dist_max-distance)/dist_max;
+                double weight = strength*std::pow(var-1,4);
+                x_prime = x - weight*dist_x;
+                y_prime = y - weight*dist_y;
+                break;
+            }
+        }
+    } else {
+        x_prime = x;
+        y_prime = y;
+    }
+}
+
+
+Image Image::RectangleSqueezing(int x_center, int y_center, int x_extent, int y_extent, double strength){
+    
+    //Get maximum of rows and cols
+    int max = std::max(rows,cols);
+    
+    //Create a new image that will be the rotation of the original image. 
+    // Pixels get the default value 1
+     cv::Mat new_mat = pixels.clone();
+    Image new_img(new_mat);
+    
+    //Auxiliary variables
+    double x, y, x_squeezed, y_squeezed;
+    int i_prime, j_prime;
+    int neighbour_x, neighbour_y;
+    double interp_x1, interp_x2, dist_x, dist_y;
+    
+    //Determine maximal distance to center, i.e. distance from center to the corner  that is least close to it
+    double dist_max = std::sqrt(x_extent*x_extent+y_extent*y_extent);
+
+    //Loop over all pixels in rotated image
+    for (int i = x_center-x_extent; i < x_center + x_extent +1; i++) {
+        for (int j = y_center-y_extent; j < y_center + y_extent +1; j++) {
+            
+            //Squeeze the coordinates by a given value theta
+            SqueezeIndicesRectangle((double)x_center, (double)y_center, (double)i, (double)j, x_extent, y_extent, x_squeezed, y_squeezed, strength);        
+            
+            //Determine indices of nearest neighbouring pixel of given coordinate
+            neighbour_x = floor(x_squeezed);
+            neighbour_y = floor(y_squeezed);
+            
+            //Check if computed neighbouring pixel is in range [0,rows-1]x[0,cols-1];
+            //If it is not, continue with next pixel, current pixel will 
+            // keep default value 1
+            if ((neighbour_x < 0) || (neighbour_x >=rows)) continue;
+            if ((neighbour_y < 0) || (neighbour_y >=cols)) continue;
+            
+            //Compute distance of coordinates to neighbouring pixel 
+            // in x- and y-direction
+            dist_x = x_squeezed - neighbour_x;
+            dist_y = y_squeezed - neighbour_y; 
+            
+            //Handle boundaries seperately
+            if ((neighbour_x == rows-1)&&(neighbour_y == cols-1)) {
+                new_img(i,j) = (*this)(rows-1,cols-1);
+            } else if (neighbour_x == rows-1) {
+                //Interpolation in y-direction
+                new_img(i, j) = (1.-dist_y)*(*this)(neighbour_x,neighbour_y) + dist_y*(*this)(neighbour_x,neighbour_y+1);
+            } else if (neighbour_y == cols-1) {
+                //Interpolation in x-direction
+                new_img(i, j) = (1.-dist_x)*(*this)(neighbour_x,neighbour_y) + dist_x*(*this)(neighbour_x+1,neighbour_y);
+            } else {
+                //Bilinear interpolation
+                //Interpolate value in x-direction
+                interp_x1 = (1.-dist_x)*(*this)(neighbour_x,neighbour_y)
+                            + dist_x*(*this)(neighbour_x+1,neighbour_y);
+                interp_x2 = (1.-dist_x)*(*this)(neighbour_x,neighbour_y+1)
+                            + dist_x*(*this)(neighbour_x+1,neighbour_y+1);
+                //Interpolation in y-direction
+                new_img(i, j) = (1.-dist_y)*interp_x1 + dist_y*interp_x2;
+            }   
+        }
+    }
+   
+    return new_img;
+}
+
+void Image::SqueezeIndicesCircle(int x_center, int y_center, int x, int y, int extent, double& x_prime, double& y_prime, double strength, int opt){
+    
+    double dist_x = x_center-x;
+    double dist_y = y_center-y;
+    double dist_x_abs = std::abs(dist_x);
+    double dist_y_abs = std::abs(dist_y);
+    
+    double distance = std::sqrt(dist_x*dist_x+dist_y*dist_y);
+    
+    if ((dist_x_abs <= extent) && (dist_y_abs <= extent)) {
+        //Choose function to compute the weight
+        switch(opt) {
+            case 0: {
+                //Linear option
+                double weight = strength*(extent-distance)/extent;
+                x_prime = x - 1/weight *dist_x;
+                y_prime = y - 1./weight *dist_y;
+                break;
+            }
+            case 1: {
+                //Square option
+                double var = 1-(extent-distance)/extent;
+                double weight = strength*var*var - 2*var +1;
+                x_prime = x - weight*dist_x;
+                y_prime = y - weight*dist_y;
+                break;
+            }
+            case 2: {
+                //Power 4 option
+                double var = 1-(extent-distance)/extent;
+                double weight = strength*std::pow(var-1,4);
+                x_prime = x - weight*dist_x;
+                y_prime = y - weight*dist_y;
+                break;
+            }
+            default: {
+                //Power 4 option
+                double var = 1-(extent-distance)/extent;
+                double weight = strength*std::pow(var-1,4);
+                x_prime = x - weight*dist_x;
+                y_prime = y - weight*dist_y;
+                break;
+            }
+        }
+    } else {
+        x_prime = x;
+        y_prime = y;
+    }
+}
+
+
+Image Image::CircleSqueezing(int x_center, int y_center, int extent, double strength){
+    
+    //Create a clone of the image that will be squeezed in some part
+     cv::Mat new_mat = pixels.clone();
+    Image new_img(new_mat);
+    
+    //Auxiliary variables
+    double x, y;
+    int neighbour_x, neighbour_y;
+    double interp_x1, interp_x2, dist_x, dist_y;
+    
+    //Loop over all pixels in square of size extent araound the center
+    for (int i = x_center-extent; i < x_center+extent+1; i++) {
+        for (int j = y_center-extent; j < y_center+extent+1; j++) {
+            
+            //Check if pixel lies in circle
+            if( (i-x_center)*(i-x_center) + (j-y_center)*(j-y_center) - extent*extent >0) continue;
+            
+            //Squeeze the coordinates by a given strength
+            SqueezeIndicesCircle(x_center, y_center, i, j, extent, x, y, strength);        
+            
+            //Determine indices of nearest neighbouring pixel of given coordinate
+            neighbour_x = floor(x);
+            neighbour_y = floor(y);
+            
+            //Check if computed neighbouring pixel is in range [0,rows-1]x[0,cols-1];
+            //If it is not, continue with next pixel, current pixel will 
+            // keep default value 1
+            if ((neighbour_x < 0) || (neighbour_x >=rows)) continue;
+            if ((neighbour_y < 0) || (neighbour_y >=cols)) continue;
+            
+            //Compute distance of coordinates to neighbouring pixel 
+            // in x- and y-direction
+            dist_x = x - neighbour_x;
+            dist_y = y - neighbour_y; 
+            
+            //Handle boundaries seperately
+            if ((neighbour_x == rows-1)&&(neighbour_y == cols-1)) {
+                new_img(i,j) = (*this)(rows-1,cols-1);
+            } else if (neighbour_x == rows-1) {
+                //Interpolation in y-direction
+                new_img(i, j) = (1.-dist_y)*(*this)(neighbour_x,neighbour_y) + dist_y*(*this)(neighbour_x,neighbour_y+1);
+            } else if (neighbour_y == cols-1) {
+                //Interpolation in x-direction
+                new_img(i, j) = (1.-dist_x)*(*this)(neighbour_x,neighbour_y) + dist_x*(*this)(neighbour_x+1,neighbour_y);
+            } else {
+                //Bilinear interpolation
+                //Interpolate value in x-direction
+                interp_x1 = (1.-dist_x)*(*this)(neighbour_x,neighbour_y)
+                            + dist_x*(*this)(neighbour_x+1,neighbour_y);
+                interp_x2 = (1.-dist_x)*(*this)(neighbour_x,neighbour_y+1)
+                            + dist_x*(*this)(neighbour_x+1,neighbour_y+1);
+                //Interpolation in y-direction
+                new_img(i, j) = (1.-dist_y)*interp_x1 + dist_y*interp_x2;
+            }   
+        }
+    }
+   
+    return new_img;
+}
+
 
 
 
@@ -973,7 +1277,7 @@ Image Image::ErodeGray(cv::Mat_<float> kernel)
                     if (jj < 0)
                         jj = 0;
 
-                    tmp(j, i) = abs(grayscale(jj, ii) - kernel(j, i));
+                    tmp(j, i) = std::abs(grayscale(jj, ii) - kernel(j, i));
                     minMaxLoc(tmp, &min, &max);
                     res(y, x) = min;
                 }
@@ -1030,7 +1334,7 @@ Image Image::Erode(cv::Mat_<float> kernel, std::string erosion_type)
                         dist = cv::norm(cv::Point(ii, jj) - center);
 
                         // if (dist > 50) {
-                            tmp(j, i) = abs(grayscale(jj, ii) - dist * kernel(j, i));
+                            tmp(j, i) = std::abs(grayscale(jj, ii) - dist * kernel(j, i));
                             minMaxLoc(tmp, &min, &max);
                             res(y, x) = min;
                         // } else {

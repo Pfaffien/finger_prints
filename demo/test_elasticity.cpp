@@ -28,8 +28,8 @@ int main()
     Image clean_finger(s2);
     
     
-    //Rotate warp_finger with interpolation
-    Image small_rotate = warp_finger.InverseScaledRotation(0.0*M_PI, 90, 0.8, 0.5);
+    //Rotate warp_finger with interpolation on small part
+    Image small_rotate = warp_finger.InverseScaledRotation(0.02*M_PI, 90, 0.8, 0.5);
     small_rotate.display("Small centered rotation");
     
     
@@ -39,64 +39,61 @@ int main()
     
     
     //Printing the image difference
-    Image Diff_2 = warp_finger-whole_rotate;
-    Diff_2.display("Difference between initial and whole rotation");
+    Image Diff_0 = warp_finger-whole_rotate;
+    Diff_0.display("Diff initial and whole rotation");
     
     
     //Clear the windows
     cv::destroyAllWindows();
 
-    //ScaledRotatin and inverse scaled InverseScaledRotation
-    
-    //Rotate warp_finger without interpolation
+    //Rotate warp_finger without interpolation, then interpolate
     Image rotate1 = warp_finger.ScaledRotation(0.2*M_PI, 90, 0.8, 0.5);
     rotate1.BilinearInterpolation();
+    rotate1.display("Scaled Rotated warp");
+    
+    //Rotate rotated image with inverse rotation
+    Image rot1 = rotate1.InverseScaledRotation(-0.2*M_PI, 90,0.8, 0.5);
     rotate1.display("Inverse Scaled Rotated warp_finger 1");
     
-    Image rot1 = rotate1.InverseScaledRotation(-0.2*M_PI, 90,0.8, 0.5);
-    Image Diff_4 = rot1-warp_finger;
-    Diff_4.display("Difference Matrix 4");
+    //Compute and display the difference between both methods
+    Image Diff_1 = rot1-warp_finger;
+    Diff_1.display("Diff: rot, inverse rot");
     
     
-     //Clear the windows
-    //cv::destroyAllWindows();
-
-    //ScaledRotatin and inverse scaled InverseScaledRotation
-    
+    //Rotate warp_finger with inverse rotation
     Image rot2 = warp_finger.InverseScaledRotation(-0.2*M_PI, 90,0.8, 0.5);
-    
-    
-    
-    //Rotate warp_finger without interpolation
+    rot2.display("Warp invere rot");
+    //Rotate rotated image without interpolation, then interpolate
     Image rotate2 = rot2.ScaledRotation(0.2*M_PI, 90, 0.8, 0.5);
     rotate2.BilinearInterpolation();
-    rotate2.display("Inverse Scaled Rotated warp_finger 2");
+    rotate2.display("Inverse Scaled Rot warp");
+    
+    //Compute and display the difference between both methods
+    Image Diff_2 = rotate2-warp_finger;
+    Diff_2.display("Diff: inverse rot, rot");;
     
     
-    Image Diff_5 = rotate2-warp_finger;
-    Diff_5.display("Difference Matrix 5");
+    //Clear the windows
+    cv::destroyAllWindows();
+    
+    //Display original image
+    clean_finger.display("Initial clean finger");
+
+    //Squeeze finger inside a given rectangle
+    Image squeeze1 = clean_finger.RectangleSqueezing(220,128, 65, 65,1.);
+    squeeze1.display("Squeezed finger rectangle");
+    
+    //Squeeze finger inside a circle for different input weights
+    Image squeeze2 = clean_finger.CircleSqueezing(200,128,80,1.);
+    squeeze2.display("Squeezed finger circle, weight = 1");
+    
+    Image squeeze3 = clean_finger.CircleSqueezing(200,128,80,1.5);
+    squeeze3.display("Squeezed finger circle, weight = 1.5");
+    
+    Image squeeze4 = clean_finger.CircleSqueezing(200,128,80,2);
+    squeeze4.display("Squeezed finger circle, weight = 2");
+    
     
     return 0;
 }
 
-
-
-/* Differences
- * 
- * //Computing and printing the difference in percentage between warp finger and rotate 1
-    float diff_1 = rotate1.error(warp_finger, 0);
-    std::cout<<"Difference between rotate 1 and warp warp_finger is : "<<diff_1<<std::endl;
-    
-    //Computing and printing the difference in percentage between warp finger and rotate 3
-    float diff_2 = warp_finger.error(rotate3, 0);
-    std::cout<<"Difference between warp_finger and rotate 3 is : "<<diff_2<<std::endl;
-    
-    //Printing the image difference
-    Image Diff_1 = warp_finger.DifferenceMatrix(rotate1);
-    //Diff_1.display("Difference Matrix 1");
-    
-    //Printing the image difference
-    Image Diff_2 = warp_finger.DifferenceMatrix(rotate3);
-    //Diff_2.display("Difference Matrix 2");
-    
-    */

@@ -299,7 +299,7 @@ class Image{
          *
          * This function rotates an image by a factor theta. It therefore performs some index transformations and then the actual rotation.
          * \param[in] theta is the rotation factor
-         * \return 
+         * \return Rotated non interpolated image
          * */
         Image Rotation(double theta);
 
@@ -318,40 +318,40 @@ class Image{
          * This function combines rotation and interpolation in such a way that no rounding of indices is performed anymore (in contrast to the combination of \ref Rotation and \ref BilinearInterpolation). Another difference is that we are looping over the pixels in the rotated target image instead of the pixels in the original image. Therefore we are perforing a backward rotation of the factor 2*PI-THETA to get the intensity values for our result pixels.
          * \param theta is the rotation factor
          * \param extension 
-         * \return 
+         * \return Rotated interpolated image
          * */
         Image InverseRotation(double theta, int extension = 0);
 
 
         /**
-         * \brief 
-         * This function computes 
+         * \brief Computing the scaled theta
+         * This function computes the theta we will use to apply the rotation afterward. It computes the distance from the origin of the circle given in parameters to the current point we are in. Then it compute a function that goes from one to zero as the function 
          * \param i is the x coordinate of the curente pixel 
          * \param j is the x coordinate of the curente pixel
          * \param origin is the origin of the circle we apply the rotation in
          * \param radius is the radius of the circle we apply the rotation in
          * \param theta is the rotation factor
-         * \return 
+         * \return scaled theta
          * */
         double ThetaScaled(int i, int j, cv::Point origin, double radius, double theta);
 
         /**
-         * \brief 
+         * \brief  TODO
          * \param theta is the rotation factor
          * \param radius is the radius of the circle we apply the rotation in
          * \param center_x is the x coordinate of the origin of the circle we apply the rotation in
          * \param center_y is the y coordinate of the origin of the circle we apply the rotation in
-         * \return 
+         * \return TODO
          */ 
         Image ScaledRotation(double theta, double radius, double center_x, double center_y);
 
         /**
-         * \brief
+         * \brief  TODO
          * \param theta is the rotation factor
          * \param radius is the radius of the circle we apply the rotation in
          * \param center_x is the x coordinate of the origin of the circle we apply the rotation in
          * \param center_y is the y coordinate of the origin of the circle we apply the rotation in
-         * \return 
+         * \return  TODO
          */ 
         Image InverseScaledRotation(double theta, double radius, double center_x, double center_y);
 
@@ -364,6 +364,87 @@ class Image{
          */ 
         Image Translation(double px, double py);
 
+
+        
+        /**
+         * \brief Index manipulation for squeezing inside a rectangle
+         *
+         * This function computes associated index coordinates for the squeezing function \ref RectangleSqueezing.
+         * \param[in] x_center is the x coordinate of the center of the rectangle
+         * \param[in] y_center is the y coordinate of the center of the rectangle
+         * \param[in] x is the x coordinate of the current pixel
+         * \param[in] y is the y coordinate of the current pixel
+         * \param[in] dist_max_x is the extent of the rectangle in x-direction (row-direction)
+         * \param[in] dist_max_y is the extent of the rectangle in y-direction (column-direction)
+         * \param[out] x_prime is the associated x coordinate of x after squeezing
+         * \param[out] y_prime is the associated y coordinate of y after squeezing
+         * \param[in] strength is the strength of the squeeze
+         * \param[in] opt determines the function to compute the weight; one can choose between linear function (opt=0), square function (opt=1) and 4th-power polynomial function (opt=2) where the last option is the default
+         * 
+         * 
+         * The function \ref SqueezeIndicesCircle computes the same manipulation inside a circle instead of a rectangle.
+         * */
+        void SqueezeIndicesRectangle(double x_center, double y_center, double x, double y, double dist_max_x, double dist_max_y, double& x_prime, double& y_prime, double strength, int opt=2);
+        
+        
+        /**
+         * \brief Index manipulation for squeezing inside a circle
+         *
+         * This function computes associated index coordinates for the squeezing function \ref CircleSqueezing.
+         * \param[in] x_center is the x coordinate of the center of the rectangle
+         * \param[in] y_center is the y coordinate of the center of the rectangle
+         * \param[in] x is the x coordinate of the current pixel
+         * \param[in] y is the y coordinate of the current pixel
+         * \param[in] extent is the extent of the circle (i.e. the radius)
+         * \param[out] x_prime is the associated x coordinate of x after squeezing
+         * \param[out] y_prime is the associated y coordinate of y after squeezing
+         * \param[in] strength is the strength of the squeeze
+         * \param[in] opt determines the function to compute the weight; one can choose between linear function (opt=0), square function (opt=1) and 4th-power polynomial function (opt=2) where the last option is the default
+         * 
+         * The function \ref SqueezeIndicesRectangle computes the same manipulation inside a rectangle instead of a circle.
+         * */
+        void SqueezeIndicesCircle(int x_center, int y_center, int x, int y, int extent, double& x_prime, double& y_prime, double strength, int opt=2);
+        
+         /**
+         * \brief Squeezing of fingerprint inside a given rectangle
+         *
+         * This function simulates a squeeze of the fingerprint inside a given rectangle.
+         * The idea is, that inside this rectangle, pixels move towards the center of it, in such a way that pixels that are close to the center move a lot and pixels that are at the border do not move at all.
+         * The function uses an inverse approach, meaning that we start from a pixel in the desired target image and compute its associated coordinates in the given original image to compute an intensity value for this pixel by bi-linear interpolation.
+         * The function calls \ref SqueezeIndicesRectangle to compute for each pixel the associated coordinates in the original image. 
+         * 
+         * Outside of the rectangle, the original image is maintained.
+         * 
+         * \param[in] x_center is the x coordinate of the center of the rectangle
+         * \param[in] y_center is the y coordinate of the center of the rectangle
+         * \param[in] x_extent is the extent of the rectangle in x-direction (row-direction)
+         * \param[in] y_extent is the extent of the rectangle in y-direction (column-direction)
+         * \param[in] strength is the strength of the squeeze
+         * \return new_img is the squeezed image that was computed
+         * 
+         * The function \ref CircleSqueezing performs the same manipulation inside a circle instead of a rectangle which leads to more natural results.
+         * */
+        Image RectangleSqueezing(int x_center, int y_center, int x_extent, int y_extent, double strength);
+        
+        /**
+         * \brief Squeezing of fingerprint inside a given circle
+         *
+         * This function simulates a squeeze of the fingerprint inside a given circle.
+         * The idea is, that inside this circle, pixels move towards the center of it, in such a way that pixels that are close to the center move a lot and pixels that are at the border do not move at all.
+         * The function uses an inverse approach, meaning that we start from a pixel in the desired target image and compute its associated coordinates in the given original image to compute an intensity value for this pixel by bi-linear interpolation.
+         * The function calls \ref SqueezeIndicesCircle to compute for each pixel the associated coordinates in the original image. 
+         * 
+         * Outside of the circle, the original image is maintained.
+         * 
+         * \param[in] x_center is the x coordinate of the center of the rectangle
+         * \param[in] y_center is the y coordinate of the center of the rectangle
+         * \param[in] extent is the extent of the circle (i.e. the radius)
+         * \param[in] strength is the strength of the squeeze
+         * \return new_img is the squeezed image that was computed
+         * 
+         * The function \ref RectangleSqueezing performs the same manipulation inside a rectangle instead of a circle.
+         * */
+        Image CircleSqueezing(int x_center, int y_center, int extent, double strength);
 
 
         // MORPHOLOGICAL FILTERING
