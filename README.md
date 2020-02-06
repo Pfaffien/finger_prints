@@ -41,7 +41,7 @@ When executing a demo, the created images are stored in `<PROJECT_ROOT>/img/save
 
 ## Running the tests
 
-Here is how to run the automated tests for this system.
+Here is how to run the automated tests for this system from the `build` repository.
 
 ### General tests
 
@@ -49,6 +49,20 @@ General tests can be found in the `demo` repository. They test the different fun
 
 ```
 ./demo/symmetries
+```
+
+The exhaustive list of programs is the following:
+
+* **Starter 1 / Main 1**: `rectangles`, `symmetries`, `pressure`
+* **Starter 2 / Main 2**: `rotations`, `elasticity`
+* **Starter 3 / Main 3**: `linear_filtering`
+* **Starter 4 / Main 4**: `morphological_filtering`
+* **Starter 5 / Main 5**: `translation`, `optimization`
+
+You can also run an interactive program - which is user friendly - to test everything.
+
+```
+./demo/demo
 ```
 
 ### Unit tests
