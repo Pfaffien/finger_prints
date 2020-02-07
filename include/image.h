@@ -152,7 +152,7 @@ class Image{
   	    * \brief Compute the error between two images
   	    * \param img image to compare this with
   	    * \param level tolerance between the two images
-  	    * \return Error between the images in pourcentage
+  	    * \return Error between the images in [0,1]
   	    */
   	    float error(Image img, float level);
 
