@@ -21,21 +21,19 @@ int main()
     Image dry("../img/dry_finger.png");    
     finger.display("Original");
 
-    // //Binarization
-    // //naive method
-    // Image naive = finger.BinarizeNaive(100);
-    // naive.display("Naive binarization (t = 100)");
+    //Binarization
+    //naive method
+    Image naive = finger.BinarizeNaive(100);
+    naive.display("Naive binarization (t = 100)");
 
     //otsu's method
     Image bin = finger.Binarize();
     bin.display("Binarization with Otsu's method");
     bin.save("binarized");
 
-    // //comparison
-    // cout << "The error between the two methods is : " << naive.error(bin, 0.001) << "%" << endl;
 
-    // //Clear the windows
-    // cv::destroyAllWindows();
+    //Clear the windows
+    cv::destroyAllWindows();
 
 
     //Dilatation and erosion binarized image
@@ -61,41 +59,41 @@ int main()
     test2.display("Test dilation grayscale");
     test2.save("dilatation_gray");
 
-    // //Clear the windows
-    // cv::destroyAllWindows();
+    //Clear the windows
+    cv::destroyAllWindows();
 
 
-    // //Commutation of the operators
-    // //erosion and dilatation
-    // Image erosion_dilatation = erosion.DilateBin(kernel());
-    // erosion_dilatation.display("Erosion and dilatation");
+    //Commutation of the operators
+    //erosion and dilatation
+    Image erosion_dilatation = erosion.DilateBin(kernel());
+    erosion_dilatation.display("Erosion and dilatation");
 
-    // //dilatation and erosion
-    // Image dilatation_erosion = dilatation.ErodeBin(kernel());
-    // dilatation_erosion.display("Dilatation and erosion");
+    //dilatation and erosion
+    Image dilatation_erosion = dilatation.ErodeBin(kernel());
+    dilatation_erosion.display("Dilatation and erosion");
 
-    // //difference
-    // Image diff = erosion_dilatation - dilatation_erosion;
-    // diff.display("Difference");
-    // cout << "Pourcentage of difference when commuting the operators : " << erosion_dilatation.error(dilatation_erosion, 0.001) << "%" << endl; 
+    //difference
+    Image diff = erosion_dilatation - dilatation_erosion;
+    diff.display("Difference");
+    cout << "Pourcentage of difference when commuting the operators : " << erosion_dilatation.error(dilatation_erosion, 0.001) << "%" << endl; 
 
-    // //Clear the windows
-    // cv::destroyAllWindows();
+    //Clear the windows
+    cv::destroyAllWindows();
 
 
-    // //Improvements
-    // //Try to approximate moist and dry
-    // Image diamond("../img/filters/diamond_5x5.png");
-    // Image moist_bin = moist.Binarize();
-    // Image dry_bin = dry.Binarize();
+    //Improvements
+    //Try to approximate moist and dry
+    Image diamond("../img/filters/diamond_5x5.png");
+    Image moist_bin = moist.Binarize();
+    Image dry_bin = dry.Binarize();
 
-    // moist_bin.display("Moist finger binarized");
-    // dry_bin.display("Dry finger binarized");
+    moist_bin.display("Moist finger binarized");
+    dry_bin.display("Dry finger binarized");
 
-    // Image erosion_dry = finger.ErodeBin(diamond());
-    // erosion_dry.display("Approximation of dry");
+    Image erosion_dry = finger.ErodeBin(diamond());
+    erosion_dry.display("Approximation of dry");
 
-    // cv::destroyAllWindows();
+    cv::destroyAllWindows();
 
     //Using a complex erosion
     Image filter("../img/filters/cross_3x3.png");
@@ -103,17 +101,17 @@ int main()
     dry_complex.display("Dry complex");
     dry_complex.save("dry_complex");
 
-    // Image dry_diamond = finger.ErodeGray(filter());
-    // dry_diamond.display("Dry gray");
+    Image dry_diamond = finger.ErodeGray(filter());
+    dry_diamond.display("Dry gray");
 
-    // Image diff_complex = dry_complex - dry_diamond;
-    // diff_complex.display("Diff");
+    Image diff_complex = dry_complex - dry_diamond;
+    diff_complex.display("Diff");
 
-    // cv::destroyAllWindows();
+    cv::destroyAllWindows();
 
-    // Image small_finger("../img/clean_finger_small.png");
-    // Image skeleton = small_finger.Skeletonize();
-    // skeleton.display("Skeleton");
+    Image small_finger("../img/clean_finger_small.png");
+    Image skeleton = small_finger.Skeletonize();
+    skeleton.display("Partial skeleton");
 
     return 0;
 }

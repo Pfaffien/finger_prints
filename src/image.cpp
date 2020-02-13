@@ -1375,7 +1375,7 @@ Image Image::Skeletonize()
 
     do {
         counter = 0;
-        std::cout << counter << std::endl;
+        // std::cout << counter << std::endl;
         //STEP 1
         for (int y = 1; y < rows-1; y++) {
             for (int x = 1; x < cols-1; x++) {
@@ -1646,7 +1646,7 @@ Image Image::Skeletonize()
                 }
             }
         }
-        std::cout << counter << std::endl;
+        // std::cout << counter << std::endl;
 
         eight_neighbours = true;
         counters--;

@@ -53,7 +53,7 @@ int main()
     
     //Rotate rotated image with inverse rotation
     Image rot1 = rotate1.InverseScaledRotation(-0.2*M_PI, 90,0.8, 0.5);
-    rotate1.display("Inverse Scaled Rotated warp_finger 1");
+    rot1.display("Inverse Scaled Rotated warp_finger 1");
     
     //Compute and display the difference between both methods
     Image Diff_1 = rot1-warp_finger;
