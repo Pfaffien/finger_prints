@@ -1278,10 +1278,10 @@ Image Image::ErodeGray(cv::Mat_<float> kernel)
                         jj = 0;
 
                     tmp(j, i) = std::abs(grayscale(jj, ii) - kernel(j, i));
-                    minMaxLoc(tmp, &min, &max);
-                    res(y, x) = min;
                 }
             }
+            minMaxLoc(tmp, &min, &max);
+            res(y, x) = min;
         }
     }
     cv::normalize(res, res, 0, 1, cv::NORM_MINMAX);

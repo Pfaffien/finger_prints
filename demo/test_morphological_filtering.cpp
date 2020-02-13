@@ -111,9 +111,9 @@ int main()
 
     // cv::destroyAllWindows();
 
-    Image small_finger("../img/clean_finger_small.png");
-    Image skeleton = small_finger.Skeletonize();
-    skeleton.display("Skeleton");
+    // Image small_finger("../img/clean_finger_small.png");
+    // Image skeleton = small_finger.Skeletonize();
+    // skeleton.display("Skeleton");
 
     return 0;
 }
