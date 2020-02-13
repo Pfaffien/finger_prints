@@ -1174,7 +1174,7 @@ Image Image::Binarize()
 }
 
 
-//Boundary conditions not treated yet
+//Boundary conditions not treated
 Image Image::ErodeNaive(std::vector<cv::Point> struct_elt)
 {
     Image bin = this->Binarize();
@@ -1203,7 +1203,7 @@ Image Image::ErodeNaive(std::vector<cv::Point> struct_elt)
 }
 
 
-//Boundary conditions not treated yet
+//Boundary conditions not treated
 Image Image::DilateNaive(std::vector<cv::Point> struct_elt)
 {
     Image swapped = -(*this);
@@ -1213,8 +1213,6 @@ Image Image::DilateNaive(std::vector<cv::Point> struct_elt)
 }
 
 
-//Pour améliorer, utiliser les histogrammes ! Et en niveau de gris
-//Binariser les images déjà modifiées
 Image Image::ErodeBin(cv::Mat_<float> kernel)
 {
     Image bin = this->Binarize();
@@ -1333,13 +1331,9 @@ Image Image::Erode(cv::Mat_<float> kernel, std::string erosion_type)
 
                         dist = cv::norm(cv::Point(ii, jj) - center);
 
-                        // if (dist > 50) {
-                            tmp(j, i) = std::abs(grayscale(jj, ii) - dist * kernel(j, i));
-                            minMaxLoc(tmp, &min, &max);
-                            res(y, x) = min;
-                        // } else {
-                        //     res(y, x) = grayscale.at<uchar>(y, x);
-                        // }
+                        tmp(j, i) = std::abs(grayscale(jj, ii) - dist * kernel(j, i));
+                        minMaxLoc(tmp, &min, &max);
+                        res(y, x) = min;
 
                     }
                 }
@@ -1364,7 +1358,7 @@ Image Image::Dilate(cv::Mat_<float> kernel, std::string dilation_type)
 }
 
 
-//BUG
+//Unfinished, naive
 Image Image::Skeletonize()
 {
     Image bin = this->Binarize();
@@ -1393,7 +1387,6 @@ Image Image::Skeletonize()
                         ii = x + i;
                         jj = y + j;
 
-                        //Attention, test si > rows et cols aussi non ?
                         if (ii < 0) {
                             ii = 0;
                             eight_neighbours = false;
@@ -1403,12 +1396,12 @@ Image Image::Skeletonize()
                         }
 
                         N += bin(jj, ii);
-                        //Trouver un moyen de calculer S
+                        //How to calculate S?
 
                     }
 
                     //Conditions
-                    //Attention, x +/- 1 et y +/- 1 ne sont pas forcément définis
+                    //Beware, x +/- 1 et y +/- 1 not always defined
                     if (y-1 < 0) {
                         yy = 0;
                         xx = x;
@@ -1525,7 +1518,6 @@ Image Image::Skeletonize()
                         ii = x + i;
                         jj = y + j;
 
-                        //Attention, test si > rows et cols aussi non ?
                         if (ii < 0) {
                             ii = 0;
                             eight_neighbours = false;
@@ -1543,12 +1535,12 @@ Image Image::Skeletonize()
                         }
 
                         N += bin(jj, ii);
-                        //Trouver un moyen de calculer S
+                        //How to calculate S?
 
                     }
 
                     //Conditions
-                    //Attention, x +/- 1 et y +/- 1 ne sont pas forcément définis
+                    //Beware, x +/- 1 et y +/- 1 not always defined
                     if (y-1 < 0) {
                         yy = 0;
                         xx = x;
@@ -1662,9 +1654,3 @@ Image Image::Skeletonize()
 
     return -bin;
 }
-
-
-//TODO: skeletonization (ZS thinning) (create a method)
-//TODO: conversion of a dry finger to a clean image with skeletonization and dilatation (create a method)
-//TODO: conversion of a moist finger to a clean image with erosion (?) (create a method)
-//TODO: deconvolution (algorithm to approximate the blurring kernel) to unblur an image (create a method)
