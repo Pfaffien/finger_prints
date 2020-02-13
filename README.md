@@ -30,11 +30,11 @@ mkdir build
 cd build/
 ```
 
-Compile the sources using cmake
+Compile the sources using cmake. You can run the make command on several cores using the `-j` option
 
 ```
 cmake ..
-make
+make -j8
 ```
 <!-- Change the structure of the program to save images in a build/img repository -->
 When executing a demo, the created images are stored in `<PROJECT_ROOT>/img/saved/`.
